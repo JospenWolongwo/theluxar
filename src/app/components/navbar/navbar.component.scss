@@ -190,17 +190,24 @@
 
       ::ng-deep {
         .mat-mdc-form-field-flex {
-          background-color: var.$gray-50;
+          background-color: var.$white;
           border-radius: 4px;
           padding: 0 spacing.$base-space;
-          min-height: 40px;
+          min-height: 44px;
           align-items: center;
-          border: 1px solid var.$gray-200;
-          transition: border-color 250ms ease-in-out;
+          border: 1px solid var.$gray-300;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          transition: all 250ms ease-in-out;
 
-          &:hover,
+          &:hover {
+            border-color: var.$primary;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+          }
+          
           &:focus-within {
-            border-color: var.$gray-300;
+            border-color: var.$primary;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-width: 1px;
           }
         }
 
@@ -218,15 +225,18 @@
           display: none;
         }
 
-        input.mat-mdc-input-element {
-          font-size: 0.7rem;
+        .mat-mdc-input-element {
+          font-size: 0.85rem;
+          font-family: 'Inter', sans-serif;
           padding: 0 spacing.$base-space;
           margin: 0;
-          height: 24px;
-          color: var.$gray-700;
+          height: 28px;
+          color: var.$gray-900;
+          letter-spacing: 0.02em;
 
           &::placeholder {
-            color: var.$gray-300;
+            color: var.$gray-400;
+            font-style: italic;
           }
         }
       }
@@ -247,6 +257,24 @@
       }
 
       &.cart-icon {
+        .mat-icon-button {
+          color: var.$primary;
+          width: 34px;
+          height: 34px;
+          line-height: 34px;
+          transition: color 250ms ease-in-out;
+          
+          &:hover {
+            color: darken(var.$primary, 10%);
+          }
+          
+          .mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+          }
+        }
         .cart-count {
           position: absolute;
           top: 0;
@@ -319,11 +347,29 @@
   }
 }
 
+// Enhanced search button styling
+.luxury-search-btn {
+  color: var.$primary !important;
+  transition: all 250ms ease-in-out !important;
+  
+  &:hover {
+    color: darken(var.$primary, 15%) !important;
+    transform: scale(1.05);
+  }
+  
+  .mat-icon {
+    font-size: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
 .mobile-search {
   position: relative;
   padding: spacing.$base-space * 5 spacing.$base-space;
   margin-bottom: spacing.$base-space * 4;
   background-color: var.$white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   &::after {
     content: "";
@@ -332,7 +378,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var.$gray-200;
   }
 
   &::before {
@@ -344,7 +390,7 @@
     height: 6px;
     background: linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.03) 0%,
+      rgba(0, 0, 0, 0.05) 0%,
       transparent 100%
     );
   }
@@ -359,17 +405,24 @@
 
       ::ng-deep {
         .mat-mdc-form-field-flex {
-          background-color: var.$gray-50;
+          background-color: var.$white;
           border-radius: 4px;
           padding: 0 spacing.$base-space;
-          min-height: 48px;
+          min-height: 44px;
           align-items: center;
-          border: 1px solid var.$gray-200;
-          transition: border-color 250ms ease-in-out;
+          border: 1px solid var.$gray-300;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          transition: all 250ms ease-in-out;
 
-          &:hover,
+          &:hover {
+            border-color: var.$primary;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+          }
+          
           &:focus-within {
-            border-color: var.$gray-300;
+            border-color: var.$primary;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-width: 1px;
           }
         }
 
@@ -387,15 +440,18 @@
           display: none;
         }
 
-        input.mat-mdc-input-element {
-          font-size: 0.75rem;
+        .mat-mdc-input-element {
+          font-size: 0.85rem;
+          font-family: 'Inter', sans-serif;
           padding: 0 spacing.$base-space;
           margin: 0;
-          height: 24px;
-          color: var.$gray-300;
+          height: 28px;
+          color: var.$gray-900;
+          letter-spacing: 0.02em;
 
           &::placeholder {
-            color: var.$gray-300;
+            color: var.$gray-400;
+            font-style: italic;
           }
         }
       }

@@ -53,7 +53,7 @@ export class ShowcaseCarouselComponent implements OnInit, AfterViewInit, OnDestr
   startSlider(): void {
     this.sliderInterval = setInterval(() => {
       this.nextSlide();
-    }, 5000);
+    }, 8000);
   }
 
   stopSlider(): void {
