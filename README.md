@@ -1,6 +1,6 @@
-# Hello Hardware Frontend
+# The Luxar
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7 and serves as the frontend for the Hello Hardware application.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7 and serves as the frontend for The Luxar application, an elegant e-commerce platform for luxury products.
 
 ## Features
 
@@ -123,6 +123,39 @@ The application uses a proxy configuration to communicate with the backend API. 
 2. Follow the Angular style guide
 3. Write comprehensive tests for new features
 4. Submit pull requests with detailed descriptions
+
+## Deployment
+
+### Netlify Deployment
+
+This project is configured for seamless deployment on Netlify:
+
+1. **netlify.toml Configuration**:
+   - The repository includes a `netlify.toml` file that configures the build process for Netlify
+   - Build command: `npm run build:prod` runs the Angular production build
+   - Publish directory: `dist/the-luxar` contains the built application
+   - URL path rewrites: All routes are redirected to index.html for SPA routing
+
+2. **Deployment Steps**:
+   - Connect your GitHub repository to Netlify
+   - Netlify will automatically detect the configuration
+   - No additional build settings are required as they're defined in `netlify.toml`
+   - (Optional) Configure custom domain settings in the Netlify dashboard
+
+3. **Environment Variables**:
+   - Configure any required environment variables in the Netlify dashboard
+   - For API URLs, backend services, or third-party integrations
+
+### Manual Deployment
+
+To deploy the build manually:
+
+```bash
+# Build for production
+npm run build:prod
+
+# The dist/the-luxar directory can be deployed to any static hosting service
+```
 
 ## Further Help
 
