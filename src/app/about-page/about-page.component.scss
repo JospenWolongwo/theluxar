@@ -1,7 +1,7 @@
 @use '../../styles/variables' as var;
 
 // Shared styles with home page
-@import '../home-page/home-page.component.scss';
+@use '../home-page/home-page.component.scss' as home;
 
 // About page specific styles
 .about-header {
