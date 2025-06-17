@@ -1,0 +1,50 @@
+@use '../../styles/variables' as var;
+
+// Inherit styles from home page
+@import '../home-page/home-page.component.scss';
+
+// Loading state styles
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var.$base-space * 50;
+  padding: var.$base-space * 8 0;
+}
+
+.spinner {
+  width: var.$base-space * 12.5;
+  height: var.$base-space * 12.5;
+  border: var.$base-space solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color, #2db224);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: var.$base-space * 4;
+}
+
+.loading-message {
+  font-size: var.$base-space * 4;
+  color: var(--text-color, #333);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// No products styles
+.no-products-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: var.$base-space * 50;
+  text-align: center;
+  padding: var.$base-space * 8;
+}
+
+.no-products-message {
+  font-size: var.$base-space * 4.5;
+  color: var(--text-color, #666);
+}

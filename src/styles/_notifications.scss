@@ -1,0 +1,93 @@
+// Notification styling for different notification types
+// Based on the application's color scheme and Material Design principles
+
+// Import variables and spacing to use the existing design system
+@use 'variables' as var;
+@use 'spacing' as spacing;
+
+// Base notification styling
+.mat-snack-bar-container {
+  padding: spacing.$base-space * 3.5 spacing.$base-space * 4;
+  border-radius: spacing.$base-space;
+  box-shadow: 0 spacing.$base-space * 0.75 spacing.$base-space * 1.25 rgba(0, 0, 0, 0.2),
+    0 spacing.$base-space * 1.5 spacing.$base-space * 2.5 rgba(0, 0, 0, 0.14),
+    0 spacing.$base-space * 0.25 spacing.$base-space * 4.5 rgba(0, 0, 0, 0.12);
+
+  .mat-simple-snackbar {
+    font-size: 0.875rem; // 14px
+    line-height: spacing.$base-space * 5;
+  }
+
+  .mat-simple-snackbar-action {
+    color: inherit;
+  }
+}
+
+// Error notification - red theme
+.notification-error {
+  background-color: var.$red; // Using project red variable
+  color: var.$white;
+
+  .mat-simple-snackbar-action {
+    color: var.$white;
+    font-weight: 500;
+  }
+}
+
+// Success notification - green theme
+.notification-success {
+  background-color: var.$green; // Using project green variable
+  color: var.$white;
+
+  .mat-simple-snackbar-action {
+    color: var.$white;
+    font-weight: 500;
+  }
+}
+
+// Info notification - blue theme
+.notification-info {
+  background-color: var.$secondary; // Using project secondary/blue variable
+  color: var.$white;
+
+  .mat-simple-snackbar-action {
+    color: var.$white;
+    font-weight: 500;
+  }
+}
+
+// Warning notification - amber theme
+.notification-warning {
+  background-color: var.$warning; // Using project warning variable
+  color: var.$white;
+
+  .mat-simple-snackbar-action {
+    color: var.$white;
+    font-weight: 500;
+  }
+}
+
+// Animation for notification entry and exit
+.mat-snack-bar-container {
+  transition: transform 225ms cubic-bezier(0, 0, 0.2, 1), opacity 225ms cubic-bezier(0, 0, 0.2, 1);
+
+  &.ng-enter {
+    opacity: 0;
+    transform: translateY(spacing.$base-space * -7.5);
+  }
+
+  &.ng-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.ng-leave {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.ng-leave-active {
+    opacity: 0;
+    transform: translateY(spacing.$base-space * -7.5);
+  }
+}

@@ -1,0 +1,52 @@
+<div class="product-specs" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <!-- Product Information Section -->
+  <h3 class="specs-section-title">Product information</h3>
+
+  <!-- Core Features Section with Icons -->
+  <h4 class="specs-subtitle">Core features</h4>
+  <div class="core-features">
+    <div class="feature-item" *ngFor="let feature of coreFeatures">
+      <div class="feature-icon">
+        <fa-icon [icon]="['fas', getIconName(feature.icon)]"></fa-icon>
+      </div>
+      <div class="feature-label">{{ feature.label }}</div>
+      <div class="feature-value">{{ feature.value }}</div>
+    </div>
+  </div>
+
+  <!-- Technical Data Section -->
+  <h3 class="specs-section-title">Technical data</h3>
+  <div class="technical-data">
+    <div class="tech-row" *ngFor="let spec of technicalData">
+      <div class="tech-label">{{ spec.label }}</div>
+      <div class="tech-value">{{ spec.value }}</div>
+    </div>
+  </div>
+
+  <!-- Included in Delivery Section -->
+  <h3 class="specs-section-title">Included in delivery</h3>
+  <div class="included-items">
+    <div class="included-item" *ngFor="let item of includedItems">
+      <div class="included-icon">
+        <fa-icon [icon]="['fas', getIconName(item.icon)]"></fa-icon>
+      </div>
+      <div class="included-label">{{ item.label }}</div>
+      <div class="included-note" *ngIf="item.note">{{ item.note }}</div>
+    </div>
+  </div>
+
+  <!-- Product Description Section -->
+  <h3 class="specs-section-title">Product description</h3>
+  <div class="product-desc-text">
+    <div [ngClass]="{ 'text-truncate': !isExpandedDescription }">
+      <p>{{ product.description || "No description available for this product." }}</p>
+    </div>
+    <button
+      class="voir-plus"
+      (click)="toggleDescription()"
+      *ngIf="product.description && product.description.length > 200"
+    >
+      {{ isExpandedDescription ? "Voir Moins" : "Voir Plus" }}
+    </button>
+  </div>
+</div>

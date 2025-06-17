@@ -1,0 +1,83 @@
+<div class="promotion-container flex-col" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <!-- Banners Section -->
+  <div class="promotion-banners flex-row">
+    <!-- Left banner - Crème de Nuit -->
+    <div class="promotion-item {{ promotionItems[0].id }} flex-row justify-content-space-between">
+      <div class="promotion-content flex-col">
+        <div class="promotion-label">{{ promotionItems[0].label }}</div>
+        <div class="promotion-details">
+          <h3>{{ promotionItems[0].title }}</h3>
+          <h2>{{ promotionItems[0].tagline }}</h2>
+          <p class="description">
+            Discover masterful Swiss craftsmanship with this iconic timepiece featuring 18k gold and precision movement.
+          </p>
+          <div class="price-tag" *ngIf="promotionItems[0].price">
+            <span class="price">{{ promotionItems[0].price }}</span>
+            <span class="currency">{{ promotionItems[0].currency }}</span>
+          </div>
+          <div class="contact-vendor">
+            <button class="btn-primary btn-with-icon" (click)="navigateToCategory(promotionItems[0].link)">
+              <i class="fas fa-shopping-cart"></i>
+              <span>SHOP NOW</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="promotion-image">
+        <img [src]="promotionItems[0].imageUrl" [alt]="promotionItems[0].title" />
+      </div>
+    </div>
+
+    <!-- Right banner - Perfume -->
+    <div class="promotion-item {{ promotionItems[1].id }} flex-row justify-content-space-between">
+      <div class="promotion-content flex-col">
+        <div class="promotion-label">{{ promotionItems[1].label }}</div>
+        <div class="promotion-details">
+          <h3>{{ promotionItems[1].title }}</h3>
+          <h2>{{ promotionItems[1].tagline }}</h2>
+          <p class="description">Captivating fragrance with notes of exotic flowers and amber, encased in an artfully crafted crystal bottle for lasting luxury.</p>
+          <div class="price-tag" *ngIf="promotionItems[1].price">
+            <span class="price">{{ promotionItems[1].price }}</span>
+            <span class="currency">{{ promotionItems[1].currency }}</span>
+          </div>
+          <div class="contact-vendor">
+            <button class="btn-primary btn-with-icon" (click)="navigateToCategory(promotionItems[1].link)">
+              <i class="fas fa-shopping-cart"></i>
+              <span>SHOP NOW</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="promotion-image">
+        <img [src]="promotionItems[1].imageUrl" [alt]="promotionItems[1].title" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Categories Section -->
+  <div class="filter-categories flex-row justify-content-space-between align-items-center">
+    <h3 class="results-count">{{ filterCategories.length }} AVAILABLE COLLECTIONS</h3>
+    <div class="sort-section flex-row align-items-center">
+      <span class="sort-label">Sort by</span>
+      <div class="sort-dropdown flex-row align-items-center">
+        <span>{{ sortOption || "Most Popular" }}</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M6 9L12 15L18 9"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filters -->
+  <div class="category-filters flex-row flex-wrap">
+    <div *ngFor="let category of filterCategories" class="category-filter-item" (click)="applyFilter(category)">
+      {{ category }}
+    </div>
+  </div>
+</div>

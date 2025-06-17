@@ -1,0 +1,52 @@
+<div
+  class="product-card flex-col position-relative"
+  [class.card-mobile]="isMobile"
+  [class.card-tablet]="isTablet"
+  (click)="navigateToProductDetail()"
+>
+  <!-- Product Badge -->
+  <div class="product-badge" *ngIf="product.tag">
+    {{ product.tag }}
+  </div>
+
+  <!-- Wishlist Icon -->
+  <div class="wishlist-icon" [class.active]="product.inWishlist" (click)="toggleWishlist($event)">
+    <fa-icon [icon]="product.inWishlist ? ['fas', 'heart'] : ['far', 'heart']"></fa-icon>
+  </div>
+
+  <!-- Product Image -->
+  <div class="product-img-container">
+    <img [src]="product.imageUrl" [alt]="product.name" class="product-img" />
+  </div>
+
+  <!-- Product details -->
+  <div class="product-details">
+    <h4 class="product-name">{{ product.name }}</h4>
+    <p class="product-specs">{{ product.description || product.specs }}</p>
+
+    <!-- Rating -->
+    <div class="product-rating" *ngIf="product.rating">
+      <div class="stars">
+        <fa-icon
+          [icon]="['fas', star <= getRatingAverage() ? 'star' : 'star']"
+          [class.filled]="star <= getRatingAverage()"
+          *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+        >
+        </fa-icon>
+      </div>
+      <span class="rating-count" *ngIf="getRatingCount() > 0">
+        {{ getRatingCount() }} {{ getRatingCount() === 1 ? "review" : "reviews" }}
+      </span>
+    </div>
+
+    <div class="product-footer">
+      <div class="product-price">
+        {{ product.price.toFixed(0) }} {{ product.currency }}
+        <span class="product-volume" *ngIf="product.volume">{{ product.volume }}</span>
+      </div>
+      <button class="add-to-cart" (click)="$event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

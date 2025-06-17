@@ -1,0 +1,131 @@
+@use '../../../styles/variables' as var;
+
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-modal {
+  background-color: var.$white;
+  border-radius: var.$base-space * 2;
+  padding: var.$base-space * 8;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 var.$base-space var.$base-space * 4 rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-out;
+
+  @media (max-width: 576px) {
+    padding: var.$base-space * 5;
+    width: 95%;
+  }
+}
+
+.success-icon-container {
+  margin-bottom: var.$base-space * 5;
+}
+
+.success-icon {
+  width: var.$base-space * 18;
+  height: var.$base-space * 18;
+  background-color: rgba(54, 179, 51, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: var.$base-space * 10;
+    height: var.$base-space * 10;
+  }
+}
+
+.success-title {
+  font-size: var.$base-space * 5;
+  font-weight: 600;
+  color: var.$black;
+  margin-bottom: var.$base-space * 4;
+}
+
+.success-message {
+  font-size: var.$base-space * 3.5;
+  color: var.$gray-600;
+  margin-bottom: var.$base-space * 6;
+  line-height: 1.5;
+}
+
+.website-link {
+  display: block;
+  color: var.$primary;
+  font-weight: 500;
+  margin-top: var.$base-space * 2;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: var.$base-space * 3;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: var.$base-space * 2;
+  }
+
+  button {
+    flex: 1;
+    padding: var.$base-space * 3 var.$base-space * 2;
+    border-radius: var.$base-space;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    @media (max-width: 576px) {
+      width: 100%;
+    }
+  }
+
+  .return-btn {
+    background-color: var.$white;
+    color: var.$gray-700;
+    border: 1px solid var.$gray-300;
+
+    &:hover {
+      background-color: var.$gray-100;
+    }
+  }
+
+  .contact-btn {
+    background-color: var.$primary;
+    color: var.$white;
+    border: none;
+
+    &:hover {
+      background-color: darken(var.$primary, 5%);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

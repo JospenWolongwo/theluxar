@@ -1,0 +1,80 @@
+<div
+  class="flex-col product-card"
+  [class.mobile]="isMobile"
+  [class.tablet]="isTablet && !isMobile"
+  (click)="navigateToProductDetail()"
+>
+  <!-- Product Label (if any) -->
+  <div *ngIf="product.label" class="product-label" [ngClass]="getLabelClass()">
+    {{ product.label }}
+  </div>
+
+  <!-- Wishlist Icon -->
+  <div class="wishlist-icon" [class.active]="product.inWishlist" (click)="toggleWishlist($event)">
+    <fa-icon [icon]="product.inWishlist ? ['fas', 'heart'] : ['far', 'heart']"></fa-icon>
+  </div>
+
+  <!-- Product Image -->
+  <div class="product-image-container">
+    <div class="product-image flex-row align-items-center justify-content-center">
+      <img
+        [src]="imageSrc"
+        [alt]="product.name"
+        (error)="onImageError()"
+        [class.loading]="!product.imageUrl"
+        loading="lazy"
+      />
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info flex-col p-2">
+    <!-- Brand -->
+    <div *ngIf="product.brand" class="product-brand">
+      {{ product.brand }}
+    </div>
+
+    <!-- Name -->
+    <h3 class="product-name" [title]="product.name">
+      {{ product.name }}
+    </h3>
+
+    <!-- Specs/Description -->
+    <div *ngIf="product.specs" class="product-specs">
+      {{ product.specs }}
+    </div>
+
+    <!-- Price -->
+    <div class="price-section">
+      <div class="product-price">{{ product.price.toFixed(0) }} {{ product.currency }}</div>
+
+      <!-- Discount Badge -->
+      <div *ngIf="hasDiscount()" class="discount-badge">-{{ getDiscountPercentage() }}%</div>
+    </div>
+
+    <!-- Stock Status -->
+    <div
+      *ngIf="product.inStock !== undefined"
+      class="stock-status"
+      [class.in-stock]="product.inStock"
+      [class.out-of-stock]="!product.inStock"
+    >
+      {{ product.inStock ? "In stock" : "Out of stock" }}
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <!-- Reserve Button -->
+    <button class="reserve-button" (click)="onReserveClick($event)" [disabled]="!product.inStock">
+      <span>Order</span>
+      <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+    </button>
+
+    <!-- Quick View (for desktop/tablet) -->
+    <button *ngIf="!isMobile" class="quick-view-button" (click)="$event.stopPropagation()">
+      <fa-icon [icon]="['far', 'eye']"></fa-icon>
+      <span>View</span>
+    </button>
+  </div>
+</div>

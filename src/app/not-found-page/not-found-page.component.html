@@ -1,0 +1,30 @@
+<div
+  class="not-found-container flex-col align-items-center justify-content-center"
+  [class.mobile]="currentScreenSize.ltSm"
+  [class.tablet]="!currentScreenSize.ltSm && currentScreenSize.ltLg"
+>
+  <div class="not-found-content flex-col align-items-center">
+    <img src="../../../assets/images/not-found.png" alt="Page non trouvée" class="not-found-image" />
+
+    <h1 class="not-found-title">404, Page non trouvée</h1>
+
+    <p class="not-found-text">
+      Une erreur s'est produite. Il semble que la page demandée n'existe pas ou a été déplacée.
+    </p>
+
+    <div
+      class="action-buttons p-t-5"
+      [class.flex-col]="currentScreenSize.ltSm"
+      [class.flex-row]="!currentScreenSize.ltSm"
+      [class.justify-content-center]="!currentScreenSize.ltSm"
+    >
+      <a [routerLink]="['/']" class="btn-secondary">
+        <span>Retour</span>
+      </a>
+
+      <a [routerLink]="['/home']" class="btn-primary">
+        <span>Page d'accueil</span>
+      </a>
+    </div>
+  </div>
+</div>

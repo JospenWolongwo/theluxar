@@ -1,0 +1,137 @@
+<main class="w-100">
+  <div
+    [class.p-l-18]="!currentScreenSize.ltSm"
+    [class.p-r-18]="!currentScreenSize.ltSm"
+    [class.p-b-4]="currentScreenSize.ltSm"
+    [class.p-t-10]="!currentScreenSize.ltSm"
+    [class.p-b-10]="!currentScreenSize.ltSm"
+  >
+    <!-- About Page Header -->
+    <div class="about-header">
+      <h1 [class.text-center]="currentScreenSize.ltSm">À Propos de Hello Cosmetics</h1>
+      <p [class.text-center]="currentScreenSize.ltSm" class="about-intro">
+        Découvrez l'univers de la beauté naturelle avec Hello Cosmetics, où la science rencontre la tradition africaine
+        pour des soins capillaires et cosmétiques d'exception.
+      </p>
+    </div>
+
+    <!-- Story Section -->
+    <div class="about-story" [class.about-story-mobile]="currentScreenSize.ltSm">
+      <div class="story-content">
+        <h2>Notre Histoire</h2>
+        <p>
+          Née en 2020, Hello Cosmetics est le fruit de la passion de Sophie Laurent pour la beauté naturelle et son
+          amour pour les trésors cosmétiques de l'Afrique. Après des années dans l'industrie cosmétique internationale,
+          Sophie a constaté le manque de produits adaptés aux spécificités des peaux et cheveux africains.
+        </p>
+        <p>
+          Inspirée par les rituels de beauté ancestraux et les connaissances traditionnelles, elle a rassemblé une
+          équipe d'experts pour créer une gamme de soins qui allie l'efficacité de la science moderne à la richesse des
+          ingrédients naturels africains.
+        </p>
+        <p>
+          Aujourd'hui, Hello Cosmetics s'impose comme une référence dans le domaine des cosmétiques naturels en Afrique,
+          avec des produits certifiés bio et des formules innovantes qui respectent à la fois la peau et
+          l'environnement.
+        </p>
+      </div>
+      <div class="story-image" *ngIf="!currentScreenSize.ltSm">
+        <img
+          src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1374&auto=format&fit=crop"
+          alt="Notre histoire"
+        />
+      </div>
+    </div>
+
+    <div class="mission-values-section" [class.mission-values-section-mobile]="currentScreenSize.ltSm">
+      <div class="mission-values-card">
+        <h2>Notre Mission</h2>
+        <p>
+          Chez Hello Cosmetics, nous nous engageons à révolutionner les soins de beauté en Afrique en proposant des
+          produits naturels, éthiques et efficaces, spécialement conçus pour les peaux et cheveux africains. Notre
+          mission est de redéfinir les standards de beauté en mettant en valeur la richesse des ingrédients naturels du
+          continent.
+        </p>
+      </div>
+      <div class="mission-values-card">
+        <h2>Nos Valeurs</h2>
+        <ul class="values-list">
+          <li>
+            <strong>Naturel & Bio</strong> - Nous utilisons jusqu'à 99% d'ingrédients d'origine naturelle et
+            privilégions les ingrédients biologiques certifiés pour des soins purs et respectueux de votre peau.
+          </li>
+          <li>
+            <strong>Innovation Scientifique</strong> - Notre équipe de recherche développe des formules uniques qui
+            allient les dernières avancées scientifiques aux savoir-faire traditionnels africains.
+          </li>
+          <li>
+            <strong>Durabilité</strong> - Nous nous engageons à réduire notre empreinte écologique avec des emballages
+            recyclables et une chaîne d'approvisionnement responsable.
+          </li>
+          <li>
+            <strong>Autonomisation</strong> - Nous soutenons les communautés locales en nous approvisionnant auprès de
+            producteurs africains et en créant des emplois durables.
+          </li>
+          <li>
+            <strong>Transparence</strong> - Nous croyons en une communication claire et honnête sur la composition de
+            nos produits et nos pratiques éthiques.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="team-section" [class.team-section-mobile]="currentScreenSize.ltSm">
+      <h2 [class.text-center]="currentScreenSize.ltSm">Notre Équipe d'Experts en Beauté</h2>
+      <p [class.text-center]="currentScreenSize.ltSm" class="team-intro">
+        Notre équipe réunit des experts passionnés par la cosmétique naturelle et la beauté africaine. Chaque membre
+        apporte son expertise unique pour créer des produits d'exception qui célèbrent et subliment la beauté naturelle
+        des peaux et cheveux africains.
+      </p>
+
+      <div class="team-grid" [class.team-grid-mobile]="currentScreenSize.ltSm">
+        <div class="team-member" *ngFor="let member of teamMembers">
+          <div class="member-photo">
+            <img [src]="member.photo" [alt]="member.name" />
+          </div>
+          <h3>{{ member.name }}</h3>
+          <p class="member-position">{{ member.position }}</p>
+          <p class="member-bio">{{ member.bio }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Numbers Section -->
+    <div class="numbers-section" [class.numbers-section-mobile]="currentScreenSize.ltSm">
+      <h2 [class.text-center]="currentScreenSize.ltSm">Hello Cosmetics en Chiffres</h2>
+      <div class="numbers-grid" [class.numbers-grid-mobile]="currentScreenSize.ltSm">
+        <div class="number-card">
+          <div class="number">3+</div>
+          <p>Années d'excellence en cosmétique naturelle</p>
+        </div>
+        <div class="number-card">
+          <div class="number">50+</div>
+          <p>Produits de beauté naturels</p>
+        </div>
+        <div class="number-card">
+          <div class="number">15+</div>
+          <p>Pays d'Afrique desservis</p>
+        </div>
+        <div class="number-card">
+          <div class="number">10k+</div>
+          <p>Clients satisfaits</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Common footer components from home page -->
+  <app-feedback
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-feedback>
+  <app-newsletter
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-newsletter>
+</main>

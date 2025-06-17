@@ -1,0 +1,88 @@
+<div class="product-filter-container" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <div class="filter-content" [class.p-2]="isMobile" [class.p-3]="isTablet" [class.p-4]="!isMobile && !isTablet">
+    <ng-container *ngFor="let category of filterCategories">
+      <div class="filter-category">
+        <div class="filter-title" [class.sm-title]="isMobile" [class.md-title]="isTablet">
+          <fa-icon [icon]="parseIcon(category.icon)" class="filter-icon" *ngIf="category.icon"></fa-icon>
+          {{ category.title }}
+        </div>
+
+        <div class="filter-options" [class.compact]="isMobile">
+          <!-- Icon based navigation -->
+          <ng-container *ngIf="category.type === 'icon'">
+            <div class="icon-grid" [class.mobile-grid]="isMobile" [class.tablet-grid]="isTablet">
+              <div
+                *ngFor="let option of category.options"
+                class="filter-option icon-only"
+                (click)="onFilterChange()"
+                [class.mobile-option]="isMobile"
+                [class.tablet-option]="isTablet"
+              >
+                <div class="icon-content">
+                  <fa-icon [icon]="parseIcon(option.icon)" class="category-icon"></fa-icon>
+                  <span class="icon-label">{{ option.name }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Text only for brands -->
+          <ng-container *ngIf="category.type === 'text'">
+            <div
+              *ngFor="let option of category.options"
+              class="filter-option text-only"
+              [class.mobile-option]="isMobile"
+              [class.tablet-option]="isTablet"
+              (click)="option.checked = !option.checked; onFilterChange()"
+            >
+              <div class="text-content">
+                <span class="brand-name">{{ option.name }}</span>
+                <span class="option-count" *ngIf="option.count && option.count > 0">({{ option.count }})</span>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Radio buttons for price filters -->
+          <ng-container *ngIf="category.type === 'radio'">
+            <div
+              *ngFor="let option of category.options"
+              class="filter-option"
+              [class.mobile-option]="isMobile"
+              [class.tablet-option]="isTablet"
+            >
+              <label class="custom-radio" [class.compact-input]="isMobile">
+                <input
+                  type="radio"
+                  [name]="category.title"
+                  [value]="option.value"
+                  [checked]="option.checked"
+                  (change)="option.checked = true; onFilterChange()"
+                />
+                <span class="radio-mark" [class.small-mark]="isMobile"></span>
+                <span class="label-text" [class.sm-text]="isMobile" [class.md-text]="isTablet">{{ option.name }}</span>
+              </label>
+              <span class="option-count" *ngIf="option.count && option.count > 0">({{ option.count }})</span>
+            </div>
+          </ng-container>
+
+          <!-- Checkboxes for other filters -->
+          <ng-container *ngIf="category.type === 'checkbox'">
+            <div
+              *ngFor="let option of category.options"
+              class="filter-option"
+              [class.mobile-option]="isMobile"
+              [class.tablet-option]="isTablet"
+            >
+              <label class="custom-checkbox" [class.compact-input]="isMobile">
+                <input type="checkbox" [(ngModel)]="option.checked" (change)="onFilterChange()" />
+                <span class="checkmark" [class.small-mark]="isMobile"></span>
+                <span class="label-text" [class.sm-text]="isMobile" [class.md-text]="isTablet">{{ option.name }}</span>
+              </label>
+              <span class="option-count" *ngIf="option.count && option.count > 0">({{ option.count }})</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

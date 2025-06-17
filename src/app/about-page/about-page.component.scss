@@ -1,0 +1,463 @@
+@use '../../styles/variables' as var;
+
+// Shared styles with home page
+@import '../home-page/home-page.component.scss';
+
+// About page specific styles
+.about-header {
+  margin-bottom: var.$base-space * 14;
+  padding: var.$base-space * 10 0;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1 * var.$base-space;
+    left: 0;
+    width: var.$base-space * 20;
+    height: var.$base-space;
+    background: linear-gradient(90deg, var.$primary, lighten(var.$primary, 20%));
+    border-radius: 10px;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    color: var.$gray-900;
+    margin-bottom: 1.2rem;
+    font-weight: 800;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    position: relative;
+    display: inline-block;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1 * var.$base-space;
+      left: 0;
+      width: 60%;
+      height: var.$base-space * 0.75;
+      background-color: var.$primary;
+      border-radius: 10px;
+    }
+  }
+
+  p {
+    font-size: 1.3rem;
+    color: var.$gray-700;
+    max-width: 800px;
+    line-height: 1.7;
+    margin-top: 1.5rem;
+  }
+
+  &.text-center {
+    text-align: center;
+
+    &::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    h1::after {
+      left: 20%;
+      width: 60%;
+    }
+
+    p {
+      margin: 1.5rem auto 0;
+    }
+  }
+}
+
+// Story Section
+.about-story {
+  display: flex;
+  gap: var.$base-space * 14;
+  margin-bottom: var.$base-space * 20;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 60%;
+    background-color: var.$gray-50;
+    border-radius: 2rem;
+    z-index: -1;
+    opacity: 0.7;
+  }
+
+  &-mobile {
+    flex-direction: column;
+    gap: var.$base-space * 10;
+
+    &::before {
+      height: 80%;
+    }
+  }
+
+  .story-content {
+    flex: 1;
+    position: relative;
+    padding: 1.5rem;
+
+    h2 {
+      font-size: 2.2rem;
+      color: var.$gray-900;
+      margin-bottom: 1.8rem;
+      font-weight: 700;
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var.$primary;
+        border-radius: 10px;
+      }
+    }
+
+    p {
+      font-size: 1.15rem;
+      color: var.$gray-700;
+      margin-bottom: 1.8rem;
+      line-height: 1.8;
+      position: relative;
+      padding-left: 1rem;
+      border-left: 3px solid var.$gray-200;
+      transition: border-color 0.3s ease;
+
+      &:hover {
+        border-left-color: var.$primary;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .story-image {
+    flex: 1;
+    max-width: 50%;
+    border-radius: var.$base-space * 6;
+    overflow: hidden;
+    box-shadow: 0 (var.$base-space * 3.75) (var.$base-space * 7.5) rgba(0, 0, 0, 0.15);
+    transform: rotate(2deg);
+    transition: all 0.5s ease;
+    position: relative;
+    z-index: 2;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 8px solid var.$white;
+      border-radius: 1.5rem;
+      box-sizing: border-box;
+      z-index: 1;
+    }
+
+    &:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+      filter: saturate(1.1);
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+// Mission and Values Section
+.mission-values-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var.$base-space * 12;
+  margin-bottom: var.$base-space * 20;
+  position: relative;
+  z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    right: 10%;
+    width: 120px;
+    height: 120px;
+    background-color: var.$gray-100;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.6;
+  }
+
+  &-mobile {
+    grid-template-columns: 1fr;
+    gap: var.$base-space * 10;
+  }
+
+  .mission-values-card {
+    background-color: var.$white;
+    border-radius: var.$base-space * 5;
+    padding: var.$base-space * 12;
+    box-shadow: 0 (var.$base-space * 3) (var.$base-space * 6.25) rgba(0, 0, 0, 0.07);
+    border: 1px solid var.$gray-200;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var.$primary, lighten(var.$primary, 15%));
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: var.$gray-900;
+      margin-bottom: 1.8rem;
+      font-weight: 700;
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 40%;
+        height: 3px;
+        background: linear-gradient(90deg, var.$primary, transparent);
+        border-radius: 10px;
+      }
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var.$gray-700;
+      line-height: 1.7;
+    }
+
+    .values-list {
+      padding-left: 0.5rem;
+
+      li {
+        margin-bottom: 1.2rem;
+        font-size: 1.1rem;
+        color: var.$gray-700;
+        line-height: 1.6;
+        padding-left: 2rem;
+        position: relative;
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: translateX(5px);
+        }
+
+        &::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          top: 0;
+          color: var.$primary;
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+
+        strong {
+          color: var.$gray-900;
+          font-weight: 700;
+          border-bottom: 2px dotted var.$gray-300;
+          padding-bottom: 2px;
+        }
+      }
+    }
+  }
+}
+
+// Team Section
+.team-section {
+  margin-bottom: 4rem;
+
+  &-mobile {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    color: var.$gray-900;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .team-intro {
+    font-size: 1.2rem;
+    color: var.$gray-700;
+    max-width: 800px;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var.$base-space * 8;
+
+    &-mobile {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+
+      @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+
+  .team-member {
+    background-color: var.$white;
+    border-radius: var.$base-space * 4;
+    overflow: hidden;
+    box-shadow: 0 (var.$base-space) (var.$base-space * 3) rgba(0, 0, 0, 0.05);
+    border: 1px solid var.$gray-200;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .member-photo {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      color: var.$gray-900;
+      margin: 1.2rem 1.2rem 0.5rem;
+      font-weight: 600;
+    }
+
+    .member-position {
+      font-size: 0.9rem;
+      color: var.$primary;
+      margin: 0 1.2rem 0.75rem;
+      font-weight: 600;
+    }
+
+    .member-bio {
+      font-size: 0.95rem;
+      color: var.$gray-700;
+      line-height: 1.6;
+      margin: 0 1.2rem 1.5rem;
+    }
+  }
+}
+
+// Numbers Section
+.numbers-section {
+  background-color: var.$gray-50;
+  padding: var.$base-space * 16 var.$base-space * 12;
+  border-radius: var.$base-space * 4;
+  margin-bottom: var.$base-space * 16;
+
+  &-mobile {
+    padding: 3rem 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    color: var.$gray-900;
+    margin-bottom: 3rem;
+    font-weight: 700;
+  }
+
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+
+    &-mobile {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  .number-card {
+    text-align: center;
+
+    .number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var.$primary;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var.$gray-700;
+      font-weight: 500;
+    }
+  }
+}
+
+// Ensure text doesn't get cut off with ellipsis (from memory)
+.about-story h2,
+.about-story p,
+.mission-values-card h2,
+.mission-values-card p,
+.mission-values-card li,
+.team-member h3,
+.team-member .member-position,
+.team-member .member-bio {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  height: auto;
+  min-height: unset;
+  max-height: unset;
+}
+
+// Responsive adjustments for mobile (from memory)
+@media screen and (max-width: 768px) {
+  .team-member,
+  .mission-values-card,
+  .number-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

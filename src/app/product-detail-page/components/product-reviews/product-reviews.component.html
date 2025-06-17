@@ -1,0 +1,194 @@
+<div class="product-reviews" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <h3 class="reviews-title">Customer Reviews</h3>
+
+  <!-- Reviews Summary -->
+  <div class="reviews-summary flex-row flex-wrap m-b-6">
+    <div class="average-rating flex-col align-items-center flex-1 m-b-4">
+      <div class="rating-value text-secondary font-large m-b-2">{{ getAverageRating() | number : "1.1-1" }}</div>
+      <app-star-rating [rating]="getAverageRating()"></app-star-rating>
+      <div class="reviews-count text-gray-600 m-t-2">Based on {{ product.reviews?.length || 0 }} reviews</div>
+    </div>
+
+    <div class="rating-breakdown flex-1">
+      <div class="rating-bar flex-row align-items-center m-b-2" *ngFor="let i of [5, 4, 3, 2, 1]">
+        <span class="rating-label text-gray-700 m-r-2">{{ i }} stars</span>
+        <div class="progress-bar flex-1">
+          <div class="progress-fill" [style.width.%]="getRatingPercentage(i)"></div>
+        </div>
+        <span class="rating-count text-gray-700 m-l-2">{{ getRatingCount(i) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Form -->
+  <div class="review-form-container m-t-8 p-4 border">
+    <h3 class="form-title m-b-4">Write a Review</h3>
+
+    <div class="alert alert-success m-b-4" *ngIf="isReviewSubmitted">
+      <fa-icon [icon]="['fas', 'check-circle']" class="m-r-2"></fa-icon>
+      Thank you for your review! It has been submitted successfully.
+    </div>
+
+    <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" *ngIf="!isReviewSubmitted">
+      <div class="form-group m-b-4">
+        <label class="m-b-2">Your Rating*</label>
+        <div class="rating-selector">
+          <app-star-rating
+            [rating]="reviewForm.get('rating')?.value || 0"
+            [editable]="true"
+            [fontSize]="1.25"
+            (ratingChanged)="onRatingChange($event)"
+          ></app-star-rating>
+        </div>
+      </div>
+
+      <div class="form-row flex-row m-b-4">
+        <div class="form-group flex-1 m-r-3">
+          <label class="m-b-2">Your Name*</label>
+          <input type="text" class="form-control w-100" formControlName="username" placeholder="Your full name" />
+          <div
+            class="error-message"
+            *ngIf="
+              reviewForm.get('username')?.invalid &&
+              (reviewForm.get('username')?.dirty || reviewForm.get('username')?.touched)
+            "
+          >
+            <span *ngIf="reviewForm.get('username')?.errors?.['required']">Name is required</span>
+          </div>
+        </div>
+
+        <div class="form-group flex-1">
+          <label class="m-b-2">Email (will not be published)*</label>
+          <input type="email" class="form-control w-100" formControlName="email" placeholder="Your email address" />
+          <div
+            class="error-message"
+            *ngIf="
+              reviewForm.get('email')?.invalid && (reviewForm.get('email')?.dirty || reviewForm.get('email')?.touched)
+            "
+          >
+            <span *ngIf="reviewForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="reviewForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group m-b-4">
+        <label class="m-b-2">Review Title*</label>
+        <input type="text" class="form-control w-100" formControlName="title" placeholder="Give your review a title" />
+        <div
+          class="error-message"
+          *ngIf="
+            reviewForm.get('title')?.invalid && (reviewForm.get('title')?.dirty || reviewForm.get('title')?.touched)
+          "
+        >
+          <span *ngIf="reviewForm.get('title')?.errors?.['required']">Title is required</span>
+        </div>
+      </div>
+
+      <div class="form-group m-b-4">
+        <label class="m-b-2">Profile Picture</label>
+        <div class="image-uploader">
+          <div class="preview">
+            <ng-container *ngIf="previewImageUrl; else noImage">
+              <img [src]="previewImageUrl" alt="Profile Preview" />
+              <button class="remove-btn" type="button" (click)="removeImage()">
+                <fa-icon [icon]="['fas', 'times']"></fa-icon>
+              </button>
+            </ng-container>
+            <ng-template #noImage>
+              <fa-icon [icon]="['fas', 'user']" class="placeholder"></fa-icon>
+            </ng-template>
+          </div>
+          <div class="upload-controls">
+            <input type="file" #fileInput class="file-input" accept="image/*" (change)="onFileSelected($event)" />
+            <label for="fileInput" class="upload-btn" (click)="triggerFileInput()">
+              <fa-icon [icon]="['fas', 'upload']"></fa-icon>
+              Choose Image
+            </label>
+            <div class="hint">Recommended: Square image, max 2MB</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group m-b-4">
+        <label class="m-b-2">Your Review*</label>
+        <textarea
+          class="form-control w-100"
+          rows="5"
+          formControlName="comment"
+          placeholder="Write your review here"
+        ></textarea>
+        <div
+          class="error-message"
+          *ngIf="
+            reviewForm.get('comment')?.invalid &&
+            (reviewForm.get('comment')?.dirty || reviewForm.get('comment')?.touched)
+          "
+        >
+          <span *ngIf="reviewForm.get('comment')?.errors?.['required']">Review content is required</span>
+          <span *ngIf="reviewForm.get('comment')?.errors?.['minlength']">Review must be at least 10 characters</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="reviewForm.invalid || isSubmitting">
+          <fa-icon [icon]="['fas', 'paper-plane']" class="m-r-2" *ngIf="!isSubmitting"></fa-icon>
+          <fa-icon [icon]="['fas', 'spinner']" class="fa-spin m-r-2" *ngIf="isSubmitting"></fa-icon>
+          {{ isSubmitting ? "Submitting..." : "Submit Review" }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Review List -->
+  <div class="reviews-list">
+    <div class="review-item p-4 m-b-4 border" *ngFor="let review of product.reviews">
+      <div class="review-header flex-row align-items-center justify-content-between m-b-3">
+        <div class="reviewer-info flex-row">
+          <!-- User Profile Image -->
+          <div class="reviewer-avatar m-r-3">
+            <img
+              [src]="review.imageUrl || 'assets/images/default-avatar.png'"
+              alt="User Avatar"
+              class="avatar"
+              onerror="this.src='assets/images/default-avatar.png'"
+            />
+          </div>
+
+          <div>
+            <h4 class="review-title m-b-1">{{ review.title || "Review" }}</h4>
+            <div class="reviewer-details flex-row align-items-center">
+              <span class="reviewer-name text-gray-700 m-r-3">{{ review.username }}</span>
+              <span class="review-date text-gray-500">{{ review.date | date }}</span>
+              <span class="verified-badge m-l-2" *ngIf="review.verified">
+                <fa-icon [icon]="['fas', 'check-circle']" class="text-success"></fa-icon> Verified Purchase
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="review-rating">
+          <app-star-rating [rating]="review.rating" [showCount]="false"></app-star-rating>
+        </div>
+      </div>
+
+      <div class="review-content m-b-3">
+        <p>{{ review.comment }}</p>
+      </div>
+
+      <div class="review-actions flex-row align-items-center">
+        <button class="helpful-btn text-gray-600 m-r-4" (click)="updateHelpful(review, true)">
+          <fa-icon [icon]="['fas', 'thumbs-up']" class="m-r-1"></fa-icon> Helpful ({{ review.helpful || 0 }})
+        </button>
+        <button class="not-helpful-btn text-gray-600" (click)="updateHelpful(review, false)">
+          <fa-icon [icon]="['fas', 'thumbs-down']" class="m-r-1"></fa-icon> Not Helpful ({{ review.notHelpful || 0 }})
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Reviews Message -->
+  <div class="no-reviews text-center p-5" *ngIf="!product.reviews?.length">
+    <fa-icon [icon]="['far', 'comment']" class="text-gray-400 fa-3x m-b-3"></fa-icon>
+    <p class="text-gray-500">There are no reviews yet. Be the first to review this product.</p>
+  </div>
+</div>

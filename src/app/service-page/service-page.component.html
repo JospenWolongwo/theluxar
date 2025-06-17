@@ -1,0 +1,144 @@
+<main class="w-100">
+  <div
+    [class.p-l-18]="!currentScreenSize.ltSm"
+    [class.p-r-18]="!currentScreenSize.ltSm"
+    [class.p-b-4]="currentScreenSize.ltSm"
+    [class.p-t-10]="!currentScreenSize.ltSm"
+    [class.p-b-10]="!currentScreenSize.ltSm"
+  >
+    <!-- Service Page Header -->
+    <div class="service-header">
+      <h1 [class.text-center]="currentScreenSize.ltSm">Nos Prestations de Beauté</h1>
+      <p [class.text-center]="currentScreenSize.ltSm" class="service-intro">
+        Découvrez notre gamme exclusive de soins et traitements de beauté, conçus pour sublimer votre beauté naturelle.
+        Nos experts en esthétique et bien-être vous accompagnent pour une expérience personnalisée et luxueuse.
+      </p>
+    </div>
+
+    <!-- Service Categories Grid -->
+    <div class="service-categories-grid" [class.service-categories-grid-mobile]="currentScreenSize.ltSm">
+      <div
+        *ngFor="let category of serviceCategories"
+        class="service-category-card"
+        [class.service-category-card-mobile]="currentScreenSize.ltSm"
+      >
+        <div class="service-icon">
+          <img [src]="category.icon" [alt]="category.title" />
+        </div>
+        <h2>{{ category.title }}</h2>
+        <p>{{ category.description }}</p>
+        <div class="service-features">
+          <ul>
+            <li *ngFor="let feature of category.features">{{ feature }}</li>
+          </ul>
+        </div>
+        <button class="service-btn">Découvrir</button>
+      </div>
+    </div>
+
+    <!-- Contact CTA -->
+    <div class="service-contact-cta" [class.service-contact-cta-mobile]="currentScreenSize.ltSm">
+      <div class="cta-content">
+        <h2>Une beauté sur mesure pour vous</h2>
+        <p>
+          Nos experts en beauté sont à votre écoute pour créer une expérience personnalisée adaptée à vos besoins et à
+          votre style de vie.
+        </p>
+        <button class="primary-btn">Prendre rendez-vous</button>
+      </div>
+      <div class="cta-image" *ngIf="!currentScreenSize.ltSm">
+        <img
+          src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1470&auto=format&fit=crop"
+          alt="Beauty Consultation"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials Section -->
+  <div class="testimonials-section" [class.testimonials-section-mobile]="currentScreenSize.ltSm">
+    <h2 [class.text-center]="currentScreenSize.ltSm">Ils nous font confiance</h2>
+    <div class="testimonials-grid" [class.testimonials-grid-mobile]="currentScreenSize.ltSm">
+      <div class="testimonial-card">
+        <div class="testimonial-rating">
+          <app-star-rating [rating]="5" [fontSize]="1"></app-star-rating>
+        </div>
+        <p>
+          "Une expérience incroyable ! Les soins du visage ont complètement transformé ma peau. Je recommande vivement
+          les soins Hello Cosmetics."
+        </p>
+        <div class="testimonial-author">
+          <p><strong>Aïssatou Diop</strong></p>
+          <p>Cliente depuis 2022</p>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-rating">
+          <app-star-rating [rating]="5" [fontSize]="1"></app-star-rating>
+        </div>
+        <p>
+          "Les produits naturels et les conseils personnalisés ont révolutionné ma routine beauté. Ma peau n'a jamais
+          été aussi éclatante !"
+        </p>
+        <div class="testimonial-author">
+          <p><strong>Fatou Ndiaye</strong></p>
+          <p>Cliente depuis 2021</p>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-rating">
+          <app-star-rating [rating]="4" [fontSize]="1"></app-star-rating>
+        </div>
+        <p>
+          "Service exceptionnel et équipe attentionnée. Les massages sont tout simplement divins. Un vrai moment de
+          détente !"
+        </p>
+        <div class="testimonial-author">
+          <p><strong>Marie-Laure Akissi</strong></p>
+          <p>Cliente depuis 2023</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-section" [class.faq-section-mobile]="currentScreenSize.ltSm">
+    <h2 [class.text-center]="currentScreenSize.ltSm">Questions Fréquentes</h2>
+    <div class="faq-grid" [class.faq-grid-mobile]="currentScreenSize.ltSm">
+      <div class="faq-item">
+        <h3>Quels types de produits utilisez-vous ?</h3>
+        <p>
+          Nous utilisons exclusivement des produits naturels et biologiques, riches en ingrédients d'origine africaine,
+          sans parabènes ni sulfates.
+        </p>
+      </div>
+      <div class="faq-item">
+        <h3>Comment prendre rendez-vous ?</h3>
+        <p>
+          Vous pouvez prendre rendez-vous en ligne via notre site, par téléphone ou directement en institut. Notre
+          équipe se fera un plaisir de vous conseiller.
+        </p>
+      </div>
+      <div class="faq-item">
+        <h3>Quelle est la durée d'un soin du visage ?</h3>
+        <p>
+          La durée varie selon le soin choisi, de 45 minutes pour un soin express à 2 heures pour un soin complet avec
+          extraction et masque.
+        </p>
+      </div>
+      <div class="faq-item">
+        <h3>Proposez-vous des forfaits fidélité ?</h3>
+        <p>
+          Oui, nous proposons des cartes de fidélité et des forfaits avantageux pour nos clients réguliers. N'hésitez
+          pas à nous demander plus d'informations.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Newsletter Component -->
+  <app-newsletter
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-newsletter>
+</main>

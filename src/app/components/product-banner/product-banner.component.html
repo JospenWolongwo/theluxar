@@ -1,0 +1,70 @@
+<div class="product-banner-container">
+  <div
+    class="flex-row flex-wrap justify-content-center w-1440px gap-6"
+    [class.p-l-4]="isMobile || isTablet"
+    [class.p-r-4]="isMobile || isTablet"
+    [class.p-l-25]="!isMobile && !isTablet"
+  >
+    <div
+      *ngFor="let product of productData"
+      class="product-card flex-col w-100 p-l-4 p-r-4"
+      [class.product-card-mobile]="isMobile"
+      [class.product-card-tablet]="isTablet"
+    >
+      <div class="product-card-content flex-row justify-content-space-between">
+        <div class="product-card-details flex-col align-items-start gap-3">
+          <div
+            class="product-card-tag"
+            [ngClass]="{
+              'limited-edition': product.tag === 'Limited Edition',
+              bestseller: product.tag === 'Bestseller'
+            }"
+          >
+            {{ product.tag }}
+          </div>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-specs">{{ product.description }}</p>
+
+          <div class="product-benefits">
+            <div class="benefit-item" *ngFor="let benefit of product.benefits">
+              <span>{{ benefit }}</span>
+            </div>
+          </div>
+
+          <div class="product-pricing flex-row align-items-center">
+            <span class="product-price">{{ product.price }} {{ product.currency }}</span>
+            <span class="product-volume" *ngIf="product.name.includes('Royal Oak')">
+              41mm
+            </span>
+            <span class="product-volume" *ngIf="product.name.includes('Parfum')">
+              100ml
+            </span>
+          </div>
+
+          <div class="product-actions">
+            <button class="btn-shop-now flex-row align-items-center justify-content-center cursor-pointer">
+              DISCOVER
+              <fa-icon [icon]="['fas', 'arrow-right']" class="btn-icon"></fa-icon>
+            </button>
+            <button class="btn-whatsapp flex-row align-items-center justify-content-center cursor-pointer">
+              <fa-icon [icon]="['fab', 'whatsapp']" class="btn-icon"></fa-icon>
+              INQUIRE
+            </button>
+          </div>
+        </div>
+
+        <div class="product-card-image-container">
+          <div class="product-card-image">
+            <img [src]="product.imageUrl" [alt]="product.name" />
+          </div>
+          <div class="product-rating" *ngIf="product.tag === 'Bestseller'">
+            <div class="stars">
+              <fa-icon [icon]="['fas', 'star']" *ngFor="let star of [1, 2, 3, 4, 5]"></fa-icon>
+            </div>
+            <span>4.9 (521 reviews)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

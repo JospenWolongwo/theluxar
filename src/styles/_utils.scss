@@ -1,0 +1,371 @@
+@use './variables' as var;
+
+.w-100 {
+  width: 100%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-1440px {
+  max-width: 1440px;
+  width: 100%;
+}
+
+.w-1000px {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.w-600px {
+  max-width: 600px;
+  width: 100%;
+}
+
+.w-700px {
+  max-width: 712px;
+  width: 100%;
+}
+
+.w-400px {
+  max-width: 400px;
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+section {
+  position: relative;
+  box-sizing: content-box;
+}
+
+.fa-layers-text {
+  width: 100%;
+}
+
+.overflow-hidden-x {
+  overflow-x: hidden;
+}
+
+.slider {
+  height: 100%;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+
+  &.transition-1s {
+    transition: transform 1s linear;
+  }
+
+  &.transition-500ms {
+    transition: transform 500ms linear;
+  }
+
+  &.animate {
+    animation-name: appear-in;
+    animation-timing-function: ease-in-out;
+    animation-duration: 900ms;
+  }
+
+  &-item {
+    flex-grow: 1;
+    flex-shrink: 0;
+    align-self: normal;
+    transition: transform 300ms ease-in-out;
+  }
+}
+
+.overflow-hidden-y {
+  overflow-y: hidden;
+}
+
+.txt-icon {
+  .initials {
+    color: var.$white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    letter-spacing: 0.5 * var.$base-space;
+  }
+}
+
+.no-decoration {
+  text-decoration: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.indicator {
+  width: 5 * var.$base-space;
+  height: 5 * var.$base-space;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: var.$gray;
+  transition: background-color 300ms ease-in-out;
+
+  &.active {
+    background-color: var.$secondary;
+    pointer-events: none;
+  }
+
+  &.sm {
+    width: 1.5 * var.$base-space;
+    height: 1.5 * var.$base-space;
+  }
+}
+
+.carousel-indicator {
+  width: 3 * var.$base-space;
+  height: 3 * var.$base-space;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: var.$gray-50;
+  transition: background-color 300ms ease-in-out;
+
+  &.active {
+    background-color: var.$black;
+    pointer-events: none;
+  }
+
+  &.sm {
+    width: 1.5 * var.$base-space;
+    height: 1.5 * var.$base-space;
+  }
+}
+
+.grid-strength {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  justify-items: center;
+  justify-content: center;
+
+  &.md {
+    grid-template-columns: 250px 250px;
+    gap: 16 * var.$base-space 4 * var.$base-space;
+  }
+
+  &.sm {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 15 * var.$base-space;
+  }
+}
+
+.icon-box {
+  box-shadow: 4px 4px 20px 0 rgb(0 0 0 / 16%);
+  border-radius: 8px;
+  width: 100px;
+
+  .strength-icon {
+    font-size: 3.75rem;
+  }
+
+  &.no-shadow {
+    box-shadow: none;
+
+    .strength-icon {
+      font-size: 2.75rem;
+    }
+  }
+}
+
+.product-list-container {
+  .side-bg {
+    position: absolute;
+    left: 0;
+    top: 10%;
+    z-index: -1;
+
+    &.disappear {
+      display: none;
+    }
+  }
+
+  .filter-menu-container {
+    position: relative;
+  }
+
+  .filter-card-border {
+    border-radius: 1 * var.$base-space;
+    border: 0.5 * var.$base-space solid var.$secondary;
+  }
+
+  .most-viewed-container {
+    background-color: var.$red;
+    border-bottom-left-radius: 4 * var.$base-space;
+    border-top-right-radius: 4 * var.$base-space;
+    color: var.$white;
+
+    &.sm {
+      border-radius: 0;
+    }
+
+    .most-viewed-txt {
+      width: 60%;
+    }
+
+    .most-viewed-img {
+      width: 40%;
+      position: relative;
+
+      .img-position-gtXs {
+        position: absolute;
+        top: -30 * var.$base-space;
+      }
+    }
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.btn-reserve {
+  background-color: var.$primary;
+  color: var.$white;
+  border: none;
+  border-radius: var.$base-space * 1;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  max-width: fit-content;
+
+  &:hover {
+    background-color: darken(var.$primary, 10%);
+  }
+
+  & .icon {
+    font-size: 1.3rem;
+  }
+
+  &.sm {
+    border-radius: 0;
+    width: 70%;
+  }
+
+  &.full-width {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+// Container utilities for centering content
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+// Responsive container sizes
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.px-3 {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+}
+
+.px-4 {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.px-5 {
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes appear-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

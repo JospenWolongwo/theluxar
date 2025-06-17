@@ -1,0 +1,34 @@
+<section class="newsletter-section" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <div class="newsletter-container">
+    <h2 class="txt-white txt-center slide-up">Subscribe to Our Exclusive Updates</h2>
+    <p class="txt-white txt-center slide-up">
+      Be the first to know about our limited-edition releases, private events, and exclusive offers tailored for our distinguished clientele.
+    </p>
+
+    <div class="form-container">
+      <div class="subscription-form scale-in">
+        <input
+          type="email"
+          class="input-field"
+          placeholder="Your Email Address"
+          [formControl]="emailControl"
+          [class.mobile-input]="isMobile"
+        />
+        <button class="subscribe-button" (click)="onSubmit()" [class.mobile-button]="isMobile">
+          JOIN
+          <span class="arrow-icon">→</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="separator" [class.mobile-separator]="isMobile"></div>
+
+    <div class="partner-logos fade-in" [class.mobile-logos]="isMobile">
+      <img src="assets/images/google-logo.png" alt="Vogue" class="partner-logo" />
+      <img src="assets/images/amazon-logo.png" alt="Forbes" class="partner-logo" />
+      <img src="assets/images/philips-logo.png" alt="GQ" class="partner-logo" />
+      <img src="assets/images/toshiba-logo.png" alt="Robb Report" class="partner-logo" />
+      <img src="assets/images/samsung-logo.png" alt="Tatler" class="partner-logo" />
+    </div>
+  </div>
+</section>

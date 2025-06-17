@@ -1,0 +1,115 @@
+<div class="product-info" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <!-- Product title and details -->
+  <h1 class="product-title font-weight-bold m-b-2">{{ product.name }}</h1>
+
+  <!-- Product info tags (SKU, brand, category, availability) -->
+  <div class="product-meta-grid m-b-4">
+    <div class="meta-item">
+      <span class="meta-label">REF:</span>
+      <span class="meta-value">{{ product.sku || "SKU" + product.id.substring(0, 8).toUpperCase() }}</span>
+    </div>
+    <div class="meta-item" *ngIf="product.brand">
+      <span class="meta-label">Marque:</span>
+      <span class="meta-value">{{ product.brand }}</span>
+    </div>
+    <div class="meta-item" *ngIf="product.category?.name">
+      <span class="meta-label">Categories:</span>
+      <span class="meta-value">{{ product.category?.name }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Availability:</span>
+      <span
+        class="meta-value"
+        [ngClass]="{
+          'in-stock': stockAvailability === 'In Stock',
+          'out-of-stock': stockAvailability === 'Out of Stock'
+        }"
+      >
+        <fa-icon
+          [icon]="stockAvailability === 'In Stock' ? ['fas', 'check-circle'] : ['fas', 'times-circle']"
+        ></fa-icon>
+        {{ stockAvailability }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Product price -->
+  <div class="product-price m-b-3">
+    <span class="current-price">{{ formatCurrency(currentPrice) }}</span>
+  </div>
+
+  <!-- Horizontal divider -->
+  <div class="divider m-b-3"></div>
+
+  <!-- Color selection -->
+  <div class="product-colors m-b-4" *ngIf="productColors.length > 0">
+    <div class="color-label m-b-2">Couleur</div>
+    <div class="color-options flex-row align-items-center">
+      <div
+        *ngFor="let color of productColors"
+        class="color-option m-r-2"
+        [class.active]="selectedColor === color.value"
+        [style.background-color]="color.hex"
+        (click)="selectColor(color.value)"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Action buttons row -->
+  <div class="product-actions-row flex-row align-items-center">
+    <!-- Quantity selector -->
+    <div class="quantity-control">
+      <button class="quantity-button" (click)="decrementQuantity()" [disabled]="quantity <= 1">&minus;</button>
+      <input
+        type="text"
+        class="quantity-input"
+        [(ngModel)]="quantity"
+        min="1"
+        max="99"
+        [disabled]="stockAvailability === 'Out of Stock'"
+      />
+      <button class="quantity-button" (click)="incrementQuantity()" [disabled]="stockAvailability === 'Out of Stock'">
+        +
+      </button>
+    </div>
+
+    <!-- Reserve button -->
+    <button class="reserve-btn" [disabled]="stockAvailability === 'Out of Stock'">
+      <span>RESERVER MAINTENANT</span>
+      <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+    </button>
+
+    <!-- Cart button using reusable component -->
+    <app-add-to-cart
+      [product]="product"
+      [buttonLabel]="'PANIER'"
+      [buttonClass]="'cart-btn'"
+      [showQuantity]="false"
+      (productAdded)="onProductAdded($event)"
+    ></app-add-to-cart>
+  </div>
+
+  <!-- Social sharing -->
+  <div class="social-actions">
+    <a href="#" class="action-btn wishlist-btn" (click)="addToWishlist(); $event.preventDefault()">
+      <fa-icon [icon]="['far', 'heart']"></fa-icon>
+      <span>Ajouter au favoris</span>
+    </a>
+
+    <a href="#" class="action-btn compare-btn">
+      <fa-icon [icon]="['fas', 'balance-scale']"></fa-icon>
+      <span>Ajouter au comparateur</span>
+    </a>
+    <!-- Social sharing icons -->
+    <span class="share-label">Partager le produit :</span>
+    <div class="flex-row align-items-center justify-content-center">
+      <a href="#" class="social-icon"><fa-icon [icon]="['fab', 'facebook-f']"></fa-icon></a>
+      <a href="#" class="social-icon"><fa-icon [icon]="['fab', 'twitter']"></fa-icon></a>
+      <a href="#" class="social-icon"><fa-icon [icon]="['fab', 'pinterest-p']"></fa-icon></a>
+      <a href="#" class="social-icon"><fa-icon [icon]="['fas', 'link']"></fa-icon></a>
+    </div>
+
+    <!-- Success notification overlay -->
+    <app-add-to-cart-success [visible]="showSuccessModal" (close)="hideSuccessModal()"></app-add-to-cart-success>
+  </div>
+</div>

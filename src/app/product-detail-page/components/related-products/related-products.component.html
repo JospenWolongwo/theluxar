@@ -1,0 +1,81 @@
+<div class="related-products" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <h3 class="section-title m-b-4" *ngIf="products.length > 0">Related Products</h3>
+
+  <div class="products-slider">
+    <div class="slider-container">
+      <div class="slider-track" [style.transform]="'translateX(' + -currentPage * 100 + '%)'">
+        <!-- Pages of products -->
+        <div class="slider-page" *ngFor="let page of getPages()">
+          <div class="product-row">
+            <div
+              *ngFor="let product of getProductRowsForPage(page)"
+              class="product-card"
+              [routerLink]="['/product', product.slug || product.id]"
+              [class.empty-slot]="!product.id"
+              [style.visibility]="product.id ? 'visible' : 'hidden'"
+              [style.width]="isMobile ? '100%' : ''"
+            >
+              <!-- Product label (if exists) -->
+              <div *ngIf="product.label" class="product-label" [style.background-color]="product.labelColor">
+                {{ product.label }}
+              </div>
+
+              <!-- Product image -->
+              <div class="product-image">
+                <img [src]="product.imageUrl" [alt]="product.name" />
+              </div>
+
+              <!-- Product info -->
+              <div class="product-info">
+                <h3 class="product-name">{{ product.name }}</h3>
+
+                <!-- Rating if available -->
+                <div class="product-rating" *ngIf="product.rating">
+                  <app-star-rating [rating]="product.rating" [showCount]="false"></app-star-rating>
+                </div>
+
+                <!-- Price -->
+                <div class="product-price">
+                  {{ formatCurrency(product.price, product.currency) }}
+                </div>
+
+                <!-- Short description -->
+                <p
+                  class="product-description"
+                  *ngIf="product.shortDescription"
+                  [class.truncate]="product.shortDescription.length > 60"
+                >
+                  {{ product.shortDescription }}
+                </p>
+
+                <!-- View details button -->
+                <button class="view-details-btn">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation controls -->
+    <div class="slider-controls" *ngIf="totalPages > 1">
+      <button class="control-btn prev-btn" [class.disabled]="currentPage === 0" (click)="prevPage()">
+        <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+      </button>
+
+      <div class="pagination-indicators">
+        <span
+          *ngFor="let _ of getPagesArray(); let i = index"
+          class="indicator"
+          [class.active]="i === currentPage"
+          (click)="goToPage(i)"
+        >
+        </span>
+      </div>
+
+      <button class="control-btn next-btn" [class.disabled]="currentPage === totalPages - 1" (click)="nextPage()">
+        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

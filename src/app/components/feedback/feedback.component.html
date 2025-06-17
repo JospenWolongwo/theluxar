@@ -1,0 +1,58 @@
+<section class="feedback-section">
+  <div class="w-100 flex-col align-items-center">
+    <div
+      class="w-1440px"
+      [class.p-l-4]="!isMobile"
+      [class.p-r-4]="!isMobile"
+      [class.p-l-2]="isMobile"
+      [class.p-r-2]="isMobile"
+    >
+      <h2 class="txt-left" [class.p-b-4]="isMobile">
+        <span class="luxury-title">Client Testimonials</span>
+      </h2>
+      
+      <p class="luxury-subtitle">Discover what our esteemed clients have to say about their experience with The Luxar collection</p>
+
+      <div class="feedback-slider w-100 overflow-hidden-x m-t-15">
+        <div class="slider flex-row" [class.gap-4]="!isMobile">
+          <!-- Generate cards for all reviews -->
+          <div
+            *ngFor="let review of reviews"
+            class="slider-item feedback-card"
+            [ngClass]="{ 'mobile-card': isMobile, 'tablet-card': isTablet }"
+          >
+            <div class="flex-row gap-3 justify-content-space-between align-items-center">
+              <img [src]="review.imageUrl" [alt]="review.name" class="reviewer-img" />
+              <app-star-rating [rating]="review.rating" [fontSize]="isMobile ? 0.7 : 0.9"></app-star-rating>
+            </div>
+            <div class="flex-col justify-content-center gap-1 p-t-3 p-b-3">
+              <h4 class="txt-bold">{{ review.name }}</h4>
+              <p *ngIf="!isMobile && review.position" class="reviewer-position">{{ review.position }}</p>
+            </div>
+            <p class="reviewer-text">
+              <span class="quote-mark">"</span>
+              {{
+                isMobile && review.reviewText
+                  ? review.reviewText.substring(0, 100) + "..."
+                  : review.reviewText || review.comment || ""
+              }}
+              <span class="quote-mark">"</span>
+            </p>
+            <p *ngIf="review.date" class="review-date">{{ review.date | date : "MMMM d, yyyy" }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider Navigation Dots -->
+      <div class="flex-row justify-content-center gap-3 p-t-6" [class.p-t-4]="isMobile">
+        <div
+          *ngFor="let i of indicators"
+          class="indicator"
+          [class.sm]="isMobile"
+          [class.active]="i === currentSlide"
+          (click)="goToSlide(i)"
+        ></div>
+      </div>
+    </div>
+  </div>
+</section>

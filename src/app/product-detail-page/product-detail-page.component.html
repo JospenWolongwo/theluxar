@@ -1,0 +1,146 @@
+<div class="product-detail-page">
+  <div class="container mx-auto px-4">
+    <!-- Loading state -->
+    <div class="loading-container flex-col align-items-center justify-content-center" *ngIf="loading">
+      <div class="spinner"></div>
+      <p class="m-t-4">Loading product details...</p>
+    </div>
+
+    <!-- Error state -->
+    <div class="error-container flex-col align-items-center justify-content-center" *ngIf="error">
+      <div class="error-message flex-col align-items-center">
+        <i class="fa fa-exclamation-circle text-danger m-b-2"></i>
+        <p>{{ error }}</p>
+        <button class="btn-primary m-t-4" routerLink="/products">Back to Products</button>
+      </div>
+    </div>
+
+    <!-- Product content -->
+    <ng-container *ngIf="product && !loading && !error">
+      <!-- Breadcrumb -->
+      <div class="breadcrumb-container m-b-4">
+        <ul class="breadcrumb flex-row align-items-center">
+          <li class="breadcrumb-item">
+            <a routerLink="/" class="text-gray-500">
+              <fa-icon [icon]="['fas', 'home']"></fa-icon>
+            </a>
+          </li>
+          <li class="breadcrumb-separator">
+            <fa-icon [icon]="['fas', 'angle-right']"></fa-icon>
+          </li>
+          <li class="breadcrumb-item">
+            <a routerLink="/products" class="text-gray-500">Products</a>
+          </li>
+          <li class="breadcrumb-separator">
+            <fa-icon [icon]="['fas', 'angle-right']"></fa-icon>
+          </li>
+          <li class="breadcrumb-item">
+            <a routerLink="/products/category/{{ product.category?.id }}" class="text-gray-500">{{
+              product.category?.name
+            }}</a>
+          </li>
+          <li class="breadcrumb-separator">
+            <fa-icon [icon]="['fas', 'angle-right']"></fa-icon>
+          </li>
+          <li class="breadcrumb-item active">
+            <span>{{ product.name }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Product Content-->
+      <div class="product-main flex-row flex-wrap justify-content-between m-b-8">
+        <!-- Product Gallery - Left side -->
+        <div class="product-gallery-section" [ngClass]="{ mobile: isMobile, tablet: isTablet }">
+          <div class="product-gallery-wrapper">
+            <app-product-gallery [product]="product" [isMobile]="isMobile" [isTablet]="isTablet"></app-product-gallery>
+          </div>
+        </div>
+
+        <!-- Product Info & Options - Right side -->
+        <div class="product-info-section flex-1" style="min-width: 300px">
+          <!-- Star rating at the top -->
+          <div class="product-rating flex-row align-items-center m-b-2">
+            <app-star-rating
+              [rating]="product.rating || 0"
+              [showCount]="true"
+              [fontSize]="1"
+              [totalReviews]="product.reviews?.length || 0"
+            ></app-star-rating>
+            <span class="text-gray-500 m-l-2" *ngIf="product.reviews?.length">
+              ({{ product.reviews?.length || 0 }} User
+              {{ (product.reviews?.length || 0) === 1 ? "review" : "reviews" }})
+            </span>
+          </div>
+
+          <app-product-info
+            [product]="product"
+            [selectedStock]="selectedStock"
+            [isMobile]="isMobile"
+            [isTablet]="isTablet"
+          ></app-product-info>
+        </div>
+      </div>
+
+      <!-- Product Benefits/Guarantees -->
+      <div class="benefits-container">
+        <div class="container">
+          <div class="flex-row benefits-row">
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <fa-icon [icon]="['fas', 'laptop']"></fa-icon>
+              </div>
+              <div class="benefit-text">
+                <h4>Appareils entièrement fonctionnels</h4>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <fa-icon [icon]="['fas', 'battery-three-quarters']"></fa-icon>
+              </div>
+              <div class="benefit-text">
+                <h4>Capacité de la batterie au moins 80%</h4>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <fa-icon [icon]="['fas', 'shield-alt']"></fa-icon>
+              </div>
+              <div class="benefit-text">
+                <h4>Garantie 03 mois</h4>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <fa-icon [icon]="['fas', 'truck']"></fa-icon>
+              </div>
+              <div class="benefit-text">
+                <h4>Livraison en 2 à 3 jours ouvrés</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Tabs (Description, Specifications, Reviews) -->
+      <div class="product-tabs-container m-b-8">
+        <app-product-tabs [product]="product" [isMobile]="isMobile" [isTablet]="isTablet"></app-product-tabs>
+      </div>
+      <!-- Related Products -->
+      <div class="related-products-container m-t-8 m-b-6">
+        <app-related-products
+          [products]="relatedProducts"
+          [isMobile]="isMobile"
+          [isTablet]="isTablet"
+        ></app-related-products>
+      </div>
+      <!-- Product Reviews -->
+      <div class="product-reviews-container m-b-8">
+        <app-product-reviews [product]="product" [isMobile]="isMobile" [isTablet]="isTablet"></app-product-reviews>
+      </div>
+    </ng-container>
+  </div>
+</div>

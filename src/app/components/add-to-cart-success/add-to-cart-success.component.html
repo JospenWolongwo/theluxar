@@ -1,0 +1,38 @@
+<div class="success-overlay flex-col align-items-center justify-content-center" *ngIf="visible">
+  <div class="success-modal flex-col align-items-center">
+    <!-- Success Icon -->
+    <div class="success-icon-container">
+      <div class="success-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M16.667 25.8334L10 19.1667L11.9167 17.25L16.667 22.0001L28.0834 10.5834L30.0001 12.5L16.667 25.8334Z"
+            fill="#36B333"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Success Message -->
+    <h2 class="success-title">Votre commande est passée avec succès</h2>
+
+    <!-- Instructions -->
+    <p class="success-message">
+      Cliquer sur le boutton pour entrer en contact avec le vendeur via whatsapp ou copier le lien ci-après dans votre
+      barre de navigation
+      <a href="https://{{ websiteUrl }}" class="website-link">{{ websiteUrl }}</a>
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons flex-row">
+      <button class="return-btn flex-row align-items-center justify-content-center" (click)="returnToMenu()">
+        <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+        <span class="m-l-2">RETOUR AU MENU</span>
+      </button>
+
+      <button class="contact-btn flex-row align-items-center justify-content-center" (click)="contactVendor()">
+        <span class="m-r-2">CONTACTER LE VENDEUR</span>
+        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

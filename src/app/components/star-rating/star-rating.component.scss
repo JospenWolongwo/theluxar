@@ -1,0 +1,21 @@
+@use '../../../styles/variables' as var;
+
+.star-icon {
+  color: var.$gray;
+  cursor: pointer;
+
+  &:hover,
+  &:hover ~ fa-icon {
+    color: var.$primary;
+  }
+
+  transition: color 0.3s ease-in-out;
+}
+
+.readOnly {
+  pointer-events: none;
+}
+
+.rated {
+  color: var.$primary;
+}

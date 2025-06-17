@@ -1,0 +1,441 @@
+@use '../../styles/variables' as var;
+
+// Shared styles with home page
+@import '../home-page/home-page.component.scss';
+
+// Service page specific styles
+.service-header {
+  margin-bottom: var.$base-space * 12;
+  padding: var.$base-space * 8 0;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1 * var.$base-space;
+    left: 0;
+    width: var.$base-space * 20;
+    height: var.$base-space;
+    background: linear-gradient(90deg, var.$primary, lighten(var.$primary, 20%));
+    border-radius: var.$base-space * 2.5;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: var.$gray-900;
+    margin-bottom: var.$base-space * 4;
+    font-weight: 800;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    position: relative;
+    display: inline-block;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1 * var.$base-space;
+      left: 0;
+      width: 50%;
+      height: var.$base-space * 0.75;
+      background-color: var.$primary;
+      border-radius: var.$base-space * 2.5;
+    }
+  }
+
+  p {
+    font-size: 1.3rem;
+    color: var.$gray-700;
+    max-width: 800px;
+    line-height: 1.7;
+    margin-top: var.$base-space * 6;
+  }
+
+  &.text-center {
+    text-align: center;
+
+    &::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    h1::after {
+      left: 20%;
+      width: 60%;
+    }
+
+    p {
+      margin: var.$base-space * 6 auto 0;
+    }
+  }
+}
+
+// Service Categories Grid
+.service-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var.$base-space * 8;
+  margin-bottom: var.$base-space * 16;
+
+  &-mobile {
+    grid-template-columns: 1fr;
+    gap: var.$base-space * 6;
+  }
+}
+
+.service-category-card {
+  background-color: var.$white;
+  border-radius: var.$base-space * 4;
+  padding: var.$base-space * 8;
+  box-shadow: 0 (var.$base-space * 2) (var.$base-space * 5) rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var.$gray-200;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var.$base-space;
+    background: linear-gradient(90deg, var.$primary, lighten(var.$primary, 20%));
+    transition: height 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 (var.$base-space * 3.75) (var.$base-space * 7.5) rgba(0, 0, 0, 0.1);
+    border-color: var.$gray-300;
+
+    &::before {
+      height: 10px;
+    }
+  }
+
+  &-mobile {
+    padding: 1.5rem;
+  }
+
+  .service-icon {
+    width: var.$base-space * 20;
+    height: var.$base-space * 20;
+    margin-bottom: var.$base-space * 6;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var.$gray-900;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var.$gray-700;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .service-features {
+    margin-bottom: 1.5rem;
+
+    ul {
+      padding-left: 1.5rem;
+
+      li {
+        margin-bottom: 0.5rem;
+        color: var.$gray-800;
+        font-size: 0.95rem;
+        position: relative;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  .service-btn {
+    padding: 0.9rem 1.8rem;
+    border-radius: 2rem;
+    background-color: transparent;
+    border: 2px solid var.$primary;
+    color: var.$primary;
+    font-weight: 700;
+    cursor: pointer;
+    align-self: flex-start;
+    margin-top: auto;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    letter-spacing: 0.5px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: var.$primary;
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+
+    &:hover {
+      color: var.$white;
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+
+      &::before {
+        width: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(2px);
+    }
+  }
+}
+
+// Contact CTA Section
+.service-contact-cta {
+  display: flex;
+  background-color: var.$gray-50;
+  border-radius: 1rem;
+  overflow: hidden;
+  margin: 4rem 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+  &-mobile {
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+  }
+
+  .cta-content {
+    flex: 1;
+    padding: 3rem;
+
+    h2 {
+      font-size: 2rem;
+      color: var.$gray-900;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var.$gray-700;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+  }
+
+  .cta-image {
+    flex: 1;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .primary-btn {
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    background-color: var.$primary;
+    border: none;
+    color: var.$white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: darken(var.$primary, 10%);
+    }
+  }
+}
+
+// Testimonials Section
+.testimonials-section {
+  padding: 5rem 3rem;
+  background-color: var.$gray-50;
+  border-radius: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  margin: 2rem 0;
+
+  &::before {
+    content: '"';
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    font-size: 8rem;
+    color: rgba(0, 123, 255, 0.1);
+    font-family: serif;
+    line-height: 0.8;
+  }
+
+  &-mobile {
+    padding: 3.5rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    color: var.$gray-900;
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+
+    &-mobile {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  .testimonial-card {
+    background-color: var.$white;
+    border-radius: 1.2rem;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    border: 1px solid var.$gray-200;
+    transform: translateY(0);
+    transition: all 0.4s ease;
+    position: relative;
+
+    &:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .testimonial-rating {
+      margin-bottom: 1.2rem;
+      display: flex;
+
+      span {
+        color: var.$golden-yellow;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+        transform-origin: center left;
+        animation: starPulse 3s infinite alternate;
+      }
+
+      @keyframes starPulse {
+        0% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(1.05);
+        }
+      }
+    }
+
+    p {
+      font-size: 1rem;
+      color: var.$gray-800;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      p {
+        margin-bottom: 0.25rem;
+        font-style: normal;
+        color: var.$gray-700;
+        font-size: 0.9rem;
+
+        strong {
+          color: var.$gray-900;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// FAQ Section
+.faq-section {
+  padding: 4rem 3rem;
+  background-color: var.$gray-50;
+
+  &-mobile {
+    padding: 3rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    color: var.$gray-900;
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+
+    &-mobile {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  .faq-item {
+    h3 {
+      font-size: 1.25rem;
+      color: var.$gray-900;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var.$gray-200;
+    }
+
+    p {
+      font-size: 1rem;
+      color: var.$gray-700;
+      line-height: 1.6;
+    }
+  }
+}
+
+// Ensure text doesn't get cut off with ellipsis (from memory)
+.service-category-card h2,
+.service-category-card p,
+.faq-item h3,
+.faq-item p,
+.cta-content h2,
+.cta-content p {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  height: auto;
+  min-height: unset;
+  max-height: unset;
+}
+
+// Responsive adjustments for mobile (from memory)
+@media screen and (max-width: 768px) {
+  .service-category-card,
+  .testimonial-card,
+  .faq-item {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

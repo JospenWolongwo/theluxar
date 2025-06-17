@@ -1,0 +1,47 @@
+<div class="product-gallery" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <!-- Main image container with fixed size and border -->
+  <div class="main-image-container">
+    <img
+      [src]="selectedImage"
+      [alt]="productName"
+      class="main-image"
+      [class.zoomed]="isZoomed"
+      [style.transform]="isZoomed ? 'scale(' + zoomLevel + ')' : 'scale(1)'"
+      (mousemove)="applyZoom($event)"
+      (click)="toggleZoom($event)"
+      onError="this.src='/assets/images/placeholder.png'"
+    />
+
+    <!-- Zoom indicator -->
+    <div class="zoom-hint" *ngIf="!isZoomed && showZoomHint">
+      <fa-icon [icon]="['fas', 'search-plus']"></fa-icon>
+      <span>Click to zoom</span>
+    </div>
+  </div>
+
+  <!-- Thumbnails container with navigation buttons -->
+  <div class="thumbnails-container m-t-4" *ngIf="allImages.length > 1">
+    <div class="thumbnails-wrapper">
+      <!-- Previous button -->
+      <button class="nav-btn prev-btn" (click)="prev(); $event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+      </button>
+
+      <div class="thumbnails-slider flex-row justify-content-center">
+        <div
+          *ngFor="let image of allImages; let i = index"
+          class="thumbnail-item m-x-1 p-1"
+          [class.active]="selectedImage === image"
+          (click)="selectImage(image, i)"
+        >
+          <img [src]="image" [alt]="productName + ' thumbnail ' + (i + 1)" class="img-fluid" />
+        </div>
+      </div>
+
+      <!-- Next button -->
+      <button class="nav-btn next-btn" (click)="next(); $event.stopPropagation()">
+        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

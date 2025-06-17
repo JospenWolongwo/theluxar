@@ -1,0 +1,112 @@
+<section
+  class="showcase-carousel-section p-t-10 p-b-10 overflow-hidden-x"
+  [class.mobile-section]="isMobile"
+>
+  <div class="w-100 flex-col align-items-center">
+    <div
+      class="w-1440px"
+      [class.p-l-4]="!isMobile"
+      [class.p-r-4]="!isMobile"
+      [class.p-l-2]="isMobile"
+      [class.p-r-2]="isMobile"
+    >
+      <div class="showcase-carousel-container w-100 overflow-hidden-x">
+        <div class="showcase-slider flex-row">
+          <!-- Showcase cards -->
+          <div
+            *ngFor="let item of showcaseItems"
+            class="slider-item showcase-card"
+            [ngClass]="{ 'mobile-card': isMobile, 'tablet-card': isTablet }"
+          >
+            <div
+              class="showcase-content flex-row justify-content-space-between align-items-start"
+            >
+              <!-- Showcase Info -->
+              <div
+                class="showcase-info flex-col gap-5"
+                [class.w-50]="!isMobile"
+                [class.w-100]="isMobile"
+                [class.txt-center]="isMobile || isTablet"
+              >
+                <div
+                  class="flex-row align-items-center gap-2 txt-secondary"
+                  [class.hide-mobile]="isMobile || isTablet"
+                >
+                  <hr class="horizontal-line txt-secondary" />
+                  <p class="tag-line">{{ item.tag }}</p>
+                </div>
+                <h1 class="showcase-title txt-bold">{{ item.name }}</h1>
+                <p class="showcase-description p-b-4">{{ item.description }}</p>
+
+                <button
+                  class="btn-reserve flex-row align-items-center justify-content-center cursor-pointer m-b-4"
+                  [class.hide-mobile]="isMobile || isTablet"
+                >
+                  {{ item.ctaText || "RESERVER" }}
+                  <span class="icon p-l-2">
+                    <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+                  </span>
+                </button>
+                <!-- Slider Navigation Dots -->
+                <div
+                  class="flex-row justify-content-start gap-2 p-t-20"
+                  [class.hide-mobile]="isMobile || isTablet"
+                >
+                  <div
+                    *ngFor="let i of indicators; let index = index"
+                    class="carousel-indicator"
+                    [class.active]="index === currentSlide"
+                    [class.active]="i === currentSlide"
+                    (click)="goToSlide(i)"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Showcase Image and Price -->
+              <div
+                class="showcase-visual flex-col align-items-flex-end"
+                [class.w-50]="!isMobile"
+                [class.w-100]="isMobile"
+                [class.p-t-4]="isMobile"
+              >
+                <div
+                  class="price-badge flex-col align-items-center justify-content-center"
+                >
+                  <span class="price-value txt-bold">{{ item.price }}</span>
+                  <span class="currency txt-bold">{{ item.currency }}</span>
+                </div>
+                <img
+                  [src]="item.imageUrl"
+                  [alt]="item.name"
+                  class="showcase-image"
+                />
+              </div>
+
+              <!-- Slider Navigation Dots -->
+              <div
+                class="flex-col align-items-center justify-content-center gap-10 w-100"
+                [class.hide-desktop]="!isMobile && !isTablet"
+              >
+                <div class="flex-row justify-content-center gap-2">
+                  <div
+                    *ngFor="let i of indicators; let index = index"
+                    class="carousel-indicator sm"
+                    [class.active]="index === currentSlide"
+                    [class.active]="i === currentSlide"
+                    (click)="goToSlide(i)"
+                  ></div>
+                </div>
+                <button class="btn-reserve sm cursor-pointer m-b-4">
+                  {{ item.ctaText || "RESERVER" }}
+                  <span class="icon p-l-2">
+                    <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

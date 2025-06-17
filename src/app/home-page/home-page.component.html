@@ -1,0 +1,124 @@
+<main class="w-100">
+  <div
+    [class.p-l-18]="!currentScreenSize.ltSm"
+    [class.p-r-18]="!currentScreenSize.ltSm"
+    [class.p-b-4]="currentScreenSize.ltSm"
+    [class.p-t-10]="!currentScreenSize.ltSm"
+    [class.p-b-10]="!currentScreenSize.ltSm"
+  >
+    <!-- New layout with filter and showcase/products -->
+    <div class="filter-showcase-container flex-row">
+      <!-- Filter component (left side) -->
+      <div
+        class="filter-column"
+        [class.filter-mobile]="currentScreenSize.ltSm"
+        *ngIf="!currentScreenSize.ltSm && !currentScreenSize.ltLg"
+      >
+        <app-product-filter
+          [isMobile]="currentScreenSize.ltSm"
+          [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+          (filterChange)="onFilterChange($event)"
+        ></app-product-filter>
+      </div>
+
+      <!-- Content column (right side) -->
+      <div class="content-column w-100">
+        <app-showcase-carousel
+          [showcaseItems]="showcaseItems"
+          [isMobile]="currentScreenSize.ltSm"
+          [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+        ></app-showcase-carousel>
+
+        <!-- Mobile Filter & Sort buttons -->
+        <div class="mobile-filter-sort-container p-t-10" *ngIf="currentScreenSize.ltSm">
+          <div class="button-container">
+            <button class="filter-btn" (click)="toggleFilterPopup()">
+              <img src="assets/images/Tags.png" alt="Filter" class="filter-icon" />
+              <span>Filter</span>
+            </button>
+            <button class="sort-btn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 7H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M6 12H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M10 17H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Sort</span>
+            </button>
+          </div>
+        </div>
+
+        <app-promotion-banner
+          [isMobile]="currentScreenSize.ltSm"
+          [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+        ></app-promotion-banner>
+
+        <app-products-slider
+          [products]="filteredProducts"
+          [title]="'Featured Products'"
+          [isMobile]="currentScreenSize.ltSm"
+          [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+          (wishlistToggled)="onWishlistToggle($event)"
+          (productReserved)="onReserveClick($event)"
+        ></app-products-slider>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile filter popup overlay -->
+  <div class="filter-popup-overlay" *ngIf="isFilterPopupOpen && currentScreenSize.ltSm">
+    <div class="filter-popup">
+      <div class="filter-popup-header">
+        <h3>Filters</h3>
+        <button class="close-btn" (click)="toggleFilterPopup()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M18 6L6 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M6 6L18 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="filter-popup-content">
+        <app-product-filter
+          [isMobile]="currentScreenSize.ltSm"
+          [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+          (filterChange)="onFilterChange($event)"
+        ></app-product-filter>
+      </div>
+      <div class="filter-popup-footer">
+        <button class="apply-btn" (click)="toggleFilterPopup()">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+
+  <app-product-banner
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-product-banner>
+  <!-- Flash Products Section -->
+  <div class="flash-products-wrapper w-100 flex-col align-items-center p-t-20 p-b-20">
+    <app-flash-products-section
+      [isMobile]="currentScreenSize.ltSm"
+      [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+      (wishlistToggled)="onWishlistToggle($event)"
+    ></app-flash-products-section>
+  </div>
+  <app-feedback
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-feedback>
+  <app-newsletter
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-newsletter>
+</main>

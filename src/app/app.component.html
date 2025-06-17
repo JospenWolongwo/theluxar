@@ -1,0 +1,7 @@
+<div class="app-container">
+  <app-navbar [isMobile]="currentScreenSize.ltSm" [isTablet]="currentScreenSize.ltLg"></app-navbar>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer [isMobile]="currentScreenSize.ltSm" [isTablet]="currentScreenSize.ltLg"></app-footer>
+</div>

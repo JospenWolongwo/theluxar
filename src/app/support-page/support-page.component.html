@@ -1,0 +1,145 @@
+<main class="w-100">
+  <div
+    [class.p-l-18]="!currentScreenSize.ltSm"
+    [class.p-r-18]="!currentScreenSize.ltSm"
+    [class.p-b-4]="currentScreenSize.ltSm"
+    [class.p-t-10]="!currentScreenSize.ltSm"
+    [class.p-b-10]="!currentScreenSize.ltSm"
+  >
+    <!-- Support Page Header -->
+    <div class="support-header">
+      <h1 [class.text-center]="currentScreenSize.ltSm">Service Client & Support</h1>
+      <p [class.text-center]="currentScreenSize.ltSm" class="max-w-3xl mx-auto">
+        Notre équipe est là pour vous accompagner dans votre expérience beauté. Que vous ayez des questions sur nos
+        produits, des conseils personnalisés ou besoin d'assistance, nous sommes à votre écoute.
+      </p>
+    </div>
+
+    <!-- Support Options -->
+    <div class="support-options" [class.support-options-mobile]="currentScreenSize.ltSm">
+      <div class="support-option-card">
+        <div class="option-icon">
+          <img src="https://img.icons8.com/color/96/000000/online-support.png" alt="Support en ligne" />
+        </div>
+        <h2>Chat en direct</h2>
+        <p>Discutez en direct avec nos conseillers beauté pour des réponses immédiates.</p>
+        <button class="option-btn">Démarrer le chat</button>
+      </div>
+      <div class="support-option-card">
+        <div class="option-icon">
+          <img src="https://img.icons8.com/color/96/000000/email.png" alt="Email" />
+        </div>
+        <h2>Email</h2>
+        <p>Envoyez-nous un message et recevez une réponse sous 24h ouvrées.</p>
+        <button class="option-btn">Nous écrire</button>
+      </div>
+      <div class="support-option-card">
+        <div class="option-icon">
+          <img src="https://img.icons8.com/color/96/000000/phone.png" alt="Téléphone" />
+        </div>
+        <h2>Téléphone</h2>
+        <p>Appelez-nous pour une assistance personnalisée sur nos produits et services.</p>
+        <button class="option-btn">Nous appeler</button>
+      </div>
+    </div>
+
+    <!-- Contact Form Section -->
+    <div class="contact-form-section" [class.contact-form-section-mobile]="currentScreenSize.ltSm">
+      <h2 [class.text-center]="currentScreenSize.ltSm">Contactez nos experts beauté</h2>
+      <p [class.text-center]="currentScreenSize.ltSm" class="contact-intro max-w-3xl mx-auto">
+        Notre équipe d'experts est à votre disposition pour répondre à toutes vos questions sur nos soins, votre routine
+        beauté ou pour des conseils personnalisés.
+      </p>
+
+      <form class="contact-form">
+        <div class="form-group">
+          <label for="name">Nom complet</label>
+          <input type="text" id="name" placeholder="Votre nom et prénom" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Votre adresse email" />
+        </div>
+        <div class="form-group">
+          <label for="subject">Sujet</label>
+          <select id="subject">
+            <option value="" disabled selected>Choisir un sujet</option>
+            <option value="advice">Conseil produit</option>
+            <option value="order">Suivi de commande</option>
+            <option value="return">Retour/Échange</option>
+            <option value="skin-concern">Problème de peau</option>
+            <option value="other">Autre question</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Votre message</label>
+          <textarea id="message" rows="5" placeholder="Décrivez-nous votre demande en détail..."></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" class="submit-btn">Envoyer mon message</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Support Info Cards -->
+    <div class="support-info-cards" [class.support-info-cards-mobile]="currentScreenSize.ltSm">
+      <div class="info-card">
+        <h3>Horaires d'ouverture</h3>
+        <ul>
+          <li><strong>Lundi - Vendredi:</strong> 9h30 - 19h00</li>
+          <li><strong>Samedi:</strong> 10h00 - 18h00</li>
+          <li><strong>Dimanche:</strong> Fermé</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Nos coordonnées</h3>
+        <ul>
+          <li><strong>Téléphone:</strong> +33 1 45 67 89 01</li>
+          <li><strong>Email:</strong> contact&#64;hellocosmetics.fr</li>
+          <li><strong>Adresse:</strong> 45 Avenue des Champs-Élysées, 75008 Paris</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Réseaux sociaux</h3>
+        <div class="social-links">
+          <a href="#" aria-label="Instagram"
+            ><img src="https://img.icons8.com/color/48/000000/instagram-new.png" alt="Instagram" width="32" height="32"
+          /></a>
+          <a href="#" aria-label="Facebook"
+            ><img src="https://img.icons8.com/color/48/000000/facebook-new.png" alt="Facebook" width="32" height="32"
+          /></a>
+          <a href="#" aria-label="Pinterest"
+            ><img src="https://img.icons8.com/color/48/000000/pinterest--v1.png" alt="Pinterest" width="32" height="32"
+          /></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section" [class.faq-section-mobile]="currentScreenSize.ltSm">
+      <h2 [class.text-center]="currentScreenSize.ltSm">Questions fréquentes</h2>
+      <div class="faq-container">
+        <div class="faq-item">
+          <h3>Comment choisir les bons produits pour mon type de peau ?</h3>
+          <p>
+            Notre équipe d'esthéticiennes peut vous aider à déterminer votre type de peau et vous recommander les
+            produits adaptés à vos besoins spécifiques lors d'une consultation gratuite en ligne ou en boutique.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Quelle est votre politique de retour ?</h3>
+          <p>
+            Vous disposez de 14 jours à réception de votre commande pour nous retourner les produits non ouverts et dans
+            leur emballage d'origine. Les frais de retour sont à votre charge, sauf en cas d'erreur de notre part.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Newsletter Component -->
+  <app-newsletter
+    [isMobile]="currentScreenSize.ltSm"
+    [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
+  ></app-newsletter>
+</main>

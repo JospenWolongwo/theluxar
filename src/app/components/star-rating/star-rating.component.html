@@ -1,0 +1,13 @@
+<div class="flex-row-rev justify-content-end" [class.readOnly]="readonly">
+  @for (_ of [].constructor(maxRating); track i; let i = $index) {
+  <fa-icon
+    [icon]="['fas', 'star']"
+    (click)="setRating(maxRating - i)"
+    [class.rated]="displayRating >= maxRating - i"
+    [style.font-size.rem]="fontSize"
+    class="star-icon"
+  ></fa-icon>
+  } @if (showCount && totalReviews > 0) {
+  <span class="ms-2 text-muted small">({{ totalReviews }})</span>
+  }
+</div>

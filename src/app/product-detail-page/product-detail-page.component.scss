@@ -1,0 +1,269 @@
+@use '../../styles/variables' as var;
+
+.product-detail-page {
+  padding: 2 * var.$base-space * 4 0 8 * var.$base-space;
+
+  .container {
+    max-width: 320 * var.$base-space;
+    margin: 0 auto;
+  }
+
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 75 * var.$base-space;
+    width: 100%;
+    padding: 8 * var.$base-space;
+
+    .spinner {
+      width: 12 * var.$base-space;
+      height: 12 * var.$base-space;
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      border-top-color: var.$primary;
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 4 * var.$base-space;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-message {
+      color: var.$red;
+      font-weight: 500;
+      margin-bottom: 2 * var.$base-space;
+      text-align: center;
+      max-width: 120 * var.$base-space;
+    }
+  }
+
+  .breadcrumb-container {
+    margin-bottom: 2 * var.$base-space * 4;
+
+    .breadcrumb {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5 * var.$base-space;
+
+      .breadcrumb-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+
+        a {
+          text-decoration: none;
+          color: var.$gray-400;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: var.$primary;
+          }
+        }
+
+        &.active {
+          color: var.$secondary;
+          font-weight: 500;
+        }
+      }
+
+      .breadcrumb-separator {
+        color: var.$gray-400;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  .product-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2 * var.$base-space;
+    margin-bottom: 8 * var.$base-space;
+
+    .product-gallery-section {
+      flex: 1 1 500px;
+      min-width: 300px;
+      width: 48%;
+      padding-right: 4 * var.$base-space;
+
+      &.tablet {
+        width: 45%;
+        padding-right: 3 * var.$base-space;
+      }
+
+      &.mobile {
+        width: 100%;
+        padding-right: 0;
+        margin-bottom: 6 * var.$base-space;
+      }
+
+      .product-gallery-wrapper {
+        border-radius: 8 * var.$base-space;
+        overflow: hidden;
+      }
+    }
+
+    .product-info-section {
+      flex: 1 1 450px;
+      min-width: 300px;
+      width: 52%;
+      padding-left: 4 * var.$base-space;
+
+      &.tablet {
+        width: 55%;
+        padding-left: 3 * var.$base-space;
+      }
+
+      &.mobile {
+        width: 100%;
+        padding-left: 0;
+      }
+
+      .product-rating {
+        margin-bottom: 2 * var.$base-space;
+      }
+    }
+  }
+
+  .product-tabs-container {
+    margin-bottom: 8 * var.$base-space;
+    border-radius: 8 * var.$base-space;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .related-products-container {
+    margin-top: 8 * var.$base-space;
+    margin-bottom: 4 * var.$base-space;
+  }
+}
+
+.benefits-container {
+  width: 100%;
+  background-color: var.$white;
+  border-radius: 2 * var.$base-space;
+  margin: 8 * var.$base-space 0;
+  padding: 6 * var.$base-space 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  .container {
+    max-width: 320 * var.$base-space;
+    margin: 0 auto;
+  }
+
+  .benefits-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4 * var.$base-space;
+  }
+
+  .benefit-item {
+    flex: 1;
+    min-width: 60 * var.$base-space;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 4 * var.$base-space;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+
+      .benefit-icon {
+        background-color: rgba(45, 165, 243, 0.2);
+      }
+    }
+  }
+
+  .benefit-icon {
+    color: var.$secondary;
+    font-size: 5 * var.$base-space;
+    margin-bottom: 4 * var.$base-space;
+    height: 15 * var.$base-space;
+    width: 15 * var.$base-space;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(45, 165, 243, 0.12);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .benefit-text {
+    h4 {
+      font-size: 3.5 * var.$base-space;
+      font-weight: 500;
+      margin: 0;
+      color: var.$gray-800;
+      line-height: 1.4;
+    }
+  }
+
+  // Responsive styles
+  @media (max-width: 599px) {
+    .benefits-row {
+      flex-direction: column;
+      gap: 6 * var.$base-space;
+    }
+
+    .benefit-item {
+      width: 100%;
+      flex-direction: row;
+      text-align: left;
+      padding: 3 * var.$base-space 4 * var.$base-space;
+      gap: 4 * var.$base-space;
+
+      &:hover {
+        transform: none;
+      }
+    }
+
+    .benefit-icon {
+      margin-bottom: 0;
+      height: 10 * var.$base-space;
+      width: 10 * var.$base-space;
+      font-size: 4 * var.$base-space;
+      flex-shrink: 0;
+    }
+
+    .benefit-text h4 {
+      font-size: 3 * var.$base-space;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 1279px) {
+    .benefits-row {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .benefit-item {
+      flex: 0 0 calc(50% - 4 * var.$base-space);
+      min-width: auto;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .product-main {
+    flex-direction: column;
+
+    .product-gallery-section,
+    .product-info-section {
+      flex: 1 1 100%;
+    }
+  }
+}

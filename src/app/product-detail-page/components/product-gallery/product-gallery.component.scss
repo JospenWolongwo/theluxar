@@ -1,0 +1,167 @@
+@use '../../../../styles/variables' as var;
+
+.product-gallery {
+  width: 100%;
+
+  .main-image-container {
+    background-color: var.$white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1 * var.$base-space * 4;
+    text-align: center;
+    border-radius: 1 * var.$base-space;
+    border: 1px solid var.$gray-300;
+    height: 125 * var.$base-space;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .main-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      padding: 1 * var.$base-space * 4;
+
+      &.zoomed {
+        cursor: zoom-out;
+      }
+    }
+
+    .zoom-hint {
+      position: absolute;
+      bottom: 2.5 * var.$base-space;
+      right: 2.5 * var.$base-space;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: var.$white;
+      padding: 2 * var.$base-space 3 * var.$base-space;
+      border-radius: 1 * var.$base-space;
+      font-size: 3 * var.$base-space;
+      display: flex;
+      align-items: center;
+      gap: 1.5 * var.$base-space;
+      z-index: 3;
+
+      fa-icon {
+        font-size: 3.5 * var.$base-space;
+      }
+    }
+  }
+
+  .thumbnails-container {
+    width: 100%;
+
+    .thumbnails-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5 * var.$base-space;
+
+      .nav-btn {
+        background-color: var.$primary;
+        border: none;
+        border-radius: 50%;
+        width: 8 * var.$base-space;
+        height: 8 * var.$base-space;
+        min-width: 8 * var.$base-space;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 2;
+        color: var.$white;
+        transition: all 0.2s ease;
+        box-shadow: 0 2 * var.$base-space 5 * var.$base-space rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          background-color: darken(var.$primary, 10%);
+        }
+
+        fa-icon {
+          font-size: 3 * var.$base-space;
+        }
+      }
+
+      .thumbnails-slider {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        margin: 0 auto;
+        gap: 2 * var.$base-space;
+        overflow-x: auto;
+        scrollbar-width: none; /* Firefox */
+        max-width: calc(100% - 20 * var.$base-space); /* Account for nav buttons */
+
+        &::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Edge */
+        }
+
+        .thumbnail-item {
+          width: 16 * var.$base-space;
+          height: 16 * var.$base-space;
+          flex: 0 0 auto;
+          border: 1px solid var.$gray-300;
+          border-radius: 1 * var.$base-space;
+          overflow: hidden;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          &.active {
+            border-color: var.$primary;
+            box-shadow: 0 0 0 1px var.$primary;
+          }
+
+          &:hover {
+            border-color: var.$gray-500;
+          }
+
+          img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+          }
+        }
+      }
+    }
+  }
+
+  &.mobile {
+    .main-image-container {
+      height: 87.5 * var.$base-space;
+    }
+
+    .thumbnails-container {
+      .thumbnails-wrapper {
+        .nav-btn {
+          width: 7 * var.$base-space;
+          height: 7 * var.$base-space;
+
+          fa-icon {
+            font-size: 2.5 * var.$base-space;
+          }
+        }
+
+        .thumbnail-item {
+          width: 12.5 * var.$base-space;
+          height: 12.5 * var.$base-space;
+        }
+
+        .thumbnails-slider {
+          max-width: calc(100% - 17.5 * var.$base-space);
+        }
+      }
+    }
+  }
+
+  &.tablet {
+    .main-image-container {
+      height: 105 * var.$base-space;
+    }
+  }
+}

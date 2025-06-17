@@ -1,0 +1,230 @@
+@use '../../../styles/variables' as vars;
+@use '../../../styles/spacing';
+
+.newsletter-section {
+  width: 100%;
+  background-color: vars.$deep-black;
+  position: relative;
+  padding: 80px 0;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(232, 180, 166, 0.05) 0%, transparent 60%),
+               radial-gradient(circle at 80% 80%, rgba(245, 230, 211, 0.05) 0%, transparent 60%);
+    z-index: -1;
+  }
+
+  .newsletter-container {
+    max-width: spacing.$base-space * 360;
+    margin: 0 auto;
+    padding: 0 spacing.$base-space * 4;
+  }
+
+  h2 {
+    font-size: spacing.$base-space * 9;
+    margin-bottom: spacing.$base-space * 4;
+    font-weight: 400;
+    color: vars.$warm-white;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.03em;
+  }
+
+  p {
+    font-size: spacing.$base-space * 4;
+    line-height: 1.5;
+    max-width: spacing.$base-space * 200;
+    margin: 0 auto spacing.$base-space * 8;
+    color: rgba(250, 250, 250, 0.8);
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  .form-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: spacing.$base-space * 7.5;
+  }
+
+  .subscription-form {
+    display: flex;
+    width: 100%;
+    max-width: spacing.$base-space * 175;
+    position: relative;
+
+    .input-field {
+      width: 100%;
+      height: spacing.$base-space * 14;
+      background-color: rgba(250, 250, 250, 0.95);
+      border: 1px solid rgba(232, 180, 166, 0.3);
+      border-radius: spacing.$base-space * 0.5;
+      padding: 0 spacing.$base-space * 5;
+      padding-right: spacing.$base-space * 37.5;
+      font-size: spacing.$base-space * 4;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: rgba(10, 10, 10, 0.5);
+        font-style: italic;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: vars.$rose-gold;
+        box-shadow: 0 0 0 2px rgba(232, 180, 166, 0.2);
+      }
+    }
+
+    .subscribe-button {
+      position: absolute;
+      right: spacing.$base-space * 3;
+      top: 50%;
+      transform: translateY(-50%);
+      height: calc(100% - 24px);
+      background: linear-gradient(135deg, vars.$rose-gold, darken(vars.$rose-gold, 10%));
+      border: none;
+      border-radius: spacing.$base-space * 0.5;
+      color: vars.$deep-black;
+      padding: 0 spacing.$base-space * 7.5;
+      font-size: spacing.$base-space * 3.5;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(232, 180, 166, 0.2);
+
+      &:hover {
+        background: linear-gradient(135deg, lighten(vars.$rose-gold, 5%), vars.$rose-gold);
+        box-shadow: 0 6px 16px rgba(232, 180, 166, 0.25);
+        transform: translateY(-52%);
+      }
+
+      .arrow-icon {
+        margin-left: spacing.$base-space * 2.5;
+        font-size: spacing.$base-space * 8;
+        margin-top: spacing.$base-space * -2;
+      }
+    }
+  }
+
+  .separator {
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, vars.$rose-gold, transparent);
+    margin: 40px auto;
+    opacity: 0.5;
+  }
+
+  .partner-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: spacing.$base-space * 5;
+
+    .partner-logo {
+      height: spacing.$base-space * 18;
+      width: spacing.$base-space * 18;
+      margin: 0 spacing.$base-space * 6;
+      opacity: 0.6;
+      filter: brightness(0) invert(1) sepia(0.1) hue-rotate(-10deg) saturate(0.8);
+      transition: all 0.3s ease;
+      object-fit: contain;
+
+      &:hover {
+        opacity: 0.9;
+        transform: translateY(-3px);
+      }
+    }
+  }
+
+  &.mobile {
+    padding: 30px 0;
+
+    .newsletter-container {
+      padding: 0 12px;
+    }
+
+    h2 {
+      font-size: spacing.$base-space * 6;
+      margin-bottom: spacing.$base-space * 4;
+    }
+
+    p {
+      font-size: spacing.$base-space * 3.5;
+      margin-bottom: spacing.$base-space * 6;
+      padding: 0 spacing.$base-space * 2;
+    }
+
+    .subscription-form {
+      flex-direction: column;
+      gap: spacing.$base-space * 3;
+
+      .input-field {
+        height: spacing.$base-space * 12;
+        padding: 0 spacing.$base-space * 4;
+        font-size: spacing.$base-space * 3.5;
+        padding-right: spacing.$base-space * 5;
+      }
+
+      .subscribe-button {
+        position: relative;
+        width: 100%;
+        height: spacing.$base-space * 12;
+        top: auto;
+        right: auto;
+        transform: none;
+        font-size: spacing.$base-space * 3.5;
+        justify-content: center;
+      }
+    }
+
+    .separator {
+      width: 50%;
+      margin: 20px auto;
+    }
+
+    .partner-logos {
+      flex-wrap: wrap;
+      gap: spacing.$base-space * 1;
+
+      .partner-logo {
+        height: spacing.$base-space * 12.5;
+        width: spacing.$base-space * 12.5;
+        margin: 0 15px;
+      }
+    }
+  }
+
+  &.tablet {
+    padding: 40px 0;
+
+    .newsletter-container {
+      padding: 0 14px;
+    }
+
+    h2 {
+      font-size: spacing.$base-space * 7;
+    }
+
+    p {
+      font-size: spacing.$base-space * 3.75;
+    }
+
+    .partner-logo {
+      height: spacing.$base-space * 15;
+      width: spacing.$base-space * 15;
+      margin: 0 spacing.$base-space * 5;
+    }
+  }
+}

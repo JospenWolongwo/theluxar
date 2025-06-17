@@ -1,0 +1,78 @@
+@use 'sass:math';
+@use 'sass:string';
+@use 'sass:list';
+
+$flex-directions: 'column', 'row';
+$flex-wrap: 'wrap';
+$content-alignments: 'flex-start', 'flex-end', 'center', 'space-between', 'space-evenly', 'space-around', 'stretch';
+$item-alignments: 'flex-start', 'flex-end', 'center', 'stretch', 'base-line';
+
+// Flex directions
+@each $flex-direction in $flex-directions {
+  .flex-#{str-slice($flex-direction, 1, 3)} {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: string.unquote($flex-direction);
+  }
+
+  .flex-#{str-slice($flex-direction, 1, 3)}-rev {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: string.unquote($flex-direction + '-reverse');
+  }
+}
+
+// Flex wrap
+.flex-#{$flex-wrap} {
+  flex-wrap: string.unquote($flex-wrap);
+}
+
+.flex-no-#{$flex-wrap} {
+  flex-wrap: string.unquote('no' + $flex-wrap);
+}
+
+.flex-#{$flex-wrap}-rev {
+  flex-wrap: string.unquote($flex-wrap + '-reverse');
+}
+
+// Flex justify-content, align-content 'flex-start', 'flex-end', 'center', 'space-between', 'space-evenly', 'space-around';
+@each $alignment in $content-alignments {
+  @if string.index($alignment, 'flex') {
+    .justify-content-#{nth(string.split($alignment, 'flex-'), 2)} {
+      justify-content: #{$alignment};
+    }
+
+    .align-content-#{nth(string.split($alignment, 'flex-'), 2)} {
+      align-content: #{$alignment};
+    }
+  } @else {
+    .justify-content-#{$alignment} {
+      justify-content: #{$alignment};
+    }
+
+    .align-content-#{$alignment} {
+      align-content: #{$alignment};
+    }
+  }
+}
+
+// Flex align-items, align-self
+@each $alignment in $content-alignments {
+  @if string.index($alignment, 'flex') {
+    .align-items-#{nth(string.split($alignment, 'flex-'), 2)} {
+      align-items: #{$alignment};
+    }
+
+    .align-self-#{nth(string.split($alignment, 'flex-'), 2)} {
+      align-self: #{$alignment};
+    }
+  } @else {
+    .align-items-#{$alignment} {
+      align-items: #{$alignment};
+    }
+
+    .align-self-#{$alignment} {
+      align-self: #{$alignment};
+    }
+  }
+}

@@ -1,0 +1,188 @@
+@use '../../../styles/variables' as vars;
+
+.showcase-carousel-section {
+  position: relative;
+  background-color: vars.$secondary;
+  border-radius: vars.$base-space * 3;
+
+  &.mobile-section {
+    border-radius: 0;
+  }
+
+  .showcase-carousel-container {
+    position: relative;
+  }
+
+  .showcase-slider {
+    transition: transform 500ms ease-in-out;
+    width: 100%;
+  }
+
+  .slider-item {
+    flex: 0 0 100%;
+    min-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .showcase-visual {
+    position: relative;
+  }
+
+  .showcase-card {
+    padding: 2rem;
+    padding-bottom: 0;
+
+    &.mobile-card {
+      padding: 1rem;
+
+      .price-badge {
+        display: none;
+      }
+
+      .showcase-content {
+        flex-direction: column;
+      }
+
+      .showcase-title {
+        font-size: 4rem;
+      }
+    }
+
+    &.tablet-card {
+      .showcase-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    & .hide-desktop {
+      display: none;
+    }
+    & .hide-mobile {
+      display: none;
+    }
+  }
+
+  .showcase-title {
+    font-size: 3rem;
+    color: vars.$white;
+    line-height: 1.2;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .tag-line {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: vars.$primary;
+  }
+
+  .horizontal-line {
+    width: vars.$base-space * 8;
+    border-color: vars.$primary;
+    opacity: 0.7;
+  }
+
+  .showcase-description {
+    font-size: 1.25rem;
+    color: vars.$gray-300;
+    max-width: 90%;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .showcase-image {
+    width: 100%;
+    max-width: vars.$base-space * 100;
+    max-height: 400px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .price-badge {
+    background-color: vars.$primary;
+    color: vars.$secondary;
+    width: vars.$base-space * 30;
+    height: vars.$base-space * 30;
+    border-radius: 50%;
+    position: absolute;
+    top: vars.$base-space * -7.5;
+    right: 0;
+    z-index: 1;
+    border: 2px solid vars.$white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    .price-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .currency {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
+  
+  .carousel-indicator {
+    width: vars.$base-space * 3;
+    height: vars.$base-space * 3;
+    border-radius: 50%;
+    background-color: vars.$gray-600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: vars.$primary;
+      transform: scale(1.2);
+    }
+    
+    &.active {
+      background-color: vars.$primary;
+      width: vars.$base-space * 6;
+      border-radius: vars.$base-space * 3;
+    }
+    
+    &.sm {
+      width: vars.$base-space * 2;
+      height: vars.$base-space * 2;
+      
+      &.active {
+        width: vars.$base-space * 4;
+      }
+    }
+  }
+  
+  .btn-reserve {
+    background-color: vars.$primary;
+    color: vars.$secondary;
+    font-weight: 600;
+    padding: vars.$base-space * 2.5 vars.$base-space * 5;
+    border: none;
+    border-radius: vars.$base-space * 2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    &.sm {
+      padding: vars.$base-space * 2 vars.$base-space * 4;
+      font-size: 0.8rem;
+    }
+    
+    .icon {
+      font-size: 1rem;
+    }
+  }
+}

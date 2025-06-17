@@ -1,0 +1,539 @@
+@use '../../../../styles/variables' as var;
+@use '../../../../styles/utils';
+
+.product-reviews {
+  margin-bottom: 12 * var.$base-space;
+
+  .reviews-title {
+    font-size: 5 * var.$base-space;
+    font-weight: 600;
+    color: var.$gray-800;
+    margin-bottom: 6 * var.$base-space;
+  }
+
+  // Reviews Summary Styling
+  .reviews-summary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 6 * var.$base-space;
+
+    .average-rating {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 4 * var.$base-space;
+
+      .rating-value {
+        color: var.$secondary;
+        font-size: 7 * var.$base-space;
+        font-weight: 600;
+        margin-bottom: 2 * var.$base-space;
+      }
+
+      .reviews-count {
+        color: var.$gray-600;
+        margin-top: 2 * var.$base-space;
+      }
+    }
+
+    .rating-breakdown {
+      flex: 1;
+
+      .rating-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2 * var.$base-space;
+
+        .rating-label {
+          color: var.$gray-700;
+          margin-right: 2 * var.$base-space;
+          min-width: 15 * var.$base-space;
+        }
+
+        .progress-bar {
+          flex: 1;
+          height: 2 * var.$base-space;
+          background-color: var.$gray-200;
+          border-radius: 1 * var.$base-space;
+          overflow: hidden;
+
+          .progress-fill {
+            height: 100%;
+            background-color: var.$secondary;
+          }
+        }
+
+        .rating-count {
+          color: var.$gray-700;
+          margin-left: 2 * var.$base-space;
+          min-width: 10 * var.$base-space;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  // Review List Styling
+  .reviews-list {
+    .review-item {
+      padding: 4 * var.$base-space;
+      margin-bottom: 4 * var.$base-space;
+      border: 1px solid var.$gray-200;
+      border-radius: 2 * var.$base-space;
+
+      .review-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 3 * var.$base-space;
+
+        .reviewer-info {
+          display: flex;
+          align-items: flex-start;
+
+          .reviewer-avatar {
+            flex-shrink: 0;
+            margin-right: 3 * var.$base-space;
+
+            .avatar {
+              width: 12 * var.$base-space;
+              height: 12 * var.$base-space;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 1px solid var.$gray-200;
+              background-color: var.$gray-100;
+            }
+          }
+
+          .review-title {
+            font-size: 4 * var.$base-space;
+            font-weight: 500;
+            margin-bottom: 1 * var.$base-space;
+            color: var.$gray-800;
+          }
+
+          .reviewer-details {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+
+            .reviewer-name {
+              color: var.$gray-700;
+              margin-right: 3 * var.$base-space;
+            }
+
+            .review-date {
+              color: var.$gray-500;
+            }
+
+            .verified-badge {
+              margin-left: 2 * var.$base-space;
+              color: var.$green;
+            }
+          }
+        }
+      }
+
+      .review-content {
+        margin-bottom: 3 * var.$base-space;
+        font-size: 3.5 * var.$base-space;
+        line-height: 1.5;
+        color: var.$gray-700;
+      }
+
+      .review-actions {
+        display: flex;
+        align-items: center;
+
+        button {
+          background: none;
+          border: none;
+          color: var.$gray-600;
+          cursor: pointer;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: var.$gray-800;
+          }
+
+          &.helpful-btn {
+            margin-right: 4 * var.$base-space;
+          }
+        }
+      }
+    }
+  }
+
+  // Empty State
+  .no-reviews {
+    text-align: center;
+    padding: 5 * var.$base-space;
+
+    fa-icon {
+      color: var.$gray-400;
+      font-size: 7 * var.$base-space;
+      margin-bottom: 3 * var.$base-space;
+    }
+
+    p {
+      color: var.$gray-500;
+      font-size: 4 * var.$base-space;
+    }
+  }
+
+  // Review Form Styling
+  .review-form-container {
+    background-color: var.$white;
+    border: 1px solid var.$gray-200;
+    border-radius: 2 * var.$base-space;
+    padding: 6 * var.$base-space;
+    margin-top: 8 * var.$base-space;
+
+    .form-title {
+      font-size: 5 * var.$base-space;
+      font-weight: 600;
+      color: var.$gray-800;
+      margin-bottom: 5 * var.$base-space;
+    }
+
+    .alert {
+      padding: 3 * var.$base-space;
+      border-radius: 1 * var.$base-space;
+      margin-bottom: 4 * var.$base-space;
+
+      &.alert-success {
+        background-color: lighten(var.$green, 45%);
+        color: var.$green;
+        border: 1px solid var.$green;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 4 * var.$base-space;
+
+      label {
+        display: block;
+        font-weight: 500;
+        color: var.$gray-700;
+        margin-bottom: 2 * var.$base-space;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 3 * var.$base-space;
+        border: 1px solid var.$gray-300;
+        border-radius: 1 * var.$base-space;
+        font-size: 3.5 * var.$base-space;
+        color: var.$gray-800;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: var.$secondary;
+          box-shadow: 0 0 0 2px rgba(45, 165, 243, 0.2);
+        }
+
+        &::placeholder {
+          color: var.$gray-400;
+        }
+      }
+
+      textarea.form-control {
+        resize: vertical;
+        min-height: 12 * var.$base-space;
+      }
+
+      .error-message {
+        color: var.$red;
+        font-size: 3 * var.$base-space;
+        margin-top: 1 * var.$base-space;
+      }
+
+      .rating-selector {
+        margin-top: 1 * var.$base-space;
+      }
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4 * var.$base-space;
+
+      .form-group {
+        flex: 1;
+        min-width: 200px;
+      }
+    }
+
+    .form-actions {
+      margin-top: 6 * var.$base-space;
+
+      button {
+        padding: 3 * var.$base-space 6 * var.$base-space;
+        font-size: 3.5 * var.$base-space;
+        font-weight: 500;
+        border-radius: 1 * var.$base-space;
+        background-color: var.$secondary;
+        color: var.$white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: darken(var.$secondary, 10%);
+        }
+
+        &:disabled {
+          background-color: var.$gray-400;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  // Responsive Styles
+  &.mobile {
+    .reviews-summary {
+      flex-direction: column;
+    }
+
+    .review-item {
+      padding: 3 * var.$base-space;
+
+      .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .reviewer-info {
+          width: 100%;
+          margin-bottom: 2 * var.$base-space;
+
+          .reviewer-avatar {
+            .avatar {
+              width: 10 * var.$base-space;
+              height: 10 * var.$base-space;
+            }
+          }
+
+          .review-title {
+            font-size: 3.5 * var.$base-space;
+          }
+
+          .reviewer-details {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1 * var.$base-space;
+
+            .reviewer-name,
+            .review-date,
+            .verified-badge {
+              margin: 0;
+              font-size: 3 * var.$base-space;
+            }
+
+            .verified-badge {
+              margin-top: 1 * var.$base-space;
+            }
+          }
+        }
+
+        .review-rating {
+          margin-top: 1 * var.$base-space;
+          align-self: flex-start;
+        }
+      }
+
+      .review-content {
+        font-size: 3 * var.$base-space;
+        line-height: 1.4;
+      }
+
+      .review-actions {
+        flex-wrap: wrap;
+        gap: 2 * var.$base-space;
+
+        button {
+          font-size: 3 * var.$base-space;
+          padding: 1 * var.$base-space;
+
+          &.helpful-btn {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+
+    .review-form-container {
+      padding: 4 * var.$base-space;
+
+      .form-title {
+        font-size: 4 * var.$base-space;
+      }
+
+      .form-group {
+        label {
+          font-size: 3.5 * var.$base-space;
+        }
+
+        .form-control {
+          padding: 2.5 * var.$base-space;
+          font-size: 3 * var.$base-space;
+        }
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 2 * var.$base-space;
+
+        .form-group {
+          width: 100%;
+          margin-right: 0;
+        }
+      }
+
+      .form-actions {
+        button {
+          width: 100%;
+          padding: 2.5 * var.$base-space;
+        }
+      }
+    }
+
+    // Image uploader styling for mobile
+    .image-uploader {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .preview {
+        margin-bottom: 2 * var.$base-space;
+        margin-right: 0;
+      }
+    }
+  }
+
+  &.tablet {
+    .reviews-summary {
+      .rating-breakdown {
+        padding-left: 5 * var.$base-space;
+      }
+    }
+
+    .review-item {
+      .review-header {
+        .reviewer-info {
+          .reviewer-details {
+            flex-wrap: wrap;
+          }
+        }
+      }
+    }
+
+    .form-row {
+      flex-wrap: wrap;
+
+      .form-group {
+        min-width: 250px;
+      }
+    }
+
+    // Image uploader styling for tablet
+    .image-uploader {
+      .preview {
+        width: 15 * var.$base-space;
+        height: 15 * var.$base-space;
+      }
+    }
+  }
+
+  // Image uploader styling
+  .image-uploader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3 * var.$base-space;
+
+    .preview {
+      width: 18 * var.$base-space;
+      height: 18 * var.$base-space;
+      border-radius: 50%;
+      background-color: var.$gray-100;
+      border: 1px dashed var.$gray-300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-right: 3 * var.$base-space;
+      position: relative;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .placeholder {
+        color: var.$gray-500;
+        font-size: 5 * var.$base-space;
+      }
+
+      .remove-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: var.$red;
+        color: var.$white;
+        border: none;
+        border-radius: 50%;
+        width: 5 * var.$base-space;
+        height: 5 * var.$base-space;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        font-size: 3 * var.$base-space;
+      }
+
+      &:hover .remove-btn {
+        opacity: 1;
+      }
+    }
+
+    .upload-controls {
+      display: flex;
+      flex-direction: column;
+
+      .file-input {
+        display: none;
+      }
+
+      .upload-btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: var.$white;
+        color: var.$secondary;
+        border: 1px solid var.$secondary;
+        border-radius: 1 * var.$base-space;
+        padding: 2 * var.$base-space 3 * var.$base-space;
+        cursor: pointer;
+        font-size: 3.5 * var.$base-space;
+        transition: all 0.2s ease;
+
+        fa-icon {
+          margin-right: 1 * var.$base-space;
+        }
+
+        &:hover {
+          background-color: rgba(45, 165, 243, 0.05);
+        }
+      }
+
+      .hint {
+        font-size: 3 * var.$base-space;
+        color: var.$gray-500;
+        margin-top: 1 * var.$base-space;
+      }
+    }
+  }
+}

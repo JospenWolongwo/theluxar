@@ -1,0 +1,119 @@
+@use '../../../styles/variables' as vars;
+
+.feedback-section {
+  background-color: vars.$deep-black;
+  position: relative;
+  padding: 5rem 0;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 20%, rgba(232, 180, 166, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+}
+
+.feedback-card {
+  flex: 0 0 calc(33.333% - 16px);
+  background-color: vars.$warm-white;
+  border: 1px solid rgba(232, 180, 166, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    border-color: vars.$rose-gold;
+  }
+}
+
+.tablet-card {
+  flex: 0 0 calc(50% - 16px);
+}
+
+.mobile-card {
+  flex: 0 0 100%;
+}
+
+.reviewer-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid vars.$rose-gold;
+  box-shadow: 0 4px 10px rgba(232, 180, 166, 0.3);
+}
+
+.reviewer-text {
+  color: vars.$deep-black;
+  line-height: 1.8;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: 'Montserrat', sans-serif;
+  flex-grow: 1;
+}
+
+h4.txt-bold {
+  font-family: 'Playfair Display', serif;
+  color: vars.$deep-black;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+
+.reviewer-position {
+  font-size: 0.85rem;
+  color: vars.$rose-gold;
+  margin-top: 2px;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.review-date {
+  font-size: 0.75rem;
+  color: rgba(10, 10, 10, 0.5);
+  text-align: right;
+  margin-top: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.slider {
+  transition: transform 0.5s ease-in-out;
+}
+
+// Navigation dots
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(232, 180, 166, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active {
+    background-color: vars.$rose-gold;
+    transform: scale(1.3);
+  }
+
+  &:hover {
+    background-color: vars.$rose-gold;
+  }
+
+  &.sm {
+    width: 6px;
+    height: 6px;
+  }
+}

@@ -1,0 +1,88 @@
+<section class="products-slider p-b-10" [class.mobile-slider]="isMobile" [class.tablet-slider]="isTablet">
+  <div class="w-100 flex-col align-items-center">
+    <div
+      class="w-1440px"
+      [class.p-l-4]="!isMobile"
+      [class.p-r-4]="!isMobile"
+      [class.p-l-2]="isMobile"
+      [class.p-r-2]="isMobile"
+      [class.p-l-3]="isTablet"
+      [class.p-r-3]="isTablet"
+    >
+      <div class="slider-container w-100 overflow-hidden-x m-t-10">
+        <!-- Use style binding for transform -->
+        <div
+          class="slider-products flex-row p-t-4 p-b-4"
+          [style.transform]="'translateX(' + -currentSlide * 100 + '%)'"
+        >
+          <!-- Create one slide per page based on indicators -->
+          <div *ngFor="let i of indicators; let slideIndex = index" class="slide-content">
+            <div class="product-row flex-row w-100" [class.mobile-row]="isMobile" [class.tablet-row]="isTablet">
+              <!-- Get products for this specific page -->
+              <ng-container *ngFor="let product of getProductRowsForPage(slideIndex)[0] || []">
+                <div
+                  class="slider-product-item product-card-container"
+                  [ngClass]="{ 'mobile-card': isMobile, 'tablet-card': isTablet }"
+                >
+                  <app-product-card
+                    [product]="product"
+                    [isMobile]="isMobile"
+                    [isTablet]="isTablet"
+                    (wishlistToggle)="onWishlistToggle($event)"
+                    (reserveClick)="onReserveClick($event)"
+                    class="w-100"
+                  ></app-product-card>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider Navigation Dots with Arrows -->
+      <div class="navigation-container" [class.mobile-nav]="isMobile" [class.tablet-nav]="isTablet">
+        <!-- Prev Button -->
+        <button class="nav-btn prev-btn" (click)="prevSlide()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Indicators - Dynamic based on product count -->
+        <div
+          *ngFor="let i of indicators"
+          class="products-slider-indicator"
+          [class.active]="i === currentSlide"
+          (click)="goToSlide(i)"
+        ></div>
+
+        <!-- Next Button -->
+        <button class="nav-btn next-btn" (click)="nextSlide()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

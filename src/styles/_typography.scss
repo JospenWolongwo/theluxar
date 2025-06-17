@@ -1,0 +1,97 @@
+@use './variables' as vars;
+
+/* --------------------------Text with no padding and no margin-------------------------------------- */
+.mat-typography.hello-cosmetics {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* --------------------------Text Alignment-------------------------------------- */
+$aligns: (center, justify, left, right);
+@each $align in $aligns {
+  .txt-#{$align} {
+    text-align: #{$align};
+    text-wrap: pretty;
+  }
+}
+
+/* --------------------------Text Transform-------------------------------------- */
+.txt-capitalize {
+  text-transform: capitalize;
+}
+
+.txt-upper-case {
+  text-transform: uppercase;
+}
+
+.txt-lower-case {
+  text-transform: lowercase;
+}
+
+/* --------------------------Colored Text-------------------------------------- */
+
+.txt-green {
+  color: vars.$green;
+}
+
+.txt-red {
+  color: vars.$red;
+}
+
+.txt-primary {
+  color: vars.$primary;
+}
+
+.txt-secondary {
+  color: vars.$secondary;
+}
+
+.txt-warning {
+  color: vars.$warning;
+}
+
+.txt-gold {
+  color: vars.$gold;
+}
+
+.txt-gray {
+  color: vars.$gray;
+}
+
+.txt-gray-0 {
+  color: vars.$gray-0;
+}
+
+.txt-dark-gray {
+  color: vars.$dark-gray;
+}
+
+.txt-normal {
+  color: vars.$black;
+}
+
+.txt-white {
+  color: vars.$white;
+}
+
+.txt-bold {
+  font-weight: bold;
+}
+
+.list-text {
+  list-style: none;
+
+  a {
+    text-decoration: none;
+    cursor: pointer;
+    color: vars.$white;
+  }
+}

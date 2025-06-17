@@ -1,0 +1,102 @@
+<div class="wishlist-page-container">
+  <div class="container">
+    <!-- Breadcrumbs -->
+    <div class="flex-row breadcrumbs">
+      <a [routerLink]="['/']" class="breadcrumb-item">Accueil</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">Favoris</span>
+    </div>
+
+    <!-- Wishlist content -->
+    <div *ngIf="wishlistItems.length > 0; else emptyWishlist">
+      <!-- Actions row -->
+      <div class="flex-row justify-content-end wishlist-actions">
+        <button class="btn-text clear-btn flex-row align-items-center" (click)="clearWishlist()">
+          <fa-icon [icon]="['far', 'trash-alt']"></fa-icon>
+          <span class="m-l-2">Vider la liste</span>
+        </button>
+      </div>
+
+      <!-- Wishlist table -->
+      <div class="wishlist-table">
+        <!-- Table header -->
+        <div class="header-row" [class.hidden-mobile]="currentScreenSize.ltMd">
+          <div class="header-cell product-cell">PRODUITS</div>
+          <div class="header-cell">PRIX</div>
+          <div class="header-cell">STOCK</div>
+          <div class="header-cell">ACTIONS</div>
+        </div>
+
+        <!-- Wishlist Items -->
+        <div class="wishlist-item" [class.mobile-view]="currentScreenSize.ltMd" *ngFor="let item of wishlistItems">
+          <!-- Remove button -->
+          <div class="remove-item" (click)="onRemoveItem(item.product.id)">
+            <fa-icon [icon]="['fas', 'times-circle']"></fa-icon>
+          </div>
+
+          <!-- Product Information -->
+          <div class="product-info" [class.mobile-view]="currentScreenSize.ltMd">
+            <!-- Product Image -->
+            <div class="product-image" [class.mobile-view]="currentScreenSize.ltMd">
+              <img [src]="item.product.imageUrl || '/assets/images/placeholder.png'" [alt]="item.product.name" />
+            </div>
+
+            <!-- Product Details -->
+            <div class="product-details">
+              <h3 class="product-name">{{ item.product.name }}</h3>
+              <p class="product-specs" *ngIf="item.product.specs">{{ item.product.specs }}</p>
+              <p class="date-added">Ajouté le {{ item.addedAt | date : "dd/MM/yyyy" }}</p>
+            </div>
+          </div>
+
+          <!-- Product Price -->
+          <div class="price-cell" [class.mobile-view]="currentScreenSize.ltMd">
+            <span class="label-mobile" *ngIf="currentScreenSize.ltMd">Prix:</span>
+            <span class="price">{{ item.product.price | number : "1.0-0" }} {{ item.product.currency || "XAF" }}</span>
+          </div>
+
+          <!-- Stock Status -->
+          <div class="stock-cell" [class.mobile-view]="currentScreenSize.ltMd">
+            <span class="label-mobile" *ngIf="currentScreenSize.ltMd">Disponibilité:</span>
+            <span
+              class="stock-status"
+              [ngClass]="{ 'in-stock': item.product.inStock, 'out-of-stock': !item.product.inStock }"
+            >
+              <fa-icon [icon]="item.product.inStock ? ['fas', 'check-circle'] : ['fas', 'times-circle']"></fa-icon>
+              {{ item.product.inStock ? "En Stock" : "Rupture de Stock" }}
+            </span>
+          </div>
+
+          <!-- Actions -->
+          <div class="actions-cell">
+            <button class="btn-primary add-to-cart-btn" (click)="addToCart(item)" [disabled]="!item.product.inStock">
+              <fa-icon [icon]="['fas', 'cart-shopping']"></fa-icon>
+              <span class="m-l-2">AJOUTER AU PANIER</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Continue Shopping -->
+        <div class="flex-row continue-shopping m-t-8">
+          <a [routerLink]="['/home']" class="btn-outline back-btn flex-row align-items-center">
+            <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon>
+            <span class="m-l-2">CONTINUER VOS ACHATS</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Empty Wishlist Template -->
+<ng-template #emptyWishlist>
+  <div class="empty-wishlist flex-col align-items-center justify-content-center">
+    <fa-icon [icon]="['far', 'heart']" class="empty-wishlist-icon"></fa-icon>
+    <h2>Votre liste d'envies est vide</h2>
+    <p>Parcourez notre catalogue et ajoutez des produits à votre liste d'envies.</p>
+    <a [routerLink]="['/home']" class="btn-primary">Continuer vos achats</a>
+  </div>
+</ng-template>
+
+<!-- Success notification overlay -->
+<app-add-to-cart-success [visible]="showSuccessModal" (close)="hideSuccessModal()"></app-add-to-cart-success>

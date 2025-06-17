@@ -1,0 +1,112 @@
+@use '../../styles/variables' as var;
+
+.not-found-container {
+  min-height: calc(100vh - 200px);
+  padding: 7 * var.$base-space 2 * var.$base-space;
+}
+
+.mobile .not-found-container {
+  padding: 3 * var.$base-space 1.5 * var.$base-space;
+}
+
+.tablet .not-found-container {
+  padding: 4 * var.$base-space 2 * var.$base-space;
+}
+
+.not-found-content {
+  max-width: 650px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.not-found-image {
+  max-width: 350px;
+  margin-bottom: 5 * var.$base-space;
+}
+
+.mobile .not-found-image {
+  max-width: 220px;
+  margin-bottom: 3 * var.$base-space;
+}
+
+.tablet .not-found-image {
+  max-width: 280px;
+  margin-bottom: 4 * var.$base-space;
+}
+
+.not-found-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 3 * var.$base-space;
+  color: var.$primary;
+}
+
+.mobile .not-found-title {
+  font-size: 2rem;
+  margin-bottom: 2 * var.$base-space;
+}
+
+.tablet .not-found-title {
+  font-size: 2.4rem;
+  margin-bottom: 2.5 * var.$base-space;
+}
+
+.not-found-text {
+  font-size: 1.25rem;
+  margin-bottom: 5 * var.$base-space;
+  color: var.$gray-700;
+  line-height: 1.8;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mobile .not-found-text {
+  font-size: 1rem;
+  margin-bottom: 3.5 * var.$base-space;
+  max-width: 90%;
+}
+
+.tablet .not-found-text {
+  font-size: 1.125rem;
+  margin-bottom: 4 * var.$base-space;
+  max-width: 85%;
+}
+
+.action-buttons {
+  gap: 3 * var.$base-space;
+}
+
+.action-buttons .btn-primary,
+.action-buttons .btn-secondary {
+  padding: 3 * var.$base-space 4 * var.$base-space;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.mobile .action-buttons {
+  gap: 4 * var.$base-space;
+}
+
+.mobile .action-buttons .btn-primary,
+.mobile .action-buttons .btn-secondary {
+  width: 100%;
+  padding: 1.25 * var.$base-space 1.5 * var.$base-space;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.tablet .action-buttons {
+  gap: 2.5 * var.$base-space;
+}
+
+.tablet .action-buttons .btn-primary,
+.tablet .action-buttons .btn-secondary {
+  padding: 1.25 * var.$base-space 3 * var.$base-space;
+  font-size: 1.1rem;
+}

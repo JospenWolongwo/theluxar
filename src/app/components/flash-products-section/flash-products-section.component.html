@@ -1,0 +1,98 @@
+<div class="flash-products-section">
+  <div class="flash-products-container" [class.container-mobile]="isMobile" [class.container-tablet]="isTablet">
+    <!-- Flash Sale Section with Countdown -->
+    <div class="section-header">
+      <h2 class="section-title">Limited Time Offers</h2>
+      <div class="sale-countdown">
+        <span class="countdown-label">Sale ends in</span>
+        <div class="countdown-timer">
+          <div class="countdown-item">
+            <span class="countdown-value">12</span>
+            <span class="countdown-unit">H</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-item">
+            <span class="countdown-value">45</span>
+            <span class="countdown-unit">M</span>
+          </div>
+          <div class="countdown-separator">:</div>
+          <div class="countdown-item">
+            <span class="countdown-value">30</span>
+            <span class="countdown-unit">S</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main grid container -->
+    <div class="product-sections-grid" [class.grid-mobile]="isMobile" [class.grid-tablet]="isTablet">
+      <!-- FLASH SALE Section -->
+      <div class="product-section">
+        <div class="section-header">
+          <h3 class="section-title">Limited Edition</h3>
+          <a [routerLink]="['/flash-sale']" class="view-all"> View All <fa-icon [icon]="faArrowRight"></fa-icon> </a>
+        </div>
+        <div class="product-cards">
+          <app-flash-product-card
+            *ngFor="let product of flashSaleProducts"
+            [product]="product"
+            [isMobile]="isMobile"
+            [isTablet]="isTablet"
+            (wishlistToggle)="onWishlistToggle($event)"
+          ></app-flash-product-card>
+        </div>
+      </div>
+
+      <!-- BEST SELLERS Section -->
+      <div class="product-section">
+        <div class="section-header">
+          <h3 class="section-title">Bestsellers</h3>
+          <a [routerLink]="['/best-sellers']" class="view-all"> View All <fa-icon [icon]="faArrowRight"></fa-icon> </a>
+        </div>
+        <div class="product-cards">
+          <app-flash-product-card
+            *ngFor="let product of bestSellerProducts"
+            [product]="product"
+            [isMobile]="isMobile"
+            [isTablet]="isTablet"
+            (wishlistToggle)="onWishlistToggle($event)"
+          ></app-flash-product-card>
+        </div>
+      </div>
+
+      <!-- TOP RATED Section -->
+      <div class="product-section">
+        <div class="section-header">
+          <h3 class="section-title">Top Rated</h3>
+          <a [routerLink]="['/top-rated']" class="view-all"> View All <fa-icon [icon]="faArrowRight"></fa-icon> </a>
+        </div>
+        <div class="product-cards">
+          <app-flash-product-card
+            *ngFor="let product of topRatedProducts"
+            [product]="product"
+            [isMobile]="isMobile"
+            [isTablet]="isTablet"
+            (wishlistToggle)="onWishlistToggle($event)"
+          ></app-flash-product-card>
+        </div>
+      </div>
+
+      <!-- NEW ARRIVALS Section -->
+      <div class="product-section">
+        <div class="section-header">
+          <h3 class="section-title">New Arrivals</h3>
+          <a [routerLink]="['/new-arrivals']" class="view-all"> View All <fa-icon [icon]="faArrowRight"></fa-icon> </a>
+        </div>
+        <div class="product-cards">
+          <app-flash-product-card
+            *ngFor="let product of newProducts"
+            [product]="product"
+            [isMobile]="isMobile"
+            [isTablet]="isTablet"
+            (wishlistToggle)="onWishlistToggle($event)"
+          ></app-flash-product-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

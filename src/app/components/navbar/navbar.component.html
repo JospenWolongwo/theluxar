@@ -1,0 +1,222 @@
+<nav class="nav-container w-100" [class.is-mobile]="isMobile">
+  <!-- Top orange bar -->
+  <div class="top-banner">
+    <div class="w-1440px p-l-40 flex-row align-items-center justify-content-space-between">
+      <span *ngIf="!isMobile" class="welcome-text">Welcome to TheLuxar luxury jewelry store.</span>
+      <div class="flex-row align-items-center p-r-4" [class.w-100-sm]="isMobile">
+        <span *ngIf="!isMobile" class="follow-text">Follow us:</span>
+        <div class="social-links flex-row gap-1" [class.is-mobile]="isMobile">
+          <a href="#" class="social-link"><fa-icon [icon]="['fab', 'twitter']"></fa-icon></a>
+          <a href="#" class="social-link"><fa-icon [icon]="['fab', 'facebook']"></fa-icon></a>
+          <a href="#" class="social-link"><fa-icon [icon]="['fab', 'youtube']"></fa-icon></a>
+          <a href="#" class="social-link"><fa-icon [icon]="['fab', 'instagram']"></fa-icon></a>
+          <a href="#" class="social-link"><fa-icon [icon]="['fab', 'pinterest']"></fa-icon></a>
+          <a href="#" class="social-link"><fa-icon [icon]="['fab', 'reddit']"></fa-icon></a>
+        </div>
+        <div class="separator"></div>
+        <div class="flex-row gap-4 align-items-center">
+          <select class="language-select m-l-2" [class.is-mobile]="isMobile">
+            <option value="en">Eng</option>
+          </select>
+          <select class="currency-select m-l-2" [class.is-mobile]="isMobile">
+            <option value="usd">USD</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main navbar -->
+  <div class="main-nav" [class.is-mobile]="isMobile">
+    <div class="w-1440px flex-row align-items-center justify-content-space-between p-2">
+      <div class="flex-row align-items-center gap-2">
+        <button mat-icon-button (click)="toggleMobileMenu()" class="menu-button" *ngIf="isMobile">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <a href="/" class="logo">
+          <img src="assets/images/logo.png" alt="TheLuxar Logo" class="logo-image" />
+          <span class="logo-text">The <span class="rose-gold">Luxar</span></span>
+        </a>
+      </div>
+
+      <div class="nav-sections flex-row align-items-center gap-4" *ngIf="!isMobile && !isTablet">
+        <a [routerLink]="['/services']" routerLinkActive="active" class="nav-section-link">Services</a>
+        <a [routerLink]="['/about']" routerLinkActive="active" class="nav-section-link">A propos</a>
+        <a [routerLink]="['/support']" routerLinkActive="active" class="nav-section-link">Support</a>
+      </div>
+
+      <div class="search-container" *ngIf="!isMobile">
+        <mat-form-field appearance="outline" class="search-field">
+          <input
+            matInput
+            type="search"
+            placeholder="Rechercher un produit"
+            [attr.aria-label]="'Search products'"
+            autocomplete="off"
+          />
+          <button matSuffix mat-icon-button aria-label="Search" type="submit">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <div class="user-actions flex-row align-items-center gap-10 p-1 h-100">
+        <a [routerLink]="['/cart']" class="nav-icon cart-icon">
+          <fa-icon [icon]="['fas', 'cart-shopping']"></fa-icon>
+          <span class="cart-count" *ngIf="cartItemsCount > 0">{{ cartItemsCount }}</span>
+        </a>
+        <ng-container *ngIf="!isMobile">
+          <a [routerLink]="['/wishlist']" class="nav-icon wishlist-icon">
+            <fa-icon [icon]="['far', 'heart']"></fa-icon>
+            <span class="wishlist-count" *ngIf="wishlistItemsCount > 0">{{ wishlistItemsCount }}</span>
+          </a>
+
+          <!-- Show profile or login based on auth state -->
+          <ng-container *ngIf="isLoggedIn; else loginButton">
+            <div class="user-profile" [matMenuTriggerFor]="userMenu">
+              <fa-icon [icon]="['fas', 'user']" class="nav-icon"></fa-icon>
+              <span class="user-name" *ngIf="!isMobile && userName">{{ userName }}</span>
+              <fa-icon [icon]="['fas', 'angle-down']" class="dropdown-icon"></fa-icon>
+            </div>
+            <mat-menu #userMenu="matMenu" class="user-menu">
+              <a mat-menu-item [routerLink]="['/auth/profile']">
+                <fa-icon [icon]="['fas', 'user-circle']" class="menu-icon"></fa-icon>
+                <span>Profile</span>
+              </a>
+              <a mat-menu-item [routerLink]="['/orders']">
+                <fa-icon [icon]="['fas', 'box']" class="menu-icon"></fa-icon>
+                <span>Orders</span>
+              </a>
+              <button mat-menu-item (click)="logout()">
+                <fa-icon [icon]="['fas', 'sign-out-alt']" class="menu-icon"></fa-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+          </ng-container>
+
+          <ng-template #loginButton>
+            <a href="javascript:void(0)" (click)="login()" class="nav-icon">
+              <fa-icon [icon]="['far', 'user']"></fa-icon>
+              <span class="login-text" *ngIf="!isMobile">Login</span>
+            </a>
+          </ng-template>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile search bar -->
+  <div class="mobile-search" *ngIf="isMobile">
+    <div class="search-wrapper">
+      <mat-form-field appearance="outline" class="search-field">
+        <input
+          matInput
+          type="search"
+          placeholder="Rechercher un produit"
+          [attr.aria-label]="'Search products'"
+          autocomplete="off"
+        />
+        <button matSuffix mat-icon-button aria-label="Search" type="submit">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Categories navbar -->
+  <div class="categories-nav" *ngIf="!isMobile">
+    <div class="w-1440px p-l-40">
+      <nav class="categories-list">
+        <a
+          *ngFor="let link of links; trackBy: trackLink"
+          [routerLink]="link.url"
+          routerLinkActive="active"
+          class="category-link"
+        >
+          {{ link.name }}
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu flex-col p-4" *ngIf="isMobile && showMobileMenu">
+    <div class="flex-row justify-content-end m-b-4">
+      <button mat-icon-button class="close-menu-button" (click)="toggleMobileMenu()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- User Profile / Login Section -->
+    <div class="mobile-user-section">
+      <ng-container *ngIf="isLoggedIn; else mobileLoginButton">
+        <div class="mobile-user-profile">
+          <fa-icon [icon]="['fas', 'user-circle']" class="user-profile-icon"></fa-icon>
+          <span class="user-name" *ngIf="userName">{{ userName }}</span>
+        </div>
+        <div class="mobile-user-actions">
+          <a [routerLink]="['/auth/profile']" class="mobile-menu-user-link" (click)="closeMobileMenu()">
+            <fa-icon [icon]="['fas', 'user-circle']"></fa-icon>
+            <span>Profile</span>
+          </a>
+          <a [routerLink]="['/orders']" class="mobile-menu-user-link" (click)="closeMobileMenu()">
+            <fa-icon [icon]="['fas', 'box']"></fa-icon>
+            <span>Orders</span>
+          </a>
+          <button class="mobile-menu-user-link logout-button" (click)="logout()">
+            <fa-icon [icon]="['fas', 'sign-out-alt']"></fa-icon>
+            <span>Logout</span>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #mobileLoginButton>
+        <a [routerLink]="['/auth/login']" class="mobile-login-button" (click)="closeMobileMenu()">
+          <fa-icon [icon]="['fas', 'sign-in-alt']"></fa-icon>
+          <span>Login / Register</span>
+        </a>
+      </ng-template>
+    </div>
+
+    <mat-divider class="m-y-3"></mat-divider>
+
+    <div class="mobile-menu-sections">
+      <a
+        [routerLink]="['/services']"
+        routerLinkActive="active"
+        class="mobile-menu-section-link"
+        (click)="closeMobileMenu()"
+        >Services</a
+      >
+      <a
+        [routerLink]="['/about']"
+        routerLinkActive="active"
+        class="mobile-menu-section-link"
+        (click)="closeMobileMenu()"
+        >A propos</a
+      >
+      <a
+        [routerLink]="['/support']"
+        routerLinkActive="active"
+        class="mobile-menu-section-link"
+        (click)="closeMobileMenu()"
+        >Support</a
+      >
+    </div>
+
+    <mat-divider class="m-y-3"></mat-divider>
+
+    <div class="categories-list flex-col gap-2">
+      <a
+        class="mobile-menu-link"
+        *ngFor="let link of links"
+        [routerLink]="link.url"
+        routerLinkActive="active"
+        (click)="closeMobileMenu()"
+      >
+        {{ link.name }}
+      </a>
+    </div>
+  </div>
+</nav>

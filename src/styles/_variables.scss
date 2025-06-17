@@ -1,0 +1,122 @@
+// Using global functions for compatibility with Angular CLI Sass processor
+// Future migration to @use will be implemented when build pipeline supports it
+
+/* ------------------------BASE SPACE------------------------------ */
+$base-space: 4px;
+
+/* ------------------------COLORS------------------------------ */
+$background-color: white;
+$primary: #e8b4a6;
+$primary-rgb: 232, 180, 166;
+$secondary: #0a0a0a;
+$red: #d24545;
+$warning: #d40404;
+$gold: #edd146;
+$golden-yellow: #edd146; // Added for component backward compatibility
+$green: #2db224;
+$white: white;
+$black: #0c0c0c;
+
+/* Gray Scale */
+$gray-50: #f9fafb;
+$gray-100: #f1f1f3;
+$gray-200: #eaecf0;
+$gray-300: #d0d5dd;
+$gray-400: #98a2b3;
+$gray-500: #667085;
+$gray-600: #475467;
+$gray-700: #344054;
+$gray-800: #1d2939;
+$gray-900: #101828;
+
+$gray: $gray-100;
+$gray-0: $gray-100;
+$dark-gray: #191c1f;
+$silver: #bebcbd;
+$rose-gold: #e8b4a6;
+$rose-gold-rgb: 232, 180, 166;
+$deep-black: #0a0a0a;
+$warm-white: #fafafa;
+$champagne: #f5e6d3;
+
+/* --------------------------------Font----------------------------------- */
+$font-family: 'Montserrat', 'Roboto', sans-serif;
+$font-size: 16px;
+
+/* ------------------------COLORS PALETTES------------------------------ */
+$warning-palette: (
+  50: #fee8e7,
+  100: #ffcabc,
+  200: #ffa690,
+  300: #ff8164,
+  400: #ff6142,
+  500: #ff3c21,
+  600: #ff361d,
+  700: #fa2d17,
+  800: #ec2312,
+  900: #d40404,
+  contrast: (
+    50: #0c0c0c,
+    100: #0c0c0c,
+    200: #0c0c0c,
+    300: #0c0c0c,
+    400: #0c0c0c,
+    500: rgb(12 12 12 / 90%),
+    600: rgb(12 12 12 / 90%),
+    700: rgb(12 12 12 / 90%),
+    800: rgb(12 12 12 / 90%),
+    900: white,
+  ),
+);
+
+$secondary-palette: (
+  50: #e5e5e5,
+  100: #cccccc,
+  200: #999999,
+  300: #666666,
+  400: #333333,
+  500: #0a0a0a, /* Deep Black */
+  600: #090909,
+  700: #080808,
+  800: #070707,
+  900: #050505,
+  contrast: (
+    50: #0c0c0c,
+    100: #0c0c0c,
+    200: #0c0c0c,
+    300: #0c0c0c,
+    400: #0c0c0c,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$primary-palette: (
+  50: #f8e9e5,
+  100: #f2d5cd,
+  200: #edc3b7,
+  300: #e8b4a6, /* Main Rose Gold */
+  400: #e3a594,
+  500: #d99a8a,
+  600: #cb8d7d,
+  700: #bd7f70,
+  800: #a56a5d,
+  900: #8c574c,
+  contrast: (
+    50: #0c0c0c,
+    100: #0c0c0c,
+    200: #0c0c0c,
+    300: #0c0c0c,
+    400: #0c0c0c,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+/* Typography variables have been moved to _theming.scss */

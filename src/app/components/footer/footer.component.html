@@ -1,0 +1,120 @@
+<footer class="footer" [class.mobile]="isMobile" [class.tablet]="isTablet">
+  <div class="footer-content">
+    <!-- Logo and Contact Section -->
+    <div class="footer-info flex-col">
+      <div class="logo-section flex-col">
+        <a
+          routerLink="/"
+          class="logo-link flex-row align-items-center txt-center gap-1"
+        >
+          <img
+            src="assets/images/logo-footer.png"
+            alt="The Luxar"
+            class="logo"
+          />
+          <span class="logo-text m-b-3">The Luxar</span>
+        </a>
+        <div class="contact-info flex-col gap-2">
+          <p class="text-gray-400">Personal Concierge:</p>
+          <p class="phone">+1 800 LUXAR</p>
+          <p class="address text-gray-400">Fifth Avenue<br />New York, NY</p>
+          <p class="email text-gray-400">clientcare&#64;theluxar.com</p>
+        </div>
+      </div>
+      <!-- Social Media Links -->
+      <div class="social-links flex-row gap-4">
+        <a routerLink="/not-found" class="social-link" aria-label="Twitter">
+          <fa-icon [icon]="faTwitter"></fa-icon>
+        </a>
+        <a routerLink="/not-found" class="social-link" aria-label="Facebook">
+          <fa-icon [icon]="faFacebook"></fa-icon>
+        </a>
+        <a routerLink="/not-found" class="social-link" aria-label="YouTube">
+          <fa-icon [icon]="faYoutube"></fa-icon>
+        </a>
+        <a routerLink="/not-found" class="social-link" aria-label="Instagram">
+          <fa-icon [icon]="faInstagram"></fa-icon>
+        </a>
+        <a routerLink="/not-found" class="social-link" aria-label="Pinterest">
+          <fa-icon [icon]="faPinterest"></fa-icon>
+        </a>
+        <a routerLink="/not-found" class="social-link" aria-label="Reddit">
+          <fa-icon [icon]="faReddit"></fa-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Links Sections -->
+    <div class="footer-links flex-row">
+      <!-- Top Category -->
+      <div class="link-group flex-col">
+        <h3 class="footer-title">COLLECTIONS</h3>
+        <div class="links flex-col gap-2">
+          <a routerLink="/not-found" routerLinkActive="active">Fine Jewelry</a>
+          <a routerLink="/not-found" routerLinkActive="active"
+            >Luxury Watches</a
+          >
+          <a routerLink="/not-found" routerLinkActive="active"
+            >Signature Fragrances</a
+          >
+          <a routerLink="/not-found" routerLinkActive="active"
+            >Limited Editions</a
+          >
+          <a routerLink="/not-found" routerLinkActive="active"
+            >Bespoke Creations</a
+          >
+          <a routerLink="/not-found" routerLinkActive="active"
+            >Artisan Accessories</a
+          >
+          <a routerLink="/not-found" class="browse-all"
+            >Explore All Collections →</a
+          >
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="link-group flex-col">
+        <h3 class="footer-title">CLIENT SERVICES</h3>
+        <div class="links flex-col gap-2">
+          <a routerLink="/not-found">New Arrivals</a>
+          <a routerLink="/not-found">Private Appointments</a>
+          <a routerLink="/not-found">Exclusive Events</a>
+          <a routerLink="/not-found">Gift Concierge</a>
+          <a routerLink="/not-found">The Luxar Journal</a>
+          <a routerLink="/not-found">Contact Us</a>
+          <a routerLink="/not-found">Our Heritage</a>
+        </div>
+      </div>
+
+      <!-- Popular Tags -->
+      <div class="link-group">
+        <h3 class="footer-title">FEATURED</h3>
+        <div class="tags">
+          <a routerLink="/not-found" class="tag">Diamonds</a>
+          <a routerLink="/not-found" class="tag">Sapphires</a>
+          <a routerLink="/not-found" class="tag">Precious Metals</a>
+          <a routerLink="/not-found" class="tag">Swiss Crafted</a>
+          <a routerLink="/not-found" class="tag">Limited Edition</a>
+          <a routerLink="/not-found" class="tag">Artisanal</a>
+          <a routerLink="/not-found" class="tag">Heirloom Quality</a>
+          <a routerLink="/not-found" class="tag">Chronographs</a>
+          <a routerLink="/not-found" class="tag">Signature Scents</a>
+          <a routerLink="/not-found" class="tag">Bespoke</a>
+          <a routerLink="/not-found" class="tag">Platinum</a>
+          <a routerLink="/not-found" class="tag">Collections</a>
+          <a routerLink="/not-found" class="tag">Heritage</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="copyright">
+    <p>
+      &copy; 2025 The Luxar. All rights reserved.
+      <span class="luxury-mark"
+        >Distinction in Fine Jewelry, Watches & Fragrances</span
+      >
+    </p>
+  </div>
+</footer>

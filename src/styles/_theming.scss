@@ -1,0 +1,48 @@
+// Importing variables first
+@import './variables';
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+// We are using a prebuilt theme that is included via angular.json
+// This provides better compatibility with the current Angular build system
+
+// Plus imports for other components in your app.
+
+// Using prebuilt theme instead of custom core
+// This eliminates the need for mat-core() inclusion
+// and simplifies our Angular Material setup
+
+// Using prebuilt theme instead of custom palettes
+// Custom colors are applied via CSS variables and utility classes
+// This simplifies our Angular Material setup and improves compatibility
+
+/* ------------------------Material Typography------------------------------ */
+// Using a prebuilt theme from Angular Material with our custom CSS for styling
+// This provides better compatibility with the current Angular version
+// 
+// Future enhancement: When upgrading to Angular's latest tooling with full Sass module support,
+// we can re-implement custom typography and theming using the modern API
+//
+// Custom fonts and styles are applied via standard CSS/SCSS variables and classes
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: $font-family;
+  font-size: $font-size;
+  color: $black;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+// No need to include theme styles since we're using a prebuilt theme
+// The prebuilt theme has been imported via CSS at the top of this file
+// Typography styling is now handled through standard CSS
