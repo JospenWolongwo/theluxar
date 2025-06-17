@@ -1,9 +1,25 @@
 [build]
 command = "npm run netlify:build"
-publish = "dist/the-luxar/browser"
+publish = "dist/the-luxar"
 
+# Disable all plugins
+[plugins]
+package = []
+
+# SPA redirect
 [[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
 force = true
+
+# Proper MIME types
+[[headers]]
+for = "/*.js"
+  [headers.values]
+  Content-Type = "application/javascript"
+
+[[headers]]
+for = "/*.css"
+  [headers.values]
+  Content-Type = "text/css"
