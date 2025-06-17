@@ -9,7 +9,6 @@ publish = "dist/the-luxar/browser"
 from = "/*"
 to = "/index.html"
 status = 200
-force = true
 
 # Proper MIME types
 [[headers]]
