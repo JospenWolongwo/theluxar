@@ -42,11 +42,12 @@
       <p>{{ product.description || "No description available for this product." }}</p>
     </div>
     <button
-      class="voir-plus"
+      class="read-more-btn luxury-btn-outline"
       (click)="toggleDescription()"
       *ngIf="product.description && product.description.length > 200"
     >
-      {{ isExpandedDescription ? "Voir Moins" : "Voir Plus" }}
+      <span>{{ isExpandedDescription ? "Read Less" : "Read More" }}</span>
+      <fa-icon [icon]="['fas', isExpandedDescription ? 'chevron-up' : 'chevron-down']"></fa-icon>
     </button>
   </div>
 </div>

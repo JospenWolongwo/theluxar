@@ -5,10 +5,12 @@
   margin-bottom: 12 * var.$base-space;
 
   .reviews-title {
-    font-size: 5 * var.$base-space;
+    font-size: 5.5 * var.$base-space;
     font-weight: 600;
     color: var.$gray-800;
     margin-bottom: 6 * var.$base-space;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.5px;
   }
 
   // Reviews Summary Styling
@@ -77,10 +79,17 @@
   // Review List Styling
   .reviews-list {
     .review-item {
-      padding: 4 * var.$base-space;
-      margin-bottom: 4 * var.$base-space;
+      padding: 5 * var.$base-space;
+      margin-bottom: 5 * var.$base-space;
       border: 1px solid var.$gray-200;
       border-radius: 2 * var.$base-space;
+      box-shadow: 0 6px 15px rgba(10, 10, 10, 0.04);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 10px 25px rgba(10, 10, 10, 0.06);
+        transform: translateY(-2px);
+      }
 
       .review-header {
         display: flex;
@@ -101,8 +110,10 @@
               height: 12 * var.$base-space;
               border-radius: 50%;
               object-fit: cover;
-              border: 1px solid var.$gray-200;
+              border: 2px solid rgba(10, 10, 10, 0.05);
               background-color: var.$gray-100;
+              box-shadow: 0 4px 10px rgba(10, 10, 10, 0.07);
+              transition: all 0.3s ease;
             }
           }
 
@@ -222,16 +233,20 @@
       .form-control {
         width: 100%;
         padding: 3 * var.$base-space;
-        border: 1px solid var.$gray-300;
-        border-radius: 1 * var.$base-space;
         font-size: 3.5 * var.$base-space;
-        color: var.$gray-800;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var.$gray-300;
+        border-radius: 1.5 * var.$base-space;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(10, 10, 10, 0.03);
 
         &:focus {
           outline: none;
           border-color: var.$secondary;
-          box-shadow: 0 0 0 2px rgba(45, 165, 243, 0.2);
+          box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
+        }
+        
+        &:hover {
+          border-color: var.$gray-400;
         }
 
         &::placeholder {
@@ -273,20 +288,31 @@
         padding: 3 * var.$base-space 6 * var.$base-space;
         font-size: 3.5 * var.$base-space;
         font-weight: 500;
-        border-radius: 1 * var.$base-space;
+        border-radius: 2 * var.$base-space;
         background-color: var.$secondary;
         color: var.$white;
         border: none;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(10, 10, 10, 0.1);
+        position: relative;
 
         &:hover {
-          background-color: darken(var.$secondary, 10%);
+          background-color: var.$secondary;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(10, 10, 10, 0.15);
+        }
+
+        &:active {
+          transform: translateY(0);
+          box-shadow: 0 3px 10px rgba(10, 10, 10, 0.1);
         }
 
         &:disabled {
           background-color: var.$gray-400;
           cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
         }
       }
     }

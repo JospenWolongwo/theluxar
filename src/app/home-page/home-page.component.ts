@@ -102,7 +102,7 @@ export class HomePageComponent {
           this.products = products.map((product) => ({
             ...product,
             // Ensure these fields exist with defaults if they're missing
-            imageUrl: product.gallery || 'assets/images/products/placeholder.png',
+            imageUrl: product.imageUrl || product.gallery || '/assets/images/products/placeholder.jpg',
             inStock: product.inStock ?? true,
             inWishlist: false,
           }));

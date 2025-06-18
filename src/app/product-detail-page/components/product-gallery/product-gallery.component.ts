@@ -70,7 +70,7 @@ export class ProductGalleryComponent implements OnChanges {
 
     // Fallback if there are no images
     if (this.allImages.length === 0) {
-      this.allImages.push('/assets/images/placeholder.png');
+      this.allImages.push('/assets/images/products/placeholder.jpg');
     }
 
     // Set the first image as selected

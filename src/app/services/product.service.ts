@@ -2,7 +2,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { map } from 'rxjs';
+import { map, catchError, of } from 'rxjs';
+import { MOCK_PRODUCTS } from '../../shared/data/products.data';
 import type { StockAvailabilityStatus } from '../../shared/enums';
 import type { ApiReview, ApiStock } from '../../shared/types/api-types';
 import type { Product } from '../../shared/types/product.type';
@@ -25,6 +26,15 @@ export class ProductService extends BaseService {
     const url = limit ? `${this.baseUrl}/products?limit=${limit}` : `${this.baseUrl}/products`;
 
     return this.http.get<Product[]>(url, this.httpOptions).pipe(
+      catchError(() => {
+        console.log('API call failed, using mock product data');
+        // Return mock data if API call fails
+        let products = [...MOCK_PRODUCTS];
+        if (limit && products.length > limit) {
+          products = products.slice(0, limit);
+        }
+        return of(products);
+      }),
       map((response) => {
         return response.map((product) => {
           // Generate the product ID part for the slug
@@ -38,8 +48,8 @@ export class ProductService extends BaseService {
             specs: product.specs || '',
             price: Number(product.price || 0),
             currency: product.currency || 'XAF',
-            imageUrl: product.imageUrl || 'assets/images/products/placeholder.png',
-            galleryImages: product.galleryImages || [product.imageUrl || 'assets/images/products/placeholder.png'],
+            imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
+            galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
             features: product.features || [],
             label: product.label || null,
             labelColor: product.labelColor || '#000000',
@@ -66,6 +76,16 @@ export class ProductService extends BaseService {
    */
   getProductById(id: string): Observable<Product> {
     return this.http.get<Product>(`${this.baseUrl}/product/${id}`, this.httpOptions).pipe(
+      catchError(() => {
+        console.log('API call failed, using mock product data');
+        // Find the product with matching id in mock data
+        const mockProduct = MOCK_PRODUCTS.find(product => product.id === id);
+        if (mockProduct) {
+          return of(mockProduct);
+        } else {
+          throw new Error('Product not found');
+        }
+      }),
       map((product) => ({
         ...product,
         id: product.id || '',
@@ -73,8 +93,8 @@ export class ProductService extends BaseService {
         specs: product.specs || '',
         price: Number(product.price || 0),
         currency: product.currency || 'XAF',
-        imageUrl: product.imageUrl || 'assets/images/products/placeholder.png',
-        galleryImages: product.galleryImages || [product.imageUrl || 'assets/images/products/placeholder.png'],
+        imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
+        galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
         features: product.features || [],
         label: product.label || null,
         labelColor: product.labelColor || '#000000',
@@ -98,18 +118,51 @@ export class ProductService extends BaseService {
 
     return this.getProducts().pipe(
       map((products) => {
-        const product = products.find((p) => {
-          // Using the shared utility function for consistent slug generation
-          const productSlug = generateProductSlug(p.name, p.id.substring(0, 8));
-
-          return productSlug === slug;
-        });
-
+        // First try to find the product by exact slug match
+        let product = products.find((p) => p.slug === slug);
+        
+        // If not found, fall back to the original search method
         if (!product) {
+          product = products.find((p) => {
+            // Using the shared utility function for consistent slug generation
+            const productSlug = generateProductSlug(p.name, p.id.substring(0, 8));
+            return productSlug === slug;
+          });
+        }
+
+        // If we still can't find the product, try to find a fallback in mock data
+        if (!product) {
+          // Look for a fallback in mock data
+          const mockProduct = MOCK_PRODUCTS.find(p => {
+            const productSlug = generateProductSlug(p.name, p.id.substring(0, 8));
+            return productSlug === slug || p.slug === slug;
+          });
+          
+          if (mockProduct) {
+            return mockProduct;
+          }
+          
+          // If still no product found, throw an error
           throw new Error(`Product with slug '${slug}' not found`);
         }
 
         return product;
+      }),
+      catchError(error => {
+        console.error(`Error finding product with slug: ${slug}`, error);
+        
+        // Look for a fallback in mock data
+        const mockProduct = MOCK_PRODUCTS.find(p => {
+          const productSlug = generateProductSlug(p.name, p.id.substring(0, 8));
+          return productSlug === slug || p.slug === slug;
+        });
+        
+        if (mockProduct) {
+          return of(mockProduct);
+        }
+        
+        // If no product found in mock data either, rethrow the error
+        throw new Error(`Product with slug '${slug}' not found`);
       })
     );
   }
@@ -153,8 +206,8 @@ export class ProductService extends BaseService {
           specs: product.specs || '',
           price: Number(product.price || 0),
           currency: product.currency || 'XAF',
-          imageUrl: product.imageUrl || 'assets/images/products/placeholder.png',
-          galleryImages: product.galleryImages || [product.imageUrl || 'assets/images/products/placeholder.png'],
+          imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
+          galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
           features: product.features || [],
           label: product.label || null,
           labelColor: product.labelColor || '#000000',
@@ -170,39 +223,70 @@ export class ProductService extends BaseService {
   }
 
   /**
-   * Get products by category ID
-   * @param categoryId Category ID
+   * Get products by category ID or name
+   * @param categoryNameOrId Category name or ID
    * @param limit Optional number of products to return
    * @param currentProductId Optional current product ID to exclude from results
    */
-  getProductsByCategory(categoryName: string, limit?: number, currentProductId?: string): Observable<Product[]> {
+  getProductsByCategory(categoryNameOrId: string, limit?: number, currentProductId?: string): Observable<Product[]> {
     // Since the category-specific endpoint doesn't exist, we'll fetch all products and filter client-side
     return this.getProducts().pipe(
+      catchError(() => {
+        console.log('API call failed, using mock product data for category filtering');
+        // Use mock data if the API call fails
+        return of(MOCK_PRODUCTS);
+      }),
       map((products) => {
+        console.log('Total products before filtering:', products.length);
+        
         // Normalize the category names for precise matching
-        const normalizedCategoryName = categoryName.trim().toLowerCase();
-        const normalizedCategoryNamePlural = normalizedCategoryName + 's';
+        const normalizedCategoryInput = categoryNameOrId.trim().toLowerCase();
+        const normalizedCategoryInputPlural = normalizedCategoryInput + 's';
 
-        // Filter products by the specified category name
+        // Filter products by the specified category name or ID
         let filteredProducts = products.filter((product) => {
-          const productCategory = product.categoryName?.trim().toLowerCase() || '';
-
+          // Check category name
+          const productCategoryName = product.category?.name?.trim().toLowerCase() || 
+                                     product.categoryName?.trim().toLowerCase() || '';
+          
+          // Check category ID
+          const productCategoryId = product.category?.id?.toLowerCase() || '';
+          
+          // Check for match in either name or ID
           return (
-            productCategory === normalizedCategoryName ||
-            productCategory === normalizedCategoryNamePlural ||
-            productCategory.includes(normalizedCategoryName) ||
-            productCategory.includes(normalizedCategoryNamePlural)
+            productCategoryName === normalizedCategoryInput ||
+            productCategoryName === normalizedCategoryInputPlural ||
+            productCategoryName.includes(normalizedCategoryInput) ||
+            productCategoryName.includes(normalizedCategoryInputPlural) ||
+            productCategoryId === normalizedCategoryInput
           );
         });
+        
+        console.log('Filtered products by category:', filteredProducts.length);
 
         // Exclude the current product if ID is provided
         if (currentProductId) {
           filteredProducts = filteredProducts.filter((product) => product.id !== currentProductId);
+          console.log('Filtered products after excluding current product:', filteredProducts.length);
         }
 
         // Apply limit if specified
-        if (limit && limit > 0) {
+        if (limit && limit > 0 && filteredProducts.length > limit) {
           filteredProducts = filteredProducts.slice(0, limit);
+          console.log('Limited to', limit, 'products');
+        }
+        
+        // If no products found, return a fallback selection
+        if (filteredProducts.length === 0) {
+          console.log('No related products found by category, using fallback selection');
+          // Exclude current product from all products
+          let fallbackProducts = products;
+          if (currentProductId) {
+            fallbackProducts = fallbackProducts.filter(p => p.id !== currentProductId);
+          }
+          // Take a random selection
+          const maxProducts = Math.min(limit || 4, fallbackProducts.length);
+          filteredProducts = fallbackProducts.slice(0, maxProducts);
         }
 
         return filteredProducts;

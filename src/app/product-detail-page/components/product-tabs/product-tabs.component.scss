@@ -27,13 +27,15 @@
 
   // Section titles
   .specs-section-title {
-    font-size: 5 * var.$base-space;
+    font-size: 5.5 * var.$base-space;
     font-weight: 600;
     color: var.$gray-800;
     margin-top: 8 * var.$base-space;
     margin-bottom: 5 * var.$base-space;
     padding-bottom: 2 * var.$base-space;
     border-bottom: 1px solid var.$gray-300;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.5px;
 
     &:first-child {
       margin-top: 0;
@@ -63,10 +65,20 @@
       padding: 4 * var.$base-space;
       background-color: var.$white;
       border-radius: 2 * var.$base-space;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 15px rgba(10, 10, 10, 0.05);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(10, 10, 10, 0.08);
+
+        .feature-icon {
+          background-color: rgba(10, 10, 10, 0.12);
+        }
+      }
 
       .feature-icon {
-        background-color: var.$gray-100;
+        background-color: rgba(10, 10, 10, 0.08);
         color: var.$secondary;
         width: 10 * var.$base-space;
         height: 10 * var.$base-space;
@@ -76,6 +88,8 @@
         justify-content: center;
         margin-bottom: 2 * var.$base-space;
         font-size: 5 * var.$base-space;
+        box-shadow: 0 5px 15px rgba(10, 10, 10, 0.1);
+        transition: all 0.3s ease;
       }
 
       .feature-label {
@@ -192,21 +206,32 @@
       }
     }
 
-    .voir-plus {
-      display: block;
-      margin-top: 2 * var.$base-space;
-      background: none;
-      border: none;
-      color: var.$secondary;
+    .read-more-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 3 * var.$base-space auto 0;
+      background: transparent;
+      border: 1px solid rgba(10, 10, 10, 0.2);
+      color: var.$gray-700;
       font-weight: 500;
       font-size: 3.5 * var.$base-space;
       cursor: pointer;
-      padding: 2 * var.$base-space 4 * var.$base-space;
-      border-radius: 1 * var.$base-space;
-      transition: background-color 0.2s;
+      padding: 2.5 * var.$base-space 5 * var.$base-space;
+      border-radius: 2 * var.$base-space;
+      transition: all 0.3s ease;
 
       &:hover {
-        background-color: rgba(45, 165, 243, 0.1);
+        background-color: rgba(10, 10, 10, 0.05);
+        color: var.$secondary;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(10, 10, 10, 0.1);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(10, 10, 10, 0.1);
       }
     }
   }

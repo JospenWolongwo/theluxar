@@ -1,11 +1,18 @@
 @use '../../styles/variables' as var;
 
+// Luxury theme variables
+$luxury-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+$luxury-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+$luxury-border-radius: 12px;
+$luxury-section-spacing: 6 * var.$base-space;
+
 .product-detail-page {
   padding: 2 * var.$base-space * 4 0 8 * var.$base-space;
-
+  
   .container {
     max-width: 320 * var.$base-space;
     margin: 0 auto;
+    padding: 0 4 * var.$base-space;
   }
 
   .loading-container,
@@ -17,12 +24,15 @@
     min-height: 75 * var.$base-space;
     width: 100%;
     padding: 8 * var.$base-space;
+    background-color: var.$white;
+    border-radius: $luxury-border-radius;
+    box-shadow: $luxury-shadow;
 
     .spinner {
       width: 12 * var.$base-space;
       height: 12 * var.$base-space;
-      border: 3px solid rgba(0, 0, 0, 0.1);
-      border-top-color: var.$primary;
+      border: 3px solid rgba(10, 10, 10, 0.15);
+      border-top-color: var.$secondary;
       border-radius: 50%;
       animation: spin 1s ease-in-out infinite;
       margin-bottom: 4 * var.$base-space;
@@ -48,11 +58,14 @@
 
     .breadcrumb {
       list-style: none;
-      padding: 0;
+      padding: 1.5 * var.$base-space 2 * var.$base-space;
       margin: 0;
       display: flex;
       flex-wrap: wrap;
       gap: 1.5 * var.$base-space;
+      background-color: var.$white;
+      border-radius: $luxury-border-radius;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
 
       .breadcrumb-item {
         display: flex;
@@ -87,8 +100,8 @@
   .product-main {
     display: flex;
     flex-wrap: wrap;
-    gap: 2 * var.$base-space;
-    margin-bottom: 8 * var.$base-space;
+    gap: 4 * var.$base-space;
+    margin-bottom: $luxury-section-spacing;
 
     .product-gallery-section {
       flex: 1 1 500px;
@@ -108,8 +121,14 @@
       }
 
       .product-gallery-wrapper {
-        border-radius: 8 * var.$base-space;
+        border-radius: $luxury-border-radius;
         overflow: hidden;
+        box-shadow: $luxury-shadow;
+        transition: box-shadow 0.3s ease;
+        
+        &:hover {
+          box-shadow: $luxury-hover-shadow;
+        }
       }
     }
 
@@ -136,25 +155,35 @@
   }
 
   .product-tabs-container {
-    margin-bottom: 8 * var.$base-space;
-    border-radius: 8 * var.$base-space;
+    margin-bottom: $luxury-section-spacing;
+    border-radius: $luxury-border-radius;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: $luxury-shadow;
+    background-color: var.$white;
   }
 
   .related-products-container {
-    margin-top: 8 * var.$base-space;
-    margin-bottom: 4 * var.$base-space;
+    margin-top: $luxury-section-spacing;
+    margin-bottom: $luxury-section-spacing;
+  }
+  
+  .product-reviews-container {
+    margin-bottom: $luxury-section-spacing;
+    padding: 4 * var.$base-space;
+    background-color: var.$white;
+    border-radius: $luxury-border-radius;
+    box-shadow: $luxury-shadow;
   }
 }
 
 .benefits-container {
   width: 100%;
   background-color: var.$white;
-  border-radius: 2 * var.$base-space;
-  margin: 8 * var.$base-space 0;
+  border-radius: $luxury-border-radius;
+  margin: $luxury-section-spacing 0;
   padding: 6 * var.$base-space 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: $luxury-shadow;
+  transition: box-shadow 0.3s ease;
 
   .container {
     max-width: 320 * var.$base-space;
@@ -191,14 +220,15 @@
     color: var.$secondary;
     font-size: 5 * var.$base-space;
     margin-bottom: 4 * var.$base-space;
-    height: 15 * var.$base-space;
-    width: 15 * var.$base-space;
+    height: 16 * var.$base-space;
+    width: 16 * var.$base-space;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(45, 165, 243, 0.12);
+    background-color: rgba(10, 10, 10, 0.08);
     border-radius: 50%;
     transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(10, 10, 10, 0.15);
   }
 
   .benefit-text {
@@ -208,6 +238,8 @@
       margin: 0;
       color: var.$gray-800;
       line-height: 1.4;
+      letter-spacing: 0.2px;
+      font-family: 'Playfair Display', serif;
     }
   }
 

@@ -126,6 +126,21 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
 
         // Map route categories to product categories with flexible matching
         const categoryMap: Record<string, string[]> = {
+          // Electronics categories
+          laptops: ['laptop', 'laptops', 'ordinateur', 'portable', 'notebook'],
+          telephones: ['telephone', 'téléphone', 'phone', 'smartphone', 'mobile'],
+          tablets: ['tablet', 'tablette', 'ipad', 'tab'],
+          'ecran-plat': ['ecran', 'écran', 'tv', 'television', 'monitor', 'moniteur'],
+          
+          // Luxury categories
+          watches: ['watch', 'montre', 'timepiece', 'horlogerie', 'wristwatch'],
+          jewelry: ['jewelry', 'bijoux', 'jewels', 'accessory', 'fine jewelry'],
+          men: ['men', 'homme', 'masculine', 'gentlemen'],
+          women: ['women', 'femme', 'feminine', 'ladies'],
+          kids: ['kids', 'enfants', 'children', 'junior', 'baby'],
+          perfumes: ['perfume', 'parfum', 'fragrance', 'cologne', 'scent'],
+          
+          // Beauty categories - preserved for compatibility
           'soins-peau': ['soins de la peau', 'soin visage', 'soin corps', 'skincare'],
           maquillage: ['maquillage', 'makeup', 'cosmétiques', 'beauté'],
           'soins-cheveux': ['soins cheveux', 'soin capillaire', 'cheveux', 'haircare'],
@@ -136,22 +151,74 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
         // Get the list of matching categories for the active route
         const matchingCategories = categoryMap[normalizedActiveCategory] || [normalizedActiveCategory];
 
-        // Filter products based on category matches
-        const categoryMatches = allProducts.filter((product) => {
-          if (!product.categoryName) {
+        // First check for exact category matches
+        let categoryMatches = allProducts.filter((product) => {
+          // Extract category name from either categoryName field or category.name object
+          const productCategoryName = product.categoryName || (product.category?.name);
+          if (!productCategoryName) {
             return false;
           }
-
-          const productCategory = product.categoryName.toLowerCase().trim();
-
-          // Check if product category matches any of the allowed categories
-          return matchingCategories.some((cat) => productCategory.includes(cat) || cat.includes(productCategory));
+          
+          const normalizedProductCategory = productCategoryName.toLowerCase().trim();
+          const productTag = product.tag ? product.tag.toLowerCase().trim() : '';
+          
+          // First try exact match by category name
+          if (normalizedProductCategory === normalizedActiveCategory) {
+            return true;
+          }
+          
+          // Then try exact match by tag
+          if (productTag && productTag === normalizedActiveCategory) {
+            return true;
+          }
+          
+          // Special cases for common mappings
+          if (normalizedActiveCategory === 'jewelry' && 
+              (normalizedProductCategory.includes('jewelry') || normalizedProductCategory.includes('jewel'))) {
+            return true;
+          }
+          
+          if (normalizedActiveCategory === 'watches' && 
+              (normalizedProductCategory.includes('watch') || normalizedProductCategory.includes('timepiece'))) {
+            return true;
+          }
+          
+          // If we have a mapping for this category, use more specific matching
+          if (categoryMap[normalizedActiveCategory]) {
+            // Check if product category or tag matches any of the allowed categories
+            return matchingCategories.some(cat => {
+              // Try exact match first
+              if (normalizedProductCategory === cat || productTag === cat) {
+                return true;
+              }
+              
+              // Then try contains match but with more strict rules
+              // Only match if the category term is a substantial part of the product category
+              const isMeaningfulContains = (
+                (normalizedProductCategory.includes(cat) && cat.length > 3) ||
+                (cat.includes(normalizedProductCategory) && normalizedProductCategory.length > 3) ||
+                (productTag.includes(cat) && cat.length > 3) ||
+                (cat.includes(productTag) && productTag.length > 3)
+              );
+              
+              return isMeaningfulContains;
+            });
+          }
+          
+          return false;
         });
+        
+        console.log(`Category '${this.activeCategory}' found ${categoryMatches.length} matching products`);
+        
+        // For "All Collections" route, return all products
+        if (normalizedActiveCategory === '' || normalizedActiveCategory === 'all collections') {
+          categoryMatches = allProducts;
+        }
 
         if (categoryMatches.length > 0) {
           this.products = categoryMatches.map((product) => ({
             ...product,
-            imageUrl: product.galleryImages?.[0] || product.imageUrl || 'assets/images/products/placeholder.png',
+            imageUrl: product.imageUrl || product.galleryImages?.[0] || '/assets/images/products/placeholder.jpg',
             inStock: product.inStock ?? true,
             inWishlist: false,
             categoryName: this.activeCategory, // Set the display category name

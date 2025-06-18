@@ -10,6 +10,12 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import type { CoreFeature, IncludedItem, SpecItem } from '../../../../shared/interfaces';
 import { Product } from '../../../../shared/types';
 
+// Define the ProductFeature interface for feature specifications
+export interface ProductFeature {
+  name: string;
+  value: string;
+}
+
 @Component({
   selector: 'app-product-tabs',
   templateUrl: './product-tabs.component.html',
@@ -26,6 +32,7 @@ export class ProductTabsComponent implements OnInit {
   coreFeatures: CoreFeature[] = [];
   includedItems: IncludedItem[] = [];
   isExpandedDescription = false;
+  productSpecifications: ProductFeature[] = [];
 
   getIconName(iconString: string): IconName {
     // If the string already matches an IconName, return it directly
@@ -35,6 +42,7 @@ export class ProductTabsComponent implements OnInit {
 
   // Map of common spec names to icons
   private iconMap: Record<string, string> = {
+    // Computing devices
     processor: 'microchip',
     cpu: 'microchip',
     ram: 'memory',
@@ -47,6 +55,7 @@ export class ProductTabsComponent implements OnInit {
     gpu: 'desktop',
     display: 'tv',
     screen: 'tv',
+    resolution: 'expand',
     battery: 'battery-full',
     weight: 'weight',
     dimensions: 'ruler',
@@ -55,6 +64,7 @@ export class ProductTabsComponent implements OnInit {
     camera: 'camera',
     webcam: 'camera',
     keyboard: 'keyboard',
+    touchpad: 'hand-pointer',
     charger: 'plug',
     'power supply': 'power-off',
     wifi: 'wifi',
@@ -62,6 +72,40 @@ export class ProductTabsComponent implements OnInit {
     ports: 'usb',
     connections: 'usb',
     warranty: 'shield-alt',
+    
+    // Clothing and accessories
+    material: 'tshirt',
+    fabric: 'tshirt',
+    size: 'ruler-vertical',
+    color: 'palette',
+    style: 'tag',
+    fit: 'user',
+    pattern: 'shapes',
+    gender: 'venus-mars',
+    season: 'sun',
+    care: 'hands-wash',
+    
+    // Home goods and furniture
+    assembly: 'tools',
+    'care instructions': 'hands-wash',
+    finish: 'paint-roller',
+    height: 'arrows-alt-v',
+    width: 'arrows-alt-h',
+    depth: 'cube',
+    capacity: 'box-open',
+    
+    // Electronics (non-computing)
+    power: 'bolt',
+    voltage: 'bolt',
+    wattage: 'bolt',
+    connectivity: 'network-wired',
+    'remote control': 'remote',
+    'smart features': 'robot',
+    
+    // Miscellaneous
+    brand: 'copyright',
+    model: 'info-circle',
+    type: 'tags'
   };
 
   constructor(private library: FaIconLibrary) {
@@ -70,13 +114,89 @@ export class ProductTabsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareSpecifications();
+    // Load icons
+    this.library.addIconPacks(fas, far, fab);
 
-    // If we still don't have any core features after processing, add some defaults
-    if (this.coreFeatures.length === 0) {
-      // Add default core features for demonstration
-      this.addDefaultCoreFeatures();
+    // Only proceed if we have a valid product
+    if (this.product) {
+      console.log('Preparing specs from product:', this.product);
+      
+      // Determine product category first
+      this.determineProductCategory();
+      console.log(`Detected product category: ${this.productCategory}, type: ${this.productType}`);
+      
+      // Prepare the specifications from the product data
+      this.prepareSpecifications();
+
+      // Add default core features if specs are not available
+      if (this.coreFeatures.length === 0) {
+        console.log('No specs found, adding default core features');
+        this.addDefaultCoreFeatures();
+      }
     }
+  }
+  
+  // Product category information
+  productCategory: string = '';
+  productType: string = '';
+  
+  /**
+   * Determine the product's category and type for category-specific UI customization
+   * Focusing on jewelry, watches, and perfumes as the main product categories
+   */
+  determineProductCategory(): void {
+    // Set default category if nothing is detected
+    this.productCategory = 'generic';
+    this.productType = 'generic';
+    
+    if (!this.product) {
+      return;
+    }
+    
+    // First check explicit category data
+    if (this.product.category?.name) {
+      this.productCategory = this.product.category.name.toLowerCase();
+    } else if (this.product.categoryName) {
+      this.productCategory = this.product.categoryName.toLowerCase();
+    }
+    
+    // Try to infer product type from name, description, specs if category is generic/missing
+    if (!this.productCategory || this.productCategory === 'generic') {
+      const productText = [
+        this.product.name || '',
+        this.product.shortDescription || '',
+        this.product.description || '',
+        this.product.specs || '',
+      ].join(' ').toLowerCase();
+      
+      // Check for luxury shop product type indicators
+      if (/watch|timepiece|wristwatch|chronograph|rolex|omega|seiko|casio/i.test(productText)) {
+        this.productType = 'watch';
+      } else if (/jewelry|jewellery|necklace|bracelet|ring|earring|pendant|gold|silver|diamond|gem|pearl/i.test(productText)) {
+        this.productType = 'jewelry';
+      } else if (/perfume|fragrance|cologne|eau de|scent|parfum|spray/i.test(productText)) {
+        this.productType = 'perfume';
+      } else if (/gift set|collection|bundle|luxury|premium/i.test(productText)) {
+        this.productType = 'luxury';
+      } else if (/accessory|accessories|cufflink|tie|wallet|handbag|purse/i.test(productText)) {
+        this.productType = 'accessory';
+      }
+    }
+    
+    // Map category names to more standardized types
+    if (/watch|wrist|time|smart/i.test(this.productCategory)) {
+      this.productType = 'watch';
+    } else if (/jewel|ring|necklace|bracelet|earring|diamond|gold|silver/i.test(this.productCategory)) {
+      this.productType = 'jewelry';
+    } else if (/perfume|fragrance|cologne|parfum|scent/i.test(this.productCategory)) {
+      this.productType = 'perfume';
+    } else if (/gift|set|bundle|collection/i.test(this.productCategory)) {
+      this.productType = 'luxury';
+    } else if (/access|wallet|bag|purse|cufflink|tie/i.test(this.productCategory)) {
+      this.productType = 'accessory';
+    }
+    
+    console.log(`Product determined to be in category: ${this.productCategory}, type: ${this.productType}`);
   }
 
   /**
@@ -175,12 +295,40 @@ export class ProductTabsComponent implements OnInit {
       });
     }
 
-    // If we don't have any included items, add defaults
+    // If we don't have any included items, add defaults based on product type
     if (this.includedItems.length === 0) {
-      this.includedItems = [
-        { icon: 'power-off', label: 'Power supply', note: '(Standard)' },
-        { icon: 'plug', label: 'Charging cable', note: '(Standard)' },
-      ];
+      switch (this.productType) {
+        case 'jewelry':
+          this.includedItems = [
+            { icon: 'gift', label: 'Luxury gift box', note: '(Premium packaging)' },
+            { icon: 'certificate', label: 'Certificate of authenticity', note: undefined },
+            { icon: 'gem', label: 'Care instructions', note: undefined },
+            { icon: 'tshirt', label: 'Polishing cloth', note: undefined }
+          ];
+          break;
+        case 'watch':
+          this.includedItems = [
+            { icon: 'gift', label: 'Watch box', note: '(Premium packaging)' },
+            { icon: 'book', label: 'User manual', note: undefined },
+            { icon: 'certificate', label: 'Warranty card', note: '(2 years)' },
+            { icon: 'tshirt', label: 'Cleaning cloth', note: undefined }
+          ];
+          break;
+        case 'perfume':
+          this.includedItems = [
+            { icon: 'gift', label: 'Gift box', note: '(Premium packaging)' },
+            { icon: 'flask', label: 'Fragrance sample', note: '(2ml)' },
+            { icon: 'spray-can', label: 'Travel atomizer', note: undefined }
+          ];
+          break;
+        default:
+          // Default luxury items for any other product type
+          this.includedItems = [
+            { icon: 'gift', label: 'Luxury packaging', note: undefined },
+            { icon: 'certificate', label: 'Certificate of authenticity', note: undefined }
+          ];
+          break;
+      }
     }
 
     // If we don't have core features, generate default ones from technical data
@@ -270,16 +418,83 @@ export class ProductTabsComponent implements OnInit {
   }
 
   /**
-   * Add default core features when no data is available from the product
+   * Add default core features based on product type if none are specified
+   * to ensure we have something to display, focusing on luxury items
    */
-  private addDefaultCoreFeatures(): void {
-    this.coreFeatures = [
-      { icon: 'microchip', label: 'Processor', value: 'Intel i5' },
-      { icon: 'memory', label: 'RAM', value: '16 GB' },
-      { icon: 'hdd', label: 'Storage', value: '256 GB' },
-      { icon: 'database', label: 'Hard drive type', value: 'SSD' },
-      { icon: 'desktop', label: 'Graphics', value: 'Intel UHD Graphics' },
-      { icon: 'tv', label: 'Display', value: '14 inch' },
-    ];
+  addDefaultCoreFeatures(): void {
+    if (!this.product || this.productSpecifications.length > 0) {
+      return; // Don't add defaults if we already have specifications
+    }
+
+    const defaultFeatures = [];
+
+    // Add category-specific default features depending on the detected product type
+    switch (this.productType) {
+      case 'watch':
+        this.coreFeatures = [
+          { icon: 'clock', label: 'Movement', value: 'Automatic' },
+          { icon: 'shield', label: 'Case Material', value: 'Stainless Steel' },
+          { icon: 'ruler', label: 'Diameter', value: '40mm' },
+          { icon: 'water', label: 'Water Resistance', value: '100m' },
+          { icon: 'link', label: 'Band Material', value: 'Steel' },
+          { icon: 'palette', label: 'Dial Color', value: 'Black' },
+        ];
+        break;
+      case 'jewelry':
+        this.coreFeatures = [
+          { icon: 'gem', label: 'Material', value: '18k Gold' },
+          { icon: 'diamond', label: 'Stone', value: 'Diamond' },
+          { icon: 'weight', label: 'Carat Weight', value: '0.5ct' },
+          { icon: 'certificate', label: 'Purity', value: '750/1000' },
+          { icon: 'award', label: 'Certification', value: 'Included' },
+          { icon: 'palette', label: 'Style', value: 'Contemporary' },
+        ];
+        break;
+      case 'perfume':
+        this.coreFeatures = [
+          { icon: 'spray-can', label: 'Type', value: 'Eau de Parfum' },
+          { icon: 'flask', label: 'Size', value: '100ml' },
+          { icon: 'leaf', label: 'Top Notes', value: 'Citrus, Spice' },
+          { icon: 'heart', label: 'Heart Notes', value: 'Floral' },
+          { icon: 'hourglass', label: 'Longevity', value: '8-12 hours' },
+          { icon: 'globe', label: 'Origin', value: 'France' },
+        ];
+        break;
+      case 'luxury':
+        defaultFeatures.push(
+          { name: 'Collection', value: 'Limited Edition' },
+          { name: 'Material', value: 'Premium Quality' },
+          { name: 'Origin', value: 'Switzerland/France/Italy' },
+          { name: 'Exclusivity', value: 'Limited Release' },
+          { name: 'Set Contents', value: `Complete collection set` },
+          { name: 'Craftsmanship', value: 'Hand-crafted' },
+          { name: 'Box/Case', value: 'Elegant presentation box' },
+          { name: 'Certificate', value: 'Authenticity guaranteed' }
+        );
+        break;
+      case 'accessory':
+        defaultFeatures.push(
+          { name: 'Material', value: 'Genuine Leather' },
+          { name: 'Color', value: 'Brown/Black/Navy' },
+          { name: 'Interior', value: 'Fabric lining' },
+          { name: 'Hardware', value: 'Gold-tone' },
+          { name: 'Dimensions', value: 'L x W x H' },
+          { name: 'Closure', value: 'Zipper/Magnetic' },
+          { name: 'Features', value: 'Multiple compartments' },
+          { name: 'Origin', value: 'Italian craftsmanship' }
+        );
+        break;
+      default:
+        // Default core features for any luxury product
+        this.coreFeatures = [
+          { icon: 'check', label: 'Brand', value: this.product.brand || 'The Luxar' },
+          { icon: 'box', label: 'Model', value: 'Premium Collection' },
+          { icon: 'tag', label: 'Warranty', value: '2 Years' },
+          { icon: 'shield', label: 'Authenticity', value: 'Guaranteed' },
+          { icon: 'dolly', label: 'Shipping', value: 'Free' },
+          { icon: 'arrow-rotate-left', label: 'Returns', value: '30 Day' },
+        ];
+        break;
+    }
   }
 }

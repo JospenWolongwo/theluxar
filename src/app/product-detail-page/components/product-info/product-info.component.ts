@@ -5,7 +5,10 @@ import { CommonModule } from '@angular/common';
 import type { OnChanges, SimpleChanges } from '@angular/core';
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  FaIconLibrary,
+  FontAwesomeModule,
+} from '@fortawesome/angular-fontawesome';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +23,13 @@ import { CartService } from '../../../services/cart.service';
 @Component({
   selector: 'app-product-info',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, AddToCartComponent, AddToCartSuccessComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    FontAwesomeModule,
+    AddToCartComponent,
+    AddToCartSuccessComponent,
+  ],
   templateUrl: './product-info.component.html',
   styleUrls: ['./product-info.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -41,7 +50,10 @@ export class ProductInfoComponent implements OnChanges {
   productColors: ColorOption[] = [];
   selectedColor = '';
 
-  constructor(private library: FaIconLibrary, private cartService: CartService) {
+  constructor(
+    private library: FaIconLibrary,
+    private cartService: CartService
+  ) {
     // Add all the icons
     this.library.addIconPacks(fas, far, fab);
   }
@@ -64,7 +76,9 @@ export class ProductInfoComponent implements OnChanges {
         this.stockAvailabilityStatus = this.selectedStock.availabilityStatus;
       } else {
         // Determine status based on quantity and availability
-        this.stockAvailabilityStatus = this.determineStockStatus(this.selectedStock);
+        this.stockAvailabilityStatus = this.determineStockStatus(
+          this.selectedStock
+        );
       }
 
       // Update the display message based on the status
@@ -180,7 +194,8 @@ export class ProductInfoComponent implements OnChanges {
     // Find matching stock with this color
     if (this.product?.stocks) {
       const matchingStock = this.product.stocks.find(
-        (stock) => stock.characteristics?.['color'] === color && stock.isAvailable
+        (stock) =>
+          stock.characteristics?.['color'] === color && stock.isAvailable
       );
 
       if (matchingStock) {

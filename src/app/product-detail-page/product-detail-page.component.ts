@@ -12,30 +12,32 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import type { Product, Screen, ScreenSize, Stock } from '../../shared/types';
 import { SCREEN_SIZES } from '../../shared/utils';
-import { StarRatingComponent } from '../components/star-rating/star-rating.component';
 import { ProductService } from '../services/product.service';
 import { ProductGalleryComponent } from './components/product-gallery/product-gallery.component';
+// Import standalone components directly with paths
 import { ProductInfoComponent } from './components/product-info/product-info.component';
 import { ProductReviewsComponent } from './components/product-reviews/product-reviews.component';
 import { ProductTabsComponent } from './components/product-tabs/product-tabs.component';
 import { RelatedProductsComponent } from './components/related-products/related-products.component';
+import { StarRatingComponent } from '../components/star-rating/star-rating.component';
 
 @Component({
   selector: 'app-product-detail-page',
+  templateUrl: './product-detail-page.component.html',
+  styleUrls: ['./product-detail-page.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
     RouterModule,
-    ProductGalleryComponent,
+    FontAwesomeModule,
+    // All of these are standalone components
     ProductInfoComponent,
+    ProductGalleryComponent, 
     ProductReviewsComponent,
     ProductTabsComponent,
     RelatedProductsComponent,
     StarRatingComponent,
-    FontAwesomeModule,
   ],
-  templateUrl: './product-detail-page.component.html',
-  styleUrls: ['./product-detail-page.component.scss'],
   providers: [ProductService],
 })
 export class ProductDetailPageComponent implements OnInit, OnDestroy {
@@ -137,13 +139,20 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
   }
 
   private loadRelatedProducts(categoryId: string): void {
+    // Get the category name if available, otherwise use the ID
+    const categoryName = this.product.category?.name || categoryId;
+    
+    console.log('Loading related products for category:', categoryName);
+    
     this.subscription.add(
       // Pass the current product ID to exclude it from results, and limit to 8 related products
-      this.productService.getProductsByCategory(categoryId, 8, this.product.id).subscribe({
+      this.productService.getProductsByCategory(categoryName, 8, this.product.id).subscribe({
         next: (products: Product[]) => {
+          console.log('Related products loaded:', products.length);
           this.relatedProducts = products;
         },
-        error: () => {
+        error: (err) => {
+          console.error('Error loading related products:', err);
           // Set empty array to prevent errors in the template
           this.relatedProducts = [];
         },

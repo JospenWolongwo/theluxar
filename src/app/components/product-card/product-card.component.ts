@@ -2,7 +2,10 @@ import { CommonModule } from '@angular/common';
 import type { OnInit } from '@angular/core';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  FaIconLibrary,
+  FontAwesomeModule,
+} from '@fortawesome/angular-fontawesome';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +25,10 @@ export class ProductCardComponent implements OnInit {
   @Output() wishlistToggle = new EventEmitter<string>();
   @Output() reserveClick = new EventEmitter<string>();
 
-  defaultImage = 'assets/images/products/placeholder.png';
+  // Use absolute path for placeholder to ensure it loads correctly
+  defaultImage = '/assets/images/products/placeholder.jpg';
+  // Store fallback images by product ID
+  private fallbackImages: Map<string, string> = new Map();
   showFullDescription = false;
 
   constructor(library: FaIconLibrary, private router: Router) {
@@ -66,7 +72,11 @@ export class ProductCardComponent implements OnInit {
     }
     const originalPrice = this.product.extraAttributes['originalPrice'];
 
-    return originalPrice !== undefined && originalPrice !== null && Number(originalPrice) > this.product.price;
+    return (
+      originalPrice !== undefined &&
+      originalPrice !== null &&
+      Number(originalPrice) > this.product.price
+    );
   }
 
   /**
@@ -88,7 +98,9 @@ export class ProductCardComponent implements OnInit {
     // Remove HTML tags if any
     const plainText = text.replace(/<[^>]*>/g, '');
 
-    return plainText.length > maxLength ? `${plainText.substring(0, maxLength)}...` : plainText;
+    return plainText.length > maxLength
+      ? `${plainText.substring(0, maxLength)}...`
+      : plainText;
   }
 
   /**
@@ -97,10 +109,18 @@ export class ProductCardComponent implements OnInit {
   private calculateDiscount(originalPrice: unknown, salePrice: number): number {
     try {
       // Convert to number if it's a string or other type
-      const original = typeof originalPrice === 'string' ? parseFloat(originalPrice) : Number(originalPrice);
+      const original =
+        typeof originalPrice === 'string'
+          ? parseFloat(originalPrice)
+          : Number(originalPrice);
 
       // Validate inputs
-      if (isNaN(original) || isNaN(salePrice) || original <= 0 || salePrice <= 0) {
+      if (
+        isNaN(original) ||
+        isNaN(salePrice) ||
+        original <= 0 ||
+        salePrice <= 0
+      ) {
         return 0;
       }
 
@@ -120,12 +140,74 @@ export class ProductCardComponent implements OnInit {
 
   // Simple getter for image source with fallback
   get imageSrc(): string {
-    return this.product.imageUrl || this.defaultImage;
+    // Handle case when no image URL is provided
+    if (!this.product.imageUrl) {
+      return this.defaultImage;
+    }
+
+    // Normalize the image URL to ensure proper loading
+    let normalizedPath = this.product.imageUrl;
+
+    // If it's a simple filename, assume it's in the products directory
+    if (!normalizedPath.includes('/') && !normalizedPath.includes('\\')) {
+      normalizedPath = `/assets/images/products/${normalizedPath}`;
+    }
+    // For asset paths that might be in our product data (with or without leading 'assets/')
+    else if (normalizedPath.includes('products/') && !normalizedPath.startsWith('/')) {
+      // Check if it's missing the assets prefix
+      if (!normalizedPath.includes('assets/')) {
+        normalizedPath = `/assets/${normalizedPath}`;
+      } else {
+        // It has 'assets/' but needs a leading slash
+        normalizedPath = `/${normalizedPath}`;
+      }
+    }
+    // If it starts with assets/ (relative path), convert to absolute path
+    else if (normalizedPath.startsWith('assets/')) {
+      normalizedPath = `/${normalizedPath}`;
+    }
+    // If it doesn't start with / or http, assume it's a relative path to assets
+    else if (
+      !normalizedPath.startsWith('/') &&
+      !normalizedPath.startsWith('http')
+    ) {
+      normalizedPath = `/assets/${normalizedPath}`;
+    }
+
+    console.log(`Normalized image path: ${normalizedPath} from ${this.product.imageUrl}`);
+    return normalizedPath;
   }
 
   // Handle image loading error
   onImageError(): void {
-    this.product.imageUrl = this.defaultImage;
+    // Get computed path that failed to load
+    const computedPath = this.imageSrc;
+    console.log(
+      `Image error for product ${this.product.name}:\n` +
+      `- Original URL: ${this.product.imageUrl}\n` +
+      `- Computed path: ${computedPath}\n` +
+      `- Using default: ${this.defaultImage}`
+    );
+
+    // Store fallback image path for this product ID
+    if (!this.fallbackImages.has(this.product.id)) {
+      setTimeout(() => {
+        // Using setTimeout to ensure the change is detected by Angular's change detection
+        this.fallbackImages.set(this.product.id, this.defaultImage);
+      });
+    }
+  }
+
+  // Get the image source with fallback handling
+  getImageSource(): string {
+    // Check if we have a fallback image for this product
+    if (this.fallbackImages.has(this.product.id)) {
+      return this.fallbackImages.get(this.product.id) || this.defaultImage;
+    }
+
+    const path = this.imageSrc;
+    console.log(`getImageSource returning: ${path} for product ${this.product.name}`);
+    return path;
   }
 
   toggleWishlist(event: MouseEvent): void {
@@ -162,7 +244,11 @@ export class ProductCardComponent implements OnInit {
     }
     const label = this.product.label.toLowerCase();
 
-    if (label.includes('sale') || label.includes('off') || label.includes('%')) {
+    if (
+      label.includes('sale') ||
+      label.includes('off') ||
+      label.includes('%')
+    ) {
       return 'label-sale';
     }
     if (label.includes('new') || label.includes('nouveau') || label === 'new') {
