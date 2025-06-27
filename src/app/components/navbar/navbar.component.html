@@ -42,7 +42,7 @@
 
       <div class="nav-sections flex-row align-items-center gap-4" *ngIf="!isMobile && !isTablet">
         <a [routerLink]="['/services']" routerLinkActive="active" class="nav-section-link">Services</a>
-        <a [routerLink]="['/about']" routerLinkActive="active" class="nav-section-link">A propos</a>
+        <a [routerLink]="['/about']" routerLinkActive="active" class="nav-section-link">About</a>
         <a [routerLink]="['/support']" routerLinkActive="active" class="nav-section-link">Support</a>
       </div>
 
@@ -194,7 +194,7 @@
         routerLinkActive="active"
         class="mobile-menu-section-link"
         (click)="closeMobileMenu()"
-        >A propos</a
+        >About</a
       >
       <a
         [routerLink]="['/support']"

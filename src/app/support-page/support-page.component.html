@@ -8,10 +8,9 @@
   >
     <!-- Support Page Header -->
     <div class="support-header">
-      <h1 [class.text-center]="currentScreenSize.ltSm">Service Client & Support</h1>
+      <h1 [class.text-center]="currentScreenSize.ltSm">Customer Service & Support</h1>
       <p [class.text-center]="currentScreenSize.ltSm" class="max-w-3xl mx-auto">
-        Notre équipe est là pour vous accompagner dans votre expérience beauté. Que vous ayez des questions sur nos
-        produits, des conseils personnalisés ou besoin d'assistance, nous sommes à votre écoute.
+        Our team is here to assist you with your luxury jewelry, watch, and fragrance experience. Whether you have questions about our products, need personalized styling advice, or require assistance, we are at your service.
       </p>
     </div>
 
@@ -19,64 +18,65 @@
     <div class="support-options" [class.support-options-mobile]="currentScreenSize.ltSm">
       <div class="support-option-card">
         <div class="option-icon">
-          <img src="https://img.icons8.com/color/96/000000/online-support.png" alt="Support en ligne" />
+          <img src="https://img.icons8.com/color/96/000000/online-support.png" alt="Live Support" />
         </div>
-        <h2>Chat en direct</h2>
-        <p>Discutez en direct avec nos conseillers beauté pour des réponses immédiates.</p>
-        <button class="option-btn">Démarrer le chat</button>
+        <h2>Live Chat</h2>
+        <p>Chat directly with our luxury consultants for immediate assistance with your jewelry, watch, and perfume selections.</p>
+        <button class="option-btn">Start Chat</button>
       </div>
       <div class="support-option-card">
         <div class="option-icon">
           <img src="https://img.icons8.com/color/96/000000/email.png" alt="Email" />
         </div>
         <h2>Email</h2>
-        <p>Envoyez-nous un message et recevez une réponse sous 24h ouvrées.</p>
-        <button class="option-btn">Nous écrire</button>
+        <p>Send us a message and receive a response within 24 business hours.</p>
+        <button class="option-btn">Email Us</button>
       </div>
       <div class="support-option-card">
         <div class="option-icon">
-          <img src="https://img.icons8.com/color/96/000000/phone.png" alt="Téléphone" />
+          <img src="https://img.icons8.com/color/96/000000/phone.png" alt="Phone" />
         </div>
-        <h2>Téléphone</h2>
-        <p>Appelez-nous pour une assistance personnalisée sur nos produits et services.</p>
-        <button class="option-btn">Nous appeler</button>
+        <h2>Phone</h2>
+        <p>Call us at +237 670 47 26 33 for personalized assistance with our products and services.</p>
+        <button class="option-btn">Call Now</button>
       </div>
     </div>
 
     <!-- Contact Form Section -->
     <div class="contact-form-section" [class.contact-form-section-mobile]="currentScreenSize.ltSm">
-      <h2 [class.text-center]="currentScreenSize.ltSm">Contactez nos experts beauté</h2>
+      <h2 [class.text-center]="currentScreenSize.ltSm">Contact Our Luxury Experts</h2>
       <p [class.text-center]="currentScreenSize.ltSm" class="contact-intro max-w-3xl mx-auto">
-        Notre équipe d'experts est à votre disposition pour répondre à toutes vos questions sur nos soins, votre routine
-        beauté ou pour des conseils personnalisés.
+        Our team of luxury specialists is available to answer all your questions about our jewelry, watch, and fragrance collections, help you find the perfect piece, or provide personalized styling advice.
       </p>
 
       <form class="contact-form">
         <div class="form-group">
-          <label for="name">Nom complet</label>
-          <input type="text" id="name" placeholder="Votre nom et prénom" />
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="Your name" />
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Votre adresse email" />
+          <input type="email" id="email" placeholder="Your email address" />
         </div>
         <div class="form-group">
-          <label for="subject">Sujet</label>
+          <label for="subject">Subject</label>
           <select id="subject">
-            <option value="" disabled selected>Choisir un sujet</option>
-            <option value="advice">Conseil produit</option>
-            <option value="order">Suivi de commande</option>
-            <option value="return">Retour/Échange</option>
-            <option value="skin-concern">Problème de peau</option>
-            <option value="other">Autre question</option>
+            <option value="" disabled selected>Select a subject</option>
+            <option value="product-advice">Product Consultation</option>
+            <option value="order">Order Status</option>
+            <option value="return">Returns/Exchanges</option>
+            <option value="custom">Custom Design Request</option>
+            <option value="maintenance">Jewelry/Watch Maintenance</option>
+            <option value="fragrance">Fragrance Recommendation</option>
+            <option value="other">Other Inquiry</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="message">Votre message</label>
-          <textarea id="message" rows="5" placeholder="Décrivez-nous votre demande en détail..."></textarea>
+          <label for="message">Your Message</label>
+          <textarea id="message" rows="5" placeholder="Please describe your inquiry in detail..."></textarea>
         </div>
         <div class="form-submit">
-          <button type="submit" class="submit-btn">Envoyer mon message</button>
+          <button type="submit" class="submit-btn">Send Message</button>
         </div>
       </form>
     </div>
@@ -84,23 +84,24 @@
     <!-- Support Info Cards -->
     <div class="support-info-cards" [class.support-info-cards-mobile]="currentScreenSize.ltSm">
       <div class="info-card">
-        <h3>Horaires d'ouverture</h3>
+        <h3>Business Hours</h3>
         <ul>
-          <li><strong>Lundi - Vendredi:</strong> 9h30 - 19h00</li>
-          <li><strong>Samedi:</strong> 10h00 - 18h00</li>
-          <li><strong>Dimanche:</strong> Fermé</li>
+          <li><strong>Monday - Friday:</strong> 9:30 AM - 7:00 PM</li>
+          <li><strong>Saturday:</strong> 10:00 AM - 6:00 PM</li>
+          <li><strong>Sunday:</strong> Closed</li>
         </ul>
       </div>
       <div class="info-card">
-        <h3>Nos coordonnées</h3>
+        <h3>Contact Information</h3>
         <ul>
-          <li><strong>Téléphone:</strong> +33 1 45 67 89 01</li>
-          <li><strong>Email:</strong> contact&#64;hellocosmetics.fr</li>
-          <li><strong>Adresse:</strong> 45 Avenue des Champs-Élysées, 75008 Paris</li>
+          <li><strong>Phone:</strong> +237 670 47 26 33</li>
+          <li><strong>Founder:</strong> Jospen Wolongwo</li>
+          <li><strong>Location:</strong> Makepe, Douala, Cameroon</li>
+          <li><strong>Shipping:</strong> Worldwide delivery available</li>
         </ul>
       </div>
       <div class="info-card">
-        <h3>Réseaux sociaux</h3>
+        <h3>Follow Us</h3>
         <div class="social-links">
           <a href="#" aria-label="Instagram"
             ><img src="https://img.icons8.com/color/48/000000/instagram-new.png" alt="Instagram" width="32" height="32"
@@ -117,20 +118,24 @@
 
     <!-- FAQ Section -->
     <div class="faq-section" [class.faq-section-mobile]="currentScreenSize.ltSm">
-      <h2 [class.text-center]="currentScreenSize.ltSm">Questions fréquentes</h2>
+      <h2 [class.text-center]="currentScreenSize.ltSm">Frequently Asked Questions</h2>
       <div class="faq-container">
         <div class="faq-item">
-          <h3>Comment choisir les bons produits pour mon type de peau ?</h3>
+          <h3>How do I determine my ring size?</h3>
           <p>
-            Notre équipe d'esthéticiennes peut vous aider à déterminer votre type de peau et vous recommander les
-            produits adaptés à vos besoins spécifiques lors d'une consultation gratuite en ligne ou en boutique.
+            Our jewelry consultants can help determine your correct ring size during an in-store visit. Alternatively, we offer a printable ring sizer on our website, or you can schedule a virtual consultation with one of our experts who will guide you through the measurement process.
           </p>
         </div>
         <div class="faq-item">
-          <h3>Quelle est votre politique de retour ?</h3>
+          <h3>Do you offer custom design services?</h3>
           <p>
-            Vous disposez de 14 jours à réception de votre commande pour nous retourner les produits non ouverts et dans
-            leur emballage d'origine. Les frais de retour sont à votre charge, sauf en cas d'erreur de notre part.
+            Yes, we offer personalized custom design services for special occasions such as engagements, weddings, and anniversaries. Our design team works closely with you to create a unique piece that reflects your personal style and preferences.
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>What is your return policy?</h3>
+          <p>
+            We offer a 14-day return policy from receipt of your order for unworn items in their original packaging. Custom-designed pieces and special orders are final sale. Return shipping costs are the customer's responsibility unless the return is due to a defect or our error.
           </p>
         </div>
       </div>

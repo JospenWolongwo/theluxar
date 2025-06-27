@@ -8,85 +8,73 @@
   >
     <!-- About Page Header -->
     <div class="about-header">
-      <h1 [class.text-center]="currentScreenSize.ltSm">À Propos de Hello Cosmetics</h1>
-      <p [class.text-center]="currentScreenSize.ltSm" class="about-intro">
-        Découvrez l'univers de la beauté naturelle avec Hello Cosmetics, où la science rencontre la tradition africaine
-        pour des soins capillaires et cosmétiques d'exception.
+      <h1 [class.text-center]="currentScreenSize.ltSm">About TheLuxar</h1>
+      <p [class.text-center]="currentScreenSize.ltSm">
+        TheLuxar is a premium luxury brand specializing in expertly crafted jewelry, watches, and exclusive perfumes, designed for the discerning customer who appreciates quality and elegance.
+      </p>
+      <p [class.text-center]="currentScreenSize.ltSm">
+        African craftsmanship meets modern elegance to create exceptional accessories that celebrate your unique style.
       </p>
     </div>
 
     <!-- Story Section -->
     <div class="about-story" [class.about-story-mobile]="currentScreenSize.ltSm">
       <div class="story-content">
-        <h2>Notre Histoire</h2>
+        <h2>Our Story</h2>
         <p>
-          Née en 2020, Hello Cosmetics est le fruit de la passion de Sophie Laurent pour la beauté naturelle et son
-          amour pour les trésors cosmétiques de l'Afrique. Après des années dans l'industrie cosmétique internationale,
-          Sophie a constaté le manque de produits adaptés aux spécificités des peaux et cheveux africains.
+          Founded by Jospen Wolongwo in Douala, Cameroon, TheLuxar began with a vision to bring premium quality jewelry, watches, and fine fragrances to the African luxury market. Drawing inspiration from both traditional African craftsmanship and contemporary global design trends, we've created a distinctive brand that celebrates elegance with an authentic African perspective.
         </p>
         <p>
-          Inspirée par les rituels de beauté ancestraux et les connaissances traditionnelles, elle a rassemblé une
-          équipe d'experts pour créer une gamme de soins qui allie l'efficacité de la science moderne à la richesse des
-          ingrédients naturels africains.
+          Inspired by Cameroon's rich cultural heritage and artistic traditions, Jospen assembled a team of skilled artisans to create collections that blend traditional African motifs with contemporary designs, using ethically sourced materials that honor both people and planet.
         </p>
         <p>
-          Aujourd'hui, Hello Cosmetics s'impose comme une référence dans le domaine des cosmétiques naturels en Afrique,
-          avec des produits certifiés bio et des formules innovantes qui respectent à la fois la peau et
-          l'environnement.
+          Today, TheLuxar stands as a leading name in luxury jewelry in Cameroon, with creations that celebrate African elegance while offering affordable options that respect the economic realities of our local market. Based in Makepe, Douala, we proudly serve customers throughout Cameroon and ship worldwide.
         </p>
       </div>
       <div class="story-image" *ngIf="!currentScreenSize.ltSm">
         <img
-          src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1374&auto=format&fit=crop"
-          alt="Notre histoire"
+          src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?q=80&w=1374&auto=format&fit=crop"
+          alt="Our story"
         />
       </div>
     </div>
 
-    <div class="mission-values-section" [class.mission-values-section-mobile]="currentScreenSize.ltSm">
-      <div class="mission-values-card">
-        <h2>Notre Mission</h2>
-        <p>
-          Chez Hello Cosmetics, nous nous engageons à révolutionner les soins de beauté en Afrique en proposant des
-          produits naturels, éthiques et efficaces, spécialement conçus pour les peaux et cheveux africains. Notre
-          mission est de redéfinir les standards de beauté en mettant en valeur la richesse des ingrédients naturels du
-          continent.
-        </p>
-      </div>
-      <div class="mission-values-card">
-        <h2>Nos Valeurs</h2>
-        <ul class="values-list">
-          <li>
-            <strong>Naturel & Bio</strong> - Nous utilisons jusqu'à 99% d'ingrédients d'origine naturelle et
-            privilégions les ingrédients biologiques certifiés pour des soins purs et respectueux de votre peau.
-          </li>
-          <li>
-            <strong>Innovation Scientifique</strong> - Notre équipe de recherche développe des formules uniques qui
-            allient les dernières avancées scientifiques aux savoir-faire traditionnels africains.
-          </li>
-          <li>
-            <strong>Durabilité</strong> - Nous nous engageons à réduire notre empreinte écologique avec des emballages
-            recyclables et une chaîne d'approvisionnement responsable.
-          </li>
-          <li>
-            <strong>Autonomisation</strong> - Nous soutenons les communautés locales en nous approvisionnant auprès de
-            producteurs africains et en créant des emplois durables.
-          </li>
-          <li>
-            <strong>Transparence</strong> - Nous croyons en une communication claire et honnête sur la composition de
-            nos produits et nos pratiques éthiques.
-          </li>
-        </ul>
+    <!-- Mission & Values -->
+    <div class="about-mission-values" [class.about-mission-values-mobile]="currentScreenSize.ltSm">
+      <h2 [class.text-center]="currentScreenSize.ltSm">Mission & Values</h2>
+      <div class="mission-values-grid" [class.mission-values-grid-mobile]="currentScreenSize.ltSm">
+        <div class="mission-card">
+          <h3>Our Mission</h3>
+          <p>
+            TheLuxar's mission is to redefine luxury in Cameroon and Africa by offering high-quality jewelry and timepieces that honor African heritage while remaining accessible to our community. We aim to elevate the confidence and style of our customers through exceptional accessories that represent both cultural significance and modern elegance, crafted with attention to detail and offered at fair prices.
+          </p>
+        </div>
+        <div class="values-card">
+          <h3>Our Values</h3>
+          <ul>
+            <li>
+              <strong>Authenticity:</strong> We create pieces that genuinely reflect African heritage and culture while meeting international quality standards.
+            </li>
+            <li><strong>Excellence:</strong> We pursue the highest standards of craftsmanship and customer service in every aspect of our business.</li>
+            <li>
+              <strong>Accessibility:</strong> We believe luxury should be attainable, offering quality pieces at price points that respect the economic realities of our market.
+            </li>
+            <li>
+              <strong>Sustainability:</strong> We prioritize ethical sourcing, environmentally responsible practices, and supporting local artisans and communities.
+            </li>
+            <li>
+              <strong>Transparency:</strong> We believe in clear and honest communication about our materials, craftsmanship, and ethical practices.
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <!-- Team Section -->
     <div class="team-section" [class.team-section-mobile]="currentScreenSize.ltSm">
-      <h2 [class.text-center]="currentScreenSize.ltSm">Notre Équipe d'Experts en Beauté</h2>
+      <h2 [class.text-center]="currentScreenSize.ltSm">Our Expert Team</h2>
       <p [class.text-center]="currentScreenSize.ltSm" class="team-intro">
-        Notre équipe réunit des experts passionnés par la cosmétique naturelle et la beauté africaine. Chaque membre
-        apporte son expertise unique pour créer des produits d'exception qui célèbrent et subliment la beauté naturelle
-        des peaux et cheveux africains.
+        Our team brings together passionate experts in jewelry design, watchmaking, and luxury retail. Each member contributes their unique expertise to create exceptional pieces that celebrate African craftsmanship while embracing contemporary elegance.
       </p>
 
       <div class="team-grid" [class.team-grid-mobile]="currentScreenSize.ltSm">
@@ -103,23 +91,23 @@
 
     <!-- Numbers Section -->
     <div class="numbers-section" [class.numbers-section-mobile]="currentScreenSize.ltSm">
-      <h2 [class.text-center]="currentScreenSize.ltSm">Hello Cosmetics en Chiffres</h2>
+      <h2 [class.text-center]="currentScreenSize.ltSm">TheLuxar by the Numbers</h2>
       <div class="numbers-grid" [class.numbers-grid-mobile]="currentScreenSize.ltSm">
         <div class="number-card">
-          <div class="number">3+</div>
-          <p>Années d'excellence en cosmétique naturelle</p>
+          <div class="number">2+</div>
+          <p>Years of luxury jewelry excellence</p>
         </div>
         <div class="number-card">
-          <div class="number">50+</div>
-          <p>Produits de beauté naturels</p>
+          <div class="number">100+</div>
+          <p>Unique jewelry and watch designs</p>
         </div>
         <div class="number-card">
-          <div class="number">15+</div>
-          <p>Pays d'Afrique desservis</p>
+          <div class="number">10+</div>
+          <p>African countries served</p>
         </div>
         <div class="number-card">
-          <div class="number">10k+</div>
-          <p>Clients satisfaits</p>
+          <div class="number">1000+</div>
+          <p>Satisfied customers</p>
         </div>
       </div>
     </div>

@@ -7,11 +7,10 @@
     [class.p-b-10]="!currentScreenSize.ltSm"
   >
     <!-- Service Page Header -->
-    <div class="service-header">
-      <h1 [class.text-center]="currentScreenSize.ltSm">Nos Prestations de Beauté</h1>
-      <p [class.text-center]="currentScreenSize.ltSm" class="service-intro">
-        Découvrez notre gamme exclusive de soins et traitements de beauté, conçus pour sublimer votre beauté naturelle.
-        Nos experts en esthétique et bien-être vous accompagnent pour une expérience personnalisée et luxueuse.
+    <div class="service-header" [class.service-header-mobile]="currentScreenSize.ltSm">
+      <h1 [class.text-center]="currentScreenSize.ltSm">Our Luxury Services</h1>
+      <p [class.text-center]="currentScreenSize.ltSm">
+        Discover our exclusive collection of luxury jewelry, watches, and premium perfumes, expertly curated to elevate your personal style. Each product is selected with attention to detail and quality, creating a sophisticated experience for the discerning customer.
       </p>
     </div>
 
@@ -32,24 +31,24 @@
             <li *ngFor="let feature of category.features">{{ feature }}</li>
           </ul>
         </div>
-        <button class="service-btn">Découvrir</button>
+        <button class="service-btn">Learn More</button>
       </div>
     </div>
 
     <!-- Contact CTA -->
     <div class="service-contact-cta" [class.service-contact-cta-mobile]="currentScreenSize.ltSm">
       <div class="cta-content">
-        <h2>Une beauté sur mesure pour vous</h2>
+        <h2>Personalized Luxury Experience</h2>
         <p>
-          Nos experts en beauté sont à votre écoute pour créer une expérience personnalisée adaptée à vos besoins et à
-          votre style de vie.
+          Our jewelry experts are ready to help you find the perfect piece that complements your personal style and
+          creates a lasting impression for any occasion.
         </p>
-        <button class="primary-btn">Prendre rendez-vous</button>
+        <button class="primary-btn">Book a Consultation</button>
       </div>
       <div class="cta-image" *ngIf="!currentScreenSize.ltSm">
         <img
-          src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1470&auto=format&fit=crop"
-          alt="Beauty Consultation"
+          src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?q=80&w=1470&auto=format&fit=crop"
+          alt="Luxury Jewelry Consultation"
         />
       </div>
     </div>
@@ -57,19 +56,18 @@
 
   <!-- Testimonials Section -->
   <div class="testimonials-section" [class.testimonials-section-mobile]="currentScreenSize.ltSm">
-    <h2 [class.text-center]="currentScreenSize.ltSm">Ils nous font confiance</h2>
+    <h2 [class.text-center]="currentScreenSize.ltSm">Our Valued Customers</h2>
     <div class="testimonials-grid" [class.testimonials-grid-mobile]="currentScreenSize.ltSm">
       <div class="testimonial-card">
         <div class="testimonial-rating">
           <app-star-rating [rating]="5" [fontSize]="1"></app-star-rating>
         </div>
         <p>
-          "Une expérience incroyable ! Les soins du visage ont complètement transformé ma peau. Je recommande vivement
-          les soins Hello Cosmetics."
+          "An incredible experience! The custom ring I ordered for my anniversary is perfect. The craftsmanship is outstanding and exactly what I envisioned. Highly recommend TheLuxar!"
         </p>
         <div class="testimonial-author">
-          <p><strong>Aïssatou Diop</strong></p>
-          <p>Cliente depuis 2022</p>
+          <p><strong>Samuel Njoh</strong></p>
+          <p>Customer since 2022</p>
         </div>
       </div>
       <div class="testimonial-card">
@@ -77,25 +75,23 @@
           <app-star-rating [rating]="5" [fontSize]="1"></app-star-rating>
         </div>
         <p>
-          "Les produits naturels et les conseils personnalisés ont révolutionné ma routine beauté. Ma peau n'a jamais
-          été aussi éclatante !"
+          "The personal styling service helped me select the perfect pieces for my collection. The attention to detail and expert advice was invaluable. I couldn't be happier with my purchases!"
         </p>
         <div class="testimonial-author">
-          <p><strong>Fatou Ndiaye</strong></p>
-          <p>Cliente depuis 2021</p>
+          <p><strong>Aminata Diallo</strong></p>
+          <p>Customer since 2021</p>
         </div>
       </div>
       <div class="testimonial-card">
         <div class="testimonial-rating">
-          <app-star-rating [rating]="4" [fontSize]="1"></app-star-rating>
+          <app-star-rating [rating]="5" [fontSize]="1"></app-star-rating>
         </div>
         <p>
-          "Service exceptionnel et équipe attentionnée. Les massages sont tout simplement divins. Un vrai moment de
-          détente !"
+          "Exceptional service and attentive staff. The watch I purchased has received countless compliments. The quality and value are unmatched in Douala!"
         </p>
         <div class="testimonial-author">
-          <p><strong>Marie-Laure Akissi</strong></p>
-          <p>Cliente depuis 2023</p>
+          <p><strong>Jean-Paul Eteki</strong></p>
+          <p>Customer since 2023</p>
         </div>
       </div>
     </div>
@@ -103,34 +99,30 @@
 
   <!-- FAQ Section -->
   <div class="faq-section" [class.faq-section-mobile]="currentScreenSize.ltSm">
-    <h2 [class.text-center]="currentScreenSize.ltSm">Questions Fréquentes</h2>
+    <h2 [class.text-center]="currentScreenSize.ltSm">Frequently Asked Questions</h2>
     <div class="faq-grid" [class.faq-grid-mobile]="currentScreenSize.ltSm">
       <div class="faq-item">
-        <h3>Quels types de produits utilisez-vous ?</h3>
+        <h3>What materials are used in TheLuxar jewelry?</h3>
         <p>
-          Nous utilisons exclusivement des produits naturels et biologiques, riches en ingrédients d'origine africaine,
-          sans parabènes ni sulfates.
+          We use only premium materials in our jewelry, including 18k gold, sterling silver, and ethically-sourced gemstones. Our pieces are crafted with African-inspired designs and meet international quality standards.
         </p>
       </div>
       <div class="faq-item">
-        <h3>Comment prendre rendez-vous ?</h3>
+        <h3>How do I book a personal styling consultation?</h3>
         <p>
-          Vous pouvez prendre rendez-vous en ligne via notre site, par téléphone ou directement en institut. Notre
-          équipe se fera un plaisir de vous conseiller.
+          You can book a consultation online through our website, by phone at +237 670 47 26 33, or visit us directly at our Makepe, Douala location. Our team will be delighted to assist you.
         </p>
       </div>
       <div class="faq-item">
-        <h3>Quelle est la durée d'un soin du visage ?</h3>
+        <h3>What is included in the warranty for watches?</h3>
         <p>
-          La durée varie selon le soin choisi, de 45 minutes pour un soin express à 2 heures pour un soin complet avec
-          extraction et masque.
+          Our watches come with a comprehensive warranty that covers manufacturing defects and mechanical issues. The warranty period varies by collection, ranging from 2 to 5 years, with extended options available.
         </p>
       </div>
       <div class="faq-item">
-        <h3>Proposez-vous des forfaits fidélité ?</h3>
+        <h3>Do you offer loyalty programs or special discounts?</h3>
         <p>
-          Oui, nous proposons des cartes de fidélité et des forfaits avantageux pour nos clients réguliers. N'hésitez
-          pas à nous demander plus d'informations.
+          Yes, we offer a VIP loyalty program for our regular customers with exclusive benefits, special previews of new collections, and personalized offers. Please ask our sales associates for more information.
         </p>
       </div>
     </div>
