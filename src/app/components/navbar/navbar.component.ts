@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import type { OnDestroy, OnInit } from '@angular/core';
-import { booleanAttribute, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { booleanAttribute, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +16,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import type { Link } from '../../../shared/types';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
@@ -117,13 +119,42 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.closeMobileMenu();
   }
 
-  // Login redirect to hello-identity server
+  /**
+   * Redirects to the backend authentication login page
+   * Formats the redirect parameter according to the backend's expected format
+   * Stores current URL in localStorage as fallback for redirect failures
+   */
   login(): void {
     try {
-      this.authService.redirectToAuth('login');
-      this.closeMobileMenu();
+      // Define client identifier that matches backend CLIENTS env configuration
+      const clientName = 'luxar-frontend';
+      
+      // Get current path or default to home
+      const returnUrl = window.location.pathname || '/home';
+      
+      // Format redirect parameter as expected by backend: {clientName}:{returnPath}
+      const redirectParam = `${clientName}:${returnUrl}`;
+      
+      // Build complete login URL with properly encoded redirect parameter
+      const backendUrl = environment.production ? 
+        'https://api.theluxar.com' : 
+        'http://localhost:3000';
+      
+      const loginUrl = `${backendUrl}/auth/login?redirect=${encodeURIComponent(redirectParam)}`;
+      
+      // Store current location as fallback mechanism
+      localStorage.setItem('preLoginUrl', window.location.href);
+      
+      // Log analytics event if applicable
+      this.authService.trackAuthEvent('login_redirect_initiated');
+      
+      // Navigate to login page
+      window.location.href = loginUrl;
     } catch (error) {
-      this.notificationService.showError('Unable to connect to the authentication service. Please try again later.');
+      console.error('Login redirect failed:', error);
+      this.notificationService.showError('Login redirect failed. Please try again.');
+    } finally {
+      this.closeMobileMenu();
     }
   }
 

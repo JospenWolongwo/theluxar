@@ -26,17 +26,17 @@ import { StarRatingComponent } from '../components/star-rating/star-rating.compo
   templateUrl: './product-detail-page.component.html',
   styleUrls: ['./product-detail-page.component.scss'],
   standalone: true,
+  // Ensure all imports are standalone components or NgModules
   imports: [
     CommonModule,
     RouterModule,
     FontAwesomeModule,
-    // All of these are standalone components
     ProductInfoComponent,
     ProductGalleryComponent, 
     ProductReviewsComponent,
     ProductTabsComponent,
     RelatedProductsComponent,
-    StarRatingComponent,
+    StarRatingComponent
   ],
   providers: [ProductService],
 })
@@ -151,7 +151,7 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
           console.log('Related products loaded:', products.length);
           this.relatedProducts = products;
         },
-        error: (err) => {
+        error: (err: Error) => {
           console.error('Error loading related products:', err);
           // Set empty array to prevent errors in the template
           this.relatedProducts = [];

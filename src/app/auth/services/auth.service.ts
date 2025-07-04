@@ -38,15 +38,15 @@ export class AuthService {
   }
 
   /**
-   * Redirects to the hello-identity authentication server
-   * @param authType The type of authentication page to redirect to (login, register, etc.)
+   * Redirects to the backend authentication pages
+   * @param authType The type of authentication page to redirect to (login, signup)
    * @param returnUrl The URL to return to after authentication
    */
   public redirectToAuth(authType: string, returnUrl = '/'): void {
     try {
       // First check if auth server is reachable
       this.checkServerAvailability(this.authApiUrl, () => {
-        // Build the redirect URL and navigate to hello-identity server
+        // Build the redirect URL and navigate to auth server
         const url = this.buildAuthUrl(authType, returnUrl);
         window.location.href = url;
       });
@@ -56,32 +56,25 @@ export class AuthService {
   }
 
   /**
-   * Builds the appropriate authentication URL based on auth type
-   * @param authType The type of authentication page (login, register, etc.)
+   * Builds the appropriate authentication URL based on auth type according to API documentation
+   * @param authType The type of authentication page (login, signup)
    * @param returnUrl The URL to return to after authentication
    * @returns The fully constructed authentication URL
    */
   private buildAuthUrl(authType: string, returnUrl: string): string {
-    // Create client-specific redirect parameter with delimiter
-    const redirectParams = `client1${this.clientDelimiter}${returnUrl}`;
+    // Create the client-name:path-to-redirect format
+    const clientName = 'luxar-frontend';
+    const redirectParam = `${clientName}:${returnUrl}`;
 
     // Determine the endpoint based on auth type
     switch (authType) {
+      case 'signup':
       case 'register':
-        return `${this.authApiUrl}/signup?redirect=${encodeURIComponent(redirectParams)}`;
-
-      case 'forgot-password':
-        return `${this.authApiUrl}/forgot-password?redirect=${encodeURIComponent(redirectParams)}`;
-
-      case 'reset-password':
-        // For reset-password, we need to pass the token from the URL params
-        const token = new URLSearchParams(window.location.search).get('token');
-
-        return `${this.authApiUrl}/reset-password?token=${token}&redirect=${encodeURIComponent(redirectParams)}`;
+        return `${this.authApiUrl}/signup?redirect=${encodeURIComponent(redirectParam)}`;
 
       case 'login':
       default:
-        return `${this.authApiUrl}/login?redirect=${encodeURIComponent(redirectParams)}`;
+        return `${this.authApiUrl}/login?redirect=${encodeURIComponent(redirectParam)}`;
     }
   }
 
@@ -350,5 +343,85 @@ export class AuthService {
    */
   public get currentUserValue(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  /**
+   * Track authentication-related events for analytics
+   * @param eventName Name of the event to track
+   * @param eventData Optional data to include with the event
+   */
+  public trackAuthEvent(eventName: string, eventData: Record<string, any> = {}): void {
+    // This is a placeholder for actual analytics tracking
+    // In a production app, this would integrate with your analytics service
+    console.log(`Auth event: ${eventName}`, eventData);
+    
+    // Example integration with analytics services:
+    // if (environment.production) {
+    //   try {
+    //     // Track with your preferred analytics service
+    //     // analytics.track(eventName, {
+    //     //   ...eventData,
+    //     //   timestamp: new Date().toISOString(),
+    //     //   userId: this.currentUserValue?.id || 'anonymous'
+    //     // });
+    //   } catch (error) {
+    //     console.error('Analytics tracking error:', error);
+    //   }
+    // }
+  }
+  
+  /**
+   * Handles return from authentication process
+   * Should be called when app loads to check for successful auth
+   * @returns Promise that resolves when auth state check completes
+   */
+  public async handleAuthReturn(): Promise<void> {
+    try {
+      // Check for auth cookies
+      const hasAuthCookies = document.cookie.includes('BAL_ess') && document.cookie.includes('BAL_esh');
+      
+      if (!hasAuthCookies) {
+        return; // Not authenticated, nothing to do
+      }
+
+      // Get the saved pre-login URL
+      const preLoginUrl = localStorage.getItem('preLoginUrl');
+      
+      // Track this auth event
+      this.trackAuthEvent('auth_return_detected', { hasStoredUrl: !!preLoginUrl });
+      
+      // Verify session is valid
+      this.isLoadingSubject.next(true);
+      await this.verifySession();
+      
+      // If authenticated and we have a stored URL, navigate back
+      if (this.isAuthenticated() && preLoginUrl) {
+        try {
+          // Parse the URL to get just the path if it's on the same domain
+          const url = new URL(preLoginUrl);
+          const currentDomain = window.location.origin;
+          
+          if (url.origin === currentDomain) {
+            // Same domain, use router for better SPA experience
+            this.router.navigateByUrl(url.pathname + url.search);
+          } else {
+            // Different domain, do a full navigation
+            window.location.href = preLoginUrl;
+          }
+          
+          // Clear the stored URL
+          localStorage.removeItem('preLoginUrl');
+          
+          // Notify user of successful authentication
+          this.notificationService.showSuccess('Successfully authenticated');
+        } catch (e) {
+          console.error('Error parsing pre-login URL:', e);
+        }
+      }
+    } catch (error) {
+      console.error('Error handling auth return:', error);
+    } finally {
+      this.isLoadingSubject.next(false);
+    }
   }
 }

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, of, tap } from 'rxjs';
 import type { Product } from '../../shared/types/product.type';
+import { ApiService } from './api.service';
+import { BaseService } from './base.service';
 
 export interface WishlistItem {
   product: Product;
@@ -11,12 +13,13 @@ export interface WishlistItem {
 @Injectable({
   providedIn: 'root',
 })
-export class WishlistService {
+export class WishlistService extends BaseService {
   private wishlistItems: WishlistItem[] = [];
   private wishlistSubject = new BehaviorSubject<WishlistItem[]>([]);
   private wishlistCountSubject = new BehaviorSubject<number>(0);
 
-  constructor() {
+  constructor(private apiService: ApiService) {
+    super();
     // Load wishlist from local storage on initialization
     this.loadWishlist();
     // Initialize the wishlist count
@@ -27,7 +30,33 @@ export class WishlistService {
    * Get observable for wishlist items
    */
   getWishlistItems(): Observable<WishlistItem[]> {
-    return this.wishlistSubject.asObservable();
+    // Attempt to get wishlist from API first
+    return this.apiService.get<WishlistItem[]>('/wishlists', []).pipe(
+      catchError(() => {
+        // If API call fails, return local wishlist
+        return of(this.wishlistItems);
+      }),
+      tap((items) => {
+        // Update local wishlist with items from API
+        this.wishlistItems = items;
+        
+        // Ensure dates are parsed as Date objects
+        this.wishlistItems.forEach((item) => {
+          item.addedAt = new Date(item.addedAt);
+          
+          // Set the inWishlist flag on products
+          if (item.product) {
+            item.product.inWishlist = true;
+          }
+        });
+        
+        this.wishlistSubject.next([...this.wishlistItems]);
+        this.wishlistCountSubject.next(this.getItemsCount());
+        
+        // Update local storage as fallback
+        localStorage.setItem('wishlist', JSON.stringify(this.wishlistItems));
+      })
+    );
   }
 
   /**
@@ -49,12 +78,20 @@ export class WishlistService {
         product,
         addedAt: new Date(),
       };
-      this.wishlistItems.push(newItem);
-
-      // Update the product's inWishlist flag
-      product.inWishlist = true;
-
-      this.updateWishlist();
+      
+      // Try to add to wishlist via API
+      this.apiService.post<WishlistItem>('/wishlists', newItem, newItem).pipe(
+        catchError(() => {
+          // If API call fails, update local wishlist
+          this.wishlistItems.push(newItem);
+          return of(newItem);
+        })
+      ).subscribe(() => {
+        // Update the product's inWishlist flag
+        product.inWishlist = true;
+        
+        this.updateWishlist();
+      });
     }
   }
 
@@ -67,10 +104,19 @@ export class WishlistService {
     if (index !== -1) {
       // Update the product's inWishlist flag
       this.wishlistItems[index].product.inWishlist = false;
-
-      // Remove the item
-      this.wishlistItems = this.wishlistItems.filter((item) => item.product.id !== productId);
-      this.updateWishlist();
+      
+      // Try to remove from wishlist via API
+      this.apiService.delete<void>(`/wishlists/${productId}`, undefined).pipe(
+        catchError(() => {
+          // If API call fails, update local wishlist
+          this.wishlistItems = this.wishlistItems.filter((item) => item.product.id !== productId);
+          return of(undefined);
+        })
+      ).subscribe(() => {
+        // Remove the item locally after API call completes
+        this.wishlistItems = this.wishlistItems.filter((item) => item.product.id !== productId);
+        this.updateWishlist();
+      });
     }
   }
 
@@ -106,9 +152,18 @@ export class WishlistService {
     this.wishlistItems.forEach((item) => {
       item.product.inWishlist = false;
     });
-
-    this.wishlistItems = [];
-    this.updateWishlist();
+    
+    // Try to clear wishlist via API
+    this.apiService.delete<void>('/wishlist', undefined).pipe(
+      catchError(() => {
+        // If API call fails, clear local wishlist
+        this.wishlistItems = [];
+        return of(undefined);
+      })
+    ).subscribe(() => {
+      this.wishlistItems = [];
+      this.updateWishlist();
+    });
   }
 
   /**
@@ -136,27 +191,48 @@ export class WishlistService {
    * Load wishlist from local storage
    */
   private loadWishlist(): void {
-    const storedWishlist = localStorage.getItem('wishlist');
-
-    if (storedWishlist) {
-      try {
-        this.wishlistItems = JSON.parse(storedWishlist);
-
-        // Ensure dates are parsed as Date objects
-        this.wishlistItems.forEach((item) => {
-          item.addedAt = new Date(item.addedAt);
-
-          // Set the inWishlist flag on products
-          if (item.product) {
-            item.product.inWishlist = true;
+    // Try to load wishlist from API first
+    this.apiService.get<WishlistItem[]>('/wishlist', []).pipe(
+      catchError(() => {
+        // If API call fails, load from localStorage
+        const storedWishlist = localStorage.getItem('wishlist');
+        
+        if (storedWishlist) {
+          try {
+            this.wishlistItems = JSON.parse(storedWishlist);
+            
+            // Ensure dates are parsed as Date objects
+            this.wishlistItems.forEach((item) => {
+              item.addedAt = new Date(item.addedAt);
+              
+              // Set the inWishlist flag on products
+              if (item.product) {
+                item.product.inWishlist = true;
+              }
+            });
+          } catch (error) {
+            localStorage.removeItem('wishlist');
+            this.wishlistItems = [];
           }
-        });
-
-        this.wishlistSubject.next([...this.wishlistItems]);
-      } catch (error) {
-        this.wishlistItems = [];
-        this.wishlistSubject.next([]);
-      }
-    }
+        } else {
+          this.wishlistItems = [];
+        }
+        
+        return of(this.wishlistItems);
+      })
+    ).subscribe((items) => {
+      this.wishlistItems = items;
+      
+      // Ensure dates are parsed as Date objects and flags are set
+      this.wishlistItems.forEach((item) => {
+        item.addedAt = new Date(item.addedAt);
+        if (item.product) {
+          item.product.inWishlist = true;
+        }
+      });
+      
+      this.wishlistSubject.next([...this.wishlistItems]);
+      this.wishlistCountSubject.next(this.getItemsCount());
+    });
   }
 }

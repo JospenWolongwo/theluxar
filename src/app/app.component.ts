@@ -8,6 +8,7 @@ import type { Screen, ScreenSize } from '../shared/types';
 import { SCREEN_SIZES } from '../shared/utils';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavBarComponent } from './components/navbar/navbar.component';
+import { AuthService } from './auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -38,9 +39,13 @@ export class AppComponent implements OnInit, OnDestroy {
     gtLg: false,
   };
 
-  constructor(private responsive: BreakpointObserver) {}
+  constructor(
+    private responsive: BreakpointObserver,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    // Handle responsive screen sizes
     const screenSizes: Screen[] = ['ltSm', 'ltLg'];
 
     screenSizes.forEach((screenSize) => {
@@ -49,6 +54,11 @@ export class AppComponent implements OnInit, OnDestroy {
           this.currentScreenSize[screenSize] = state.matches;
         })
       );
+    });
+    
+    // Check authentication state for returning users
+    this.authService.handleAuthReturn().catch(error => {
+      console.error('Error handling authentication return:', error);
     });
   }
 

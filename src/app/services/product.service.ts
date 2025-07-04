@@ -1,20 +1,22 @@
 /* eslint-disable max-lines */
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import { map, catchError, of } from 'rxjs';
 import { MOCK_PRODUCTS } from '../../shared/data/products.data';
+import { REVIEWS } from '../../shared/data/reviews.data';
+import type { Review } from '../../shared/types/review.type';
 import type { StockAvailabilityStatus } from '../../shared/enums';
 import type { ApiReview, ApiStock } from '../../shared/types/api-types';
 import type { Product } from '../../shared/types/product.type';
 import { generateProductSlug } from '../../shared/utils/string.utils';
+import { ApiService } from './api.service';
 import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService extends BaseService {
-  constructor(protected http: HttpClient) {
+  constructor(private apiService: ApiService) {
     super();
   }
 
@@ -23,20 +25,18 @@ export class ProductService extends BaseService {
    * @param limit Optional number of products to return
    */
   getProducts(limit?: number): Observable<Product[]> {
-    const url = limit ? `${this.baseUrl}/products?limit=${limit}` : `${this.baseUrl}/products`;
+    // Create endpoint URL with limit parameter if provided
+    const endpoint = limit ? `/products?limit=${limit}` : '/products';
+    
+    // Prepare fallback data from mock products
+    let fallbackProducts = [...MOCK_PRODUCTS];
+    if (limit && fallbackProducts.length > limit) {
+      fallbackProducts = fallbackProducts.slice(0, limit);
+    }
 
-    return this.http.get<Product[]>(url, this.httpOptions).pipe(
-      catchError(() => {
-        console.log('API call failed, using mock product data');
-        // Return mock data if API call fails
-        let products = [...MOCK_PRODUCTS];
-        if (limit && products.length > limit) {
-          products = products.slice(0, limit);
-        }
-        return of(products);
-      }),
-      map((response) => {
-        return response.map((product) => {
+    return this.apiService.get<Product[]>(endpoint, fallbackProducts).pipe(
+      map((products) => {
+        return products.map((product: any) => {
           // Generate the product ID part for the slug
           const idPart = product.id?.substring(0, 8) || '';
 
@@ -75,18 +75,14 @@ export class ProductService extends BaseService {
    * @param id Product ID
    */
   getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.baseUrl}/product/${id}`, this.httpOptions).pipe(
-      catchError(() => {
-        console.log('API call failed, using mock product data');
-        // Find the product with matching id in mock data
-        const mockProduct = MOCK_PRODUCTS.find(product => product.id === id);
-        if (mockProduct) {
-          return of(mockProduct);
-        } else {
-          throw new Error('Product not found');
-        }
-      }),
-      map((product) => ({
+    const endpoint = `/products/${id}`;
+    
+    // Find the product with matching id in mock data for fallback
+    const mockProduct = MOCK_PRODUCTS.find(product => product.id === id);
+    const fallbackData = mockProduct || MOCK_PRODUCTS[0]; // Use first product as fallback if no match
+    
+    return this.apiService.get<Product>(endpoint, fallbackData).pipe(
+      map((product: any) => ({
         ...product,
         id: product.id || '',
         name: product.name || 'Unknown Product',
@@ -168,15 +164,15 @@ export class ProductService extends BaseService {
   }
 
   // Removed duplicate generateSlug method - now using shared utility function
-
   /**
    * Get product stocks by product ID
    * @param productId Product ID
    */
   getProductStocks(productId: string): Observable<Product['stocks']> {
-    return this.http
-      .get<Product['stocks']>(`${this.baseUrl}/product/${productId}/stocks`, this.httpOptions)
-      .pipe(map((stocks) => this.normalizeStocks(stocks)));
+    const endpoint = `/stock/product/${productId}`;
+    return this.apiService.get<ApiStock[]>(endpoint, []).pipe(
+      map((stocks) => this.normalizeStocks(stocks))
+    );
   }
 
   /**
@@ -184,9 +180,33 @@ export class ProductService extends BaseService {
    * @param productId Product ID
    */
   getProductReviews(productId: string): Observable<Product['reviews']> {
-    return this.http
-      .get<Product['reviews']>(`${this.baseUrl}/product/${productId}/reviews`, this.httpOptions)
-      .pipe(map((reviews) => this.normalizeReviews(reviews)));
+    const endpoint = `/reviews/product/${productId}`;
+    
+    // Create fallback reviews data - convert REVIEWS (type Review[]) to ApiReview[] 
+    const fallbackReviews = REVIEWS.filter(() => Math.random() > 0.5)
+      .map(review => {
+        return {
+          id: review.id?.toString(), // Convert possible number id to string
+          rating: review.rating,
+          comment: review.reviewText,
+          user: { email: review.name },
+          username: review.name,
+          title: review.position || '',
+          feedbackDetails: review.reviewText,
+          feedbackSummary: review.position,
+          createdAt: review.date || new Date().toISOString(),
+          verified: true,
+          helpful: 0,
+          notHelpful: 0,
+          content: review.reviewText,
+          imageUrl: review.imageUrl,
+          position: review.position
+        } as ApiReview;
+      });
+    
+    return this.apiService.get<ApiReview[]>(endpoint, fallbackReviews).pipe(
+      map((reviews) => this.normalizeReviews(reviews))
+    );
   }
 
   /**
@@ -196,11 +216,73 @@ export class ProductService extends BaseService {
    * @param size Results per page (default: 10)
    */
   searchProducts(query: string, page = 1, size = 10): Observable<Product[]> {
-    return this.http.post<Product[]>(`${this.baseUrl}/search/products`, { query, page, size }, this.httpOptions).pipe(
-      map((products) => {
-        return products.map((product) => ({
-          ...product,
-          // Ensure critical fields have default values
+    const endpoint = `/products/search?q=${query}&page=${page}&size=${size}`;
+    
+    // Filter mock products for fallback data
+    const normalizedQuery = query.toLowerCase();
+    const fallbackProducts = MOCK_PRODUCTS.filter((product) => {
+      return (
+        product.name?.toLowerCase().includes(normalizedQuery) ||
+        product.shortDescription?.toLowerCase().includes(normalizedQuery) ||
+        product.categoryName?.toLowerCase().includes(normalizedQuery)
+      );
+    });
+    
+    return this.apiService.get<Product[]>(endpoint, fallbackProducts).pipe(
+      map((products: any[]) => {
+        return products.map((product: any) => {
+          // Generate the product ID part for the slug
+          const idPart = product.id?.substring(0, 8) || '';
+          
+          return {
+            ...product as object,
+            id: product.id || '',
+            name: product.name || 'Unknown Product',
+            specs: product.specs || '',
+            price: Number(product.price || 0),
+            currency: product.currency || 'XAF',
+            imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
+            galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
+            features: product.features || [],
+            label: product.label || null,
+            labelColor: product.labelColor || '#000000',
+            inStock: product.inStock ?? true,
+            shortDescription: product.shortDescription || '',
+            inWishlist: product.inWishlist ?? false,
+            stocks: this.normalizeStocks(product.stocks as ApiStock[] | undefined),
+            reviews: this.normalizeReviews(product.reviews as ApiReview[] | undefined),
+            rating: product.rating || this.calculateAverageRating(product.reviews as ApiReview[] | undefined),
+            slug: generateProductSlug(product.name || 'product', idPart)
+          } as Product;
+        });
+      })
+    );
+  }
+
+  /**
+   * Get products by category ID or name
+        if (currentProductId) {
+          fallbackProducts = fallbackProducts.filter(p => p.id !== currentProductId);
+        }
+        // Take a random selection
+        const maxProducts = Math.min(limit || 4, fallbackProducts.length);
+        filteredProducts = fallbackProducts.slice(0, maxProducts);
+      }
+
+      return filteredProducts;
+    });
+  };
+  
+  // Attempt to call the real API endpoint with fallback to local filtering
+  return this.apiService.get<Product[]>(endpoint, null).pipe(
+    catchError(() => fallback$),
+    map((products: any[]) => {
+      return products.map((product: any) => {
+        // Standard normalization of product data
+        const idPart = product.id?.substring(0, 8) || '';
+        
+        return {
+          ...product as object,
           id: product.id || '',
           name: product.name || 'Unknown Product',
           specs: product.specs || '',
@@ -214,12 +296,14 @@ export class ProductService extends BaseService {
           inStock: product.inStock ?? true,
           shortDescription: product.shortDescription || '',
           inWishlist: product.inWishlist ?? false,
-          stocks: this.normalizeStocks(product.stocks),
-          reviews: this.normalizeReviews(product.reviews),
-          rating: product.rating || this.calculateAverageRating(product.reviews),
-        }));
-      })
-    );
+          stocks: this.normalizeStocks(product.stocks as ApiStock[] | undefined),
+          reviews: this.normalizeReviews(product.reviews as ApiReview[] | undefined),
+          rating: product.rating || this.calculateAverageRating(product.reviews as ApiReview[] | undefined),
+          slug: generateProductSlug(product.name || 'product', idPart)
+        } as Product;
+      });
+    })
+  );
   }
 
   /**
@@ -229,56 +313,56 @@ export class ProductService extends BaseService {
    * @param currentProductId Optional current product ID to exclude from results
    */
   getProductsByCategory(categoryNameOrId: string, limit?: number, currentProductId?: string): Observable<Product[]> {
-    // Since the category-specific endpoint doesn't exist, we'll fetch all products and filter client-side
-    return this.getProducts().pipe(
-      catchError(() => {
-        console.log('API call failed, using mock product data for category filtering');
-        // Use mock data if the API call fails
-        return of(MOCK_PRODUCTS);
-      }),
+    const endpoint = `/products/category/${categoryNameOrId}${limit ? `?limit=${limit}` : ''}`;
+    
+    // Create fallback logic - filter mock products by category
+    const fallback$ = this.getProducts().pipe(
       map((products) => {
-        console.log('Total products before filtering:', products.length);
-        
-        // Normalize the category names for precise matching
-        const normalizedCategoryInput = categoryNameOrId.trim().toLowerCase();
-        const normalizedCategoryInputPlural = normalizedCategoryInput + 's';
+        // Normalize the category input to lowercase for more flexible matching
+        const normalizedCategoryInput = categoryNameOrId.toLowerCase().trim();
+        const normalizedCategoryInputPlural = normalizedCategoryInput.endsWith('s') ? normalizedCategoryInput : `${normalizedCategoryInput}s`;
 
-        // Filter products by the specified category name or ID
-        let filteredProducts = products.filter((product) => {
-          // Check category name
-          const productCategoryName = product.category?.name?.trim().toLowerCase() || 
-                                     product.categoryName?.trim().toLowerCase() || '';
+        // Filter products by category name or ID
+        let filteredProducts = products.filter((product: Product) => {
+          // Try to match by categoryName field if exists
+          if (product.categoryName) {
+            const productCategoryName = product.categoryName.toLowerCase();
+            if (productCategoryName.includes(normalizedCategoryInput) || 
+                productCategoryName.includes(normalizedCategoryInputPlural)) {
+              return true;
+            }
+          }
           
-          // Check category ID
-          const productCategoryId = product.category?.id?.toLowerCase() || '';
+          // Check category if available
+          if (product.category) {
+            const category = product.category;
+            const catName = (category.name || '').toLowerCase();
+            const catId = (category.id || '').toLowerCase();
+            
+            return (
+              catName === normalizedCategoryInput ||
+              catName === normalizedCategoryInputPlural ||
+              catName.includes(normalizedCategoryInput) ||
+              catName.includes(normalizedCategoryInputPlural) ||
+              catId === normalizedCategoryInput
+            );
+          }
           
-          // Check for match in either name or ID
-          return (
-            productCategoryName === normalizedCategoryInput ||
-            productCategoryName === normalizedCategoryInputPlural ||
-            productCategoryName.includes(normalizedCategoryInput) ||
-            productCategoryName.includes(normalizedCategoryInputPlural) ||
-            productCategoryId === normalizedCategoryInput
-          );
+          return false;
         });
         
-        console.log('Filtered products by category:', filteredProducts.length);
-
         // Exclude the current product if ID is provided
         if (currentProductId) {
           filteredProducts = filteredProducts.filter((product) => product.id !== currentProductId);
-          console.log('Filtered products after excluding current product:', filteredProducts.length);
         }
 
         // Apply limit if specified
         if (limit && limit > 0 && filteredProducts.length > limit) {
           filteredProducts = filteredProducts.slice(0, limit);
-          console.log('Limited to', limit, 'products');
         }
         
         // If no products found, return a fallback selection
         if (filteredProducts.length === 0) {
-          console.log('No related products found by category, using fallback selection');
           // Exclude current product from all products
           let fallbackProducts = products;
           if (currentProductId) {
@@ -290,6 +374,38 @@ export class ProductService extends BaseService {
         }
 
         return filteredProducts;
+      })
+    );
+    
+    // Attempt to call the real API endpoint with fallback to local filtering
+    return this.apiService.get<Product[]>(endpoint, []).pipe(
+      catchError((err: Error) => fallback$),
+      map((products: any[]) => {
+        return products.map((product: any) => {
+          // Standard normalization of product data
+          const idPart = product.id?.substring(0, 8) || '';
+          
+          return {
+            ...product as object,
+            id: product.id || '',
+            name: product.name || 'Unknown Product',
+            specs: product.specs || '',
+            price: Number(product.price || 0),
+            currency: product.currency || 'XAF',
+            imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
+            galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
+            features: product.features || [],
+            label: product.label || null,
+            labelColor: product.labelColor || '#000000',
+            inStock: product.inStock ?? true,
+            shortDescription: product.shortDescription || '',
+            inWishlist: product.inWishlist ?? false,
+            stocks: this.normalizeStocks(product.stocks as ApiStock[] | undefined),
+            reviews: this.normalizeReviews(product.reviews as ApiReview[] | undefined),
+            rating: product.rating || this.calculateAverageRating(product.reviews as ApiReview[] | undefined),
+            slug: generateProductSlug(product.name || 'product', idPart)
+          } as Product;
+        });
       })
     );
   }

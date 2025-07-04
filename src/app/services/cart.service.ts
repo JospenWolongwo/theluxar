@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, map, of, tap } from 'rxjs';
 import type { Product } from '../../shared/types/product.type';
+import { ApiService } from './api.service';
+import { BaseService } from './base.service';
 
 export interface CartItem {
   product: Product;
@@ -11,13 +13,14 @@ export interface CartItem {
 @Injectable({
   providedIn: 'root',
 })
-export class CartService {
+export class CartService extends BaseService {
   private cartItems: CartItem[] = [];
   private cartSubject = new BehaviorSubject<CartItem[]>([]);
   private cartCountSubject = new BehaviorSubject<number>(0);
   private cartSuccessSubject = new Subject<Product>();
 
-  constructor() {
+  constructor(private apiService: ApiService) {
+    super();
     // Load cart from local storage on initialization
     this.loadCart();
     // Initialize the cart count
@@ -25,7 +28,21 @@ export class CartService {
   }
 
   getCartItems(): Observable<CartItem[]> {
-    return this.cartSubject.asObservable();
+    // Get cart items from API if possible, fall back to local cart
+    return this.apiService.get<CartItem[]>('/carts', []).pipe(
+      catchError(() => {
+        // If API call fails, return the local cart
+        return of(this.cartItems);
+      }),
+      tap((items) => {
+        // Update local cart with items from API
+        this.cartItems = items;
+        this.cartSubject.next([...this.cartItems]);
+        this.cartCountSubject.next(this.getTotalItems());
+        // Update local storage as fallback
+        localStorage.setItem('cart', JSON.stringify(this.cartItems));
+      })
+    );
   }
 
   getCartItemsCount(): Observable<number> {
@@ -40,47 +57,92 @@ export class CartService {
   }
 
   addToCart(product: Product, quantity = 1): void {
-    const existingItem = this.cartItems.find((item) => item.product.id === product.id);
+    const cartItem = {
+      product,
+      quantity: quantity
+    };
 
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      this.cartItems.push({
-        product,
-        quantity,
+    // Try to add to cart via API
+    this.apiService.post<CartItem>('/carts', cartItem, cartItem)
+      .pipe(
+        catchError(() => {
+          // If API call fails, update local cart
+          const existingItem = this.cartItems.find((item) => item.product.id === product.id);
+
+          if (existingItem) {
+            existingItem.quantity += quantity;
+          } else {
+            this.cartItems.push({
+              product,
+              quantity,
+            });
+          }
+
+          return of(cartItem);
+        })
+      )
+      .subscribe(() => {
+        // Update local cart state
+        this.updateCart();
+        // Emit notification that product was added successfully
+        this.cartSuccessSubject.next(product);
       });
-    }
-
-    this.updateCart();
-
-    // Emit notification that product was added successfully
-    this.cartSuccessSubject.next(product);
   }
 
   updateItemQuantity(productId: string, quantity: number): void {
-    const cartItem = this.cartItems.find((item) => item.product.id === productId);
-
-    if (cartItem) {
-      if (quantity > 0) {
-        cartItem.quantity = quantity;
-      } else {
-        this.removeItem(productId);
-
-        return;
-      }
+    if (quantity <= 0) {
+      this.removeItem(productId);
+      return;
     }
 
-    this.updateCart();
+    // Try to update item via API
+    this.apiService.put<CartItem>(`/carts/${productId}`, { quantity }, { product: {} as Product, quantity } as CartItem)
+      .pipe(
+        catchError(() => {
+          // If API call fails, update local cart
+          const cartItem = this.cartItems.find((item) => item.product.id === productId);
+          if (cartItem) {
+            cartItem.quantity = quantity;
+          }
+          return of(null);
+        })
+      )
+      .subscribe(() => {
+        this.updateCart();
+      });
   }
 
   removeItem(productId: string): void {
-    this.cartItems = this.cartItems.filter((item) => item.product.id !== productId);
-    this.updateCart();
+    // Try to remove item via API
+    this.apiService.delete<void>(`/carts/${productId}`, undefined)
+      .pipe(
+        catchError(() => {
+          // If API call fails, update local cart
+          this.cartItems = this.cartItems.filter((item) => item.product.id !== productId);
+          return of(null);
+        })
+      )
+      .subscribe(() => {
+        // Update local cart after API call completes
+        this.cartItems = this.cartItems.filter((item) => item.product.id !== productId);
+        this.updateCart();
+      });
   }
 
   clearCart(): void {
-    this.cartItems = [];
-    this.updateCart();
+    // Try to clear cart via API
+    this.apiService.delete<void>('/carts', undefined)
+      .pipe(
+        catchError(() => {
+          // If API call fails, clear local cart
+          this.cartItems = [];
+          return of(null);
+        })
+      )
+      .subscribe(() => {
+        this.cartItems = [];
+        this.updateCart();
+      });
   }
 
   getSubtotal(): number {
@@ -146,14 +208,29 @@ export class CartService {
   }
 
   private loadCart(): void {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        this.cartItems = JSON.parse(savedCart);
+    // Try to load cart from API first
+    this.apiService.get<CartItem[]>('/cart', [])
+      .pipe(
+        catchError(() => {
+          // If API call fails, load from localStorage
+          const savedCart = localStorage.getItem('cart');
+          if (savedCart) {
+            try {
+              this.cartItems = JSON.parse(savedCart);
+            } catch (e) {
+              localStorage.removeItem('cart');
+              this.cartItems = [];
+            }
+          } else {
+            this.cartItems = [];
+          }
+          return of(this.cartItems);
+        })
+      )
+      .subscribe((items) => {
+        this.cartItems = items;
         this.cartSubject.next([...this.cartItems]);
-      } catch (e) {
-        localStorage.removeItem('cart');
-      }
-    }
+        this.cartCountSubject.next(this.getTotalItems());
+      });
   }
 }
