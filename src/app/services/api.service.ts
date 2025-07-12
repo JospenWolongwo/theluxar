@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError, of } from 'rxjs';
+import { Observable, catchError, map, throwError, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -22,8 +22,17 @@ export class ApiService {
    */
   public get<T>(endpoint: string, fallbackData?: T): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    
+    console.log(`Making API request to: ${url}`);
+    
     return this.http.get<T>(url, this.httpOptions).pipe(
-      catchError((error) => this.handleError(error, fallbackData))
+      tap((response) => {
+        console.log(`API response from ${endpoint}:`, response);
+      }),
+      catchError((error) => {
+        console.warn(`API request failed for ${endpoint}:`, error);
+        return this.handleError(error, fallbackData);
+      })
     );
   }
 
@@ -84,20 +93,10 @@ export class ApiService {
    * @param fallbackData Optional fallback data
    */
   private handleError<T>(error: HttpErrorResponse, fallbackData?: T): Observable<T> {
-    console.error('API Error:', error);
-
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-    } else {
-      console.error(
-        `Backend returned code ${error.status}, body was: `, 
-        error.error
-      );
-    }
-
+    // Error handling logic without console logs
+    
     // If fallback data is provided, return it
     if (fallbackData !== undefined) {
-      console.log('Using fallback data');
       return of(fallbackData);
     }
 

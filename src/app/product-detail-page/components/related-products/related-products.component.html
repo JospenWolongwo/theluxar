@@ -1,7 +1,7 @@
 <div class="related-products" [class.mobile]="isMobile" [class.tablet]="isTablet">
   <h3 class="section-title m-b-4" *ngIf="products.length > 0">Related Products</h3>
 
-  <div class="products-slider">
+  <div class="products-slider" *ngIf="products.length > 0">
     <div class="slider-container">
       <div class="slider-track" [style.transform]="'translateX(' + -currentPage * 100 + '%)'">
         <!-- Pages of products -->
@@ -77,5 +77,10 @@
         <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
       </button>
     </div>
+  </div>
+
+  <!-- No products message -->
+  <div *ngIf="products.length === 0" class="no-products-message">
+    <p>No related products found.</p>
   </div>
 </div>

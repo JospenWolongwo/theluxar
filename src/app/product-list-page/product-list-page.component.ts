@@ -119,104 +119,28 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
   loadProductsByCategory(): void {
     this.isLoading = true;
 
-    this.productService.getProducts().subscribe({
-      next: (allProducts) => {
-        // Normalize the active category for comparison
-        const normalizedActiveCategory = this.activeCategory.toLowerCase().trim();
+    console.log('Loading products for category:', this.activeCategory);
 
-        // Map route categories to product categories with flexible matching
-        const categoryMap: Record<string, string[]> = {
-          // Electronics categories
-          laptops: ['laptop', 'laptops', 'ordinateur', 'portable', 'notebook'],
-          telephones: ['telephone', 'téléphone', 'phone', 'smartphone', 'mobile'],
-          tablets: ['tablet', 'tablette', 'ipad', 'tab'],
-          'ecran-plat': ['ecran', 'écran', 'tv', 'television', 'monitor', 'moniteur'],
-          
-          // Luxury categories
-          watches: ['watch', 'montre', 'timepiece', 'horlogerie', 'wristwatch'],
-          jewelry: ['jewelry', 'bijoux', 'jewels', 'accessory', 'fine jewelry'],
-          men: ['men', 'homme', 'masculine', 'gentlemen'],
-          women: ['women', 'femme', 'feminine', 'ladies'],
-          kids: ['kids', 'enfants', 'children', 'junior', 'baby'],
-          perfumes: ['perfume', 'parfum', 'fragrance', 'cologne', 'scent'],
-          
-          // Beauty categories - preserved for compatibility
-          'soins-peau': ['soins de la peau', 'soin visage', 'soin corps', 'skincare'],
-          maquillage: ['maquillage', 'makeup', 'cosmétiques', 'beauté'],
-          'soins-cheveux': ['soins cheveux', 'soin capillaire', 'cheveux', 'haircare'],
-          parfums: ['parfum', 'parfums', 'fragrance', 'parfumerie'],
-          'soins-corps': ['soins du corps', 'corps', 'bodycare', 'soin corps'],
-        };
+    // First, let's see what categories are actually available in the API
+    console.log('Checking available categories in API...');
+    this.productService.getProducts(10).subscribe({
+      next: (sampleProducts) => {
+        console.log('Sample products from API:', sampleProducts.slice(0, 3).map(p => ({
+          name: p.name,
+          category: p.category,
+          categoryName: p.categoryName,
+          tag: p.tag
+        })));
+      }
+    });
 
-        // Get the list of matching categories for the active route
-        const matchingCategories = categoryMap[normalizedActiveCategory] || [normalizedActiveCategory];
-
-        // First check for exact category matches
-        let categoryMatches = allProducts.filter((product) => {
-          // Extract category name from either categoryName field or category.name object
-          const productCategoryName = product.categoryName || (product.category?.name);
-          if (!productCategoryName) {
-            return false;
-          }
-          
-          const normalizedProductCategory = productCategoryName.toLowerCase().trim();
-          const productTag = product.tag ? product.tag.toLowerCase().trim() : '';
-          
-          // First try exact match by category name
-          if (normalizedProductCategory === normalizedActiveCategory) {
-            return true;
-          }
-          
-          // Then try exact match by tag
-          if (productTag && productTag === normalizedActiveCategory) {
-            return true;
-          }
-          
-          // Special cases for common mappings
-          if (normalizedActiveCategory === 'jewelry' && 
-              (normalizedProductCategory.includes('jewelry') || normalizedProductCategory.includes('jewel'))) {
-            return true;
-          }
-          
-          if (normalizedActiveCategory === 'watches' && 
-              (normalizedProductCategory.includes('watch') || normalizedProductCategory.includes('timepiece'))) {
-            return true;
-          }
-          
-          // If we have a mapping for this category, use more specific matching
-          if (categoryMap[normalizedActiveCategory]) {
-            // Check if product category or tag matches any of the allowed categories
-            return matchingCategories.some(cat => {
-              // Try exact match first
-              if (normalizedProductCategory === cat || productTag === cat) {
-                return true;
-              }
-              
-              // Then try contains match but with more strict rules
-              // Only match if the category term is a substantial part of the product category
-              const isMeaningfulContains = (
-                (normalizedProductCategory.includes(cat) && cat.length > 3) ||
-                (cat.includes(normalizedProductCategory) && normalizedProductCategory.length > 3) ||
-                (productTag.includes(cat) && cat.length > 3) ||
-                (cat.includes(productTag) && productTag.length > 3)
-              );
-              
-              return isMeaningfulContains;
-            });
-          }
-          
-          return false;
-        });
+    // Use the proper API endpoint for category-based filtering
+    this.productService.getProductsByCategory(this.activeCategory).subscribe({
+      next: (categoryProducts) => {
+        console.log(`Found ${categoryProducts.length} products for category '${this.activeCategory}'`);
         
-        console.log(`Category '${this.activeCategory}' found ${categoryMatches.length} matching products`);
-        
-        // For "All Collections" route, return all products
-        if (normalizedActiveCategory === '' || normalizedActiveCategory === 'all collections') {
-          categoryMatches = allProducts;
-        }
-
-        if (categoryMatches.length > 0) {
-          this.products = categoryMatches.map((product) => ({
+        if (categoryProducts.length > 0) {
+          this.products = categoryProducts.map((product) => ({
             ...product,
             imageUrl: product.imageUrl || product.galleryImages?.[0] || '/assets/images/products/placeholder.jpg',
             inStock: product.inStock ?? true,
@@ -225,16 +149,15 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
           }));
           this.filteredProducts = [...this.products];
         } else {
-          // If no products found for the category, show all products with a message
-          this.products = allProducts.map((product) => ({
-            ...product,
-            inWishlist: false,
-          }));
-          this.filteredProducts = [...this.products];
+          // If no products found for the category, show empty state
+          this.products = [];
+          this.filteredProducts = [];
+          console.log(`No products found for category '${this.activeCategory}'`);
         }
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading products for category:', this.activeCategory, err);
         this.products = [];
         this.filteredProducts = [];
         this.isLoading = false;

@@ -27,7 +27,7 @@
           <!-- Cart Items -->
           <div class="cart-item" *ngFor="let item of cartItems">
             <!-- Remove button -->
-            <div class="remove-item" (click)="onRemoveItem(item.product.id)">
+            <div class="remove-item" (click)="onRemoveItem(item.product?.id || '')">
               <fa-icon [icon]="['fas', 'times-circle']"></fa-icon>
             </div>
 
@@ -36,23 +36,23 @@
               <!-- Product Image -->
               <div class="product-image">
                 <img
-                  [src]="item.product.imageUrl || '/assets/images/products/placeholder.jpg'"
-                  [alt]="item.product.name"
+                  [src]="item.product?.imageUrl || '/assets/images/products/placeholder.jpg'"
+                  [alt]="item.product?.name || 'Product'"
                   onError="this.src='/assets/images/products/placeholder.jpg';"
                 />
               </div>
 
               <!-- Product Details -->
               <div class="product-details">
-                <h3 class="product-name">{{ item.product.name }}</h3>
-                <p class="product-specs" *ngIf="item.product.specs">{{ item.product.specs }}</p>
+                <h3 class="product-name">{{ item.product?.name || 'Product Unavailable' }}</h3>
+                <p class="product-specs" *ngIf="item.product?.specs">{{ item.product.specs }}</p>
               </div>
             </div>
 
             <!-- Product Price -->
             <div class="price-cell">
               <span class="price"
-                >{{ item.product.price | number : "1.0-0" }} {{ item.product.currency || "XAF" }}</span
+                >{{ (item.product?.price || 0) | number : "1.0-0" }} {{ item.product?.currency || "XAF" }}</span
               >
             </div>
 
@@ -66,7 +66,7 @@
                   type="number"
                   class="quantity-input"
                   [(ngModel)]="item.quantity"
-                  (change)="onQuantityUpdate(item.product.id, item.quantity)"
+                  (change)="onQuantityUpdate(item.product?.id || '', item.quantity)"
                   min="1"
                   max="99"
                 />
@@ -79,7 +79,7 @@
             <!-- Subtotal -->
             <div class="subtotal-cell">
               <span class="subtotal"
-                >{{ item.quantity * item.product.price | number : "1.0-0" }} {{ item.product.currency || "XAF" }}</span
+                >{{ item.quantity * (item.product?.price || 0) | number : "1.0-0" }} {{ item.product?.currency || "XAF" }}</span
               >
             </div>
           </div>

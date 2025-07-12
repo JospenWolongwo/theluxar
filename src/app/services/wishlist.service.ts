@@ -30,15 +30,38 @@ export class WishlistService extends BaseService {
    * Get observable for wishlist items
    */
   getWishlistItems(): Observable<WishlistItem[]> {
-    // Attempt to get wishlist from API first
-    return this.apiService.get<WishlistItem[]>('/wishlists', []).pipe(
-      catchError(() => {
+    console.log('Fetching wishlist items from /wishlists/user endpoint');
+    // Attempt to get wishlist from API first using the user endpoint
+    // Regular users should use /wishlists/user instead of /wishlists (which is admin-only)
+    return this.apiService.get<WishlistItem[]>('/wishlists/user', []).pipe(
+      catchError((error) => {
+        // Log specific error for debugging
+        if (error?.status === 403) {
+          console.warn('Wishlist access forbidden - user may not have proper roles assigned');
+        } else {
+          console.warn('Failed to load wishlist from API, using local data:', error);
+        }
+        console.log('Error details:', error);
         // If API call fails, return local wishlist
         return of(this.wishlistItems);
       }),
       tap((items) => {
-        // Update local wishlist with items from API
-        this.wishlistItems = items;
+        console.log('Successfully fetched wishlist items:', items);
+        // Validate wishlist items to ensure they have valid product information
+        const validItems = items.filter(item => {
+          if (!item || !item.product) {
+            console.warn('Wishlist item missing product information:', item);
+            return false;
+          }
+          if (!item.product.id || !item.product.name || item.product.price === undefined) {
+            console.warn('Wishlist item has incomplete product information:', item);
+            return false;
+          }
+          return true;
+        });
+        
+        // Update local wishlist with valid items from API
+        this.wishlistItems = validItems;
         
         // Ensure dates are parsed as Date objects
         this.wishlistItems.forEach((item) => {
@@ -154,7 +177,7 @@ export class WishlistService extends BaseService {
     });
     
     // Try to clear wishlist via API
-    this.apiService.delete<void>('/wishlist', undefined).pipe(
+    this.apiService.delete<void>('/wishlists', undefined).pipe(
       catchError(() => {
         // If API call fails, clear local wishlist
         this.wishlistItems = [];
@@ -191,15 +214,37 @@ export class WishlistService extends BaseService {
    * Load wishlist from local storage
    */
   private loadWishlist(): void {
-    // Try to load wishlist from API first
-    this.apiService.get<WishlistItem[]>('/wishlist', []).pipe(
-      catchError(() => {
+    // Try to load wishlist from API first using the user endpoint
+    // Regular users should use /wishlists/user instead of /wishlists (which is admin-only)
+    this.apiService.get<WishlistItem[]>('/wishlists/user', []).pipe(
+      catchError((error) => {
+        // Log specific error for debugging
+        if (error?.status === 403) {
+          console.warn('Wishlist access forbidden - user may not have proper roles assigned');
+        } else {
+          console.warn('Failed to load wishlist from API, using local data:', error);
+        }
+        console.log('Error details:', error);
+        
         // If API call fails, load from localStorage
         const storedWishlist = localStorage.getItem('wishlist');
         
         if (storedWishlist) {
           try {
             this.wishlistItems = JSON.parse(storedWishlist);
+            
+            // Validate wishlist items to ensure they have valid product information
+            this.wishlistItems = this.wishlistItems.filter(item => {
+              if (!item || !item.product) {
+                console.warn('Stored wishlist item missing product information:', item);
+                return false;
+              }
+              if (!item.product.id || !item.product.name || item.product.price === undefined) {
+                console.warn('Stored wishlist item has incomplete product information:', item);
+                return false;
+              }
+              return true;
+            });
             
             // Ensure dates are parsed as Date objects
             this.wishlistItems.forEach((item) => {
@@ -221,7 +266,20 @@ export class WishlistService extends BaseService {
         return of(this.wishlistItems);
       })
     ).subscribe((items) => {
-      this.wishlistItems = items;
+      // Validate wishlist items to ensure they have valid product information
+      const validItems = items.filter(item => {
+        if (!item || !item.product) {
+          console.warn('Wishlist item missing product information:', item);
+          return false;
+        }
+        if (!item.product.id || !item.product.name || item.product.price === undefined) {
+          console.warn('Wishlist item has incomplete product information:', item);
+          return false;
+        }
+        return true;
+      });
+      
+      this.wishlistItems = validItems;
       
       // Ensure dates are parsed as Date objects and flags are set
       this.wishlistItems.forEach((item) => {
@@ -233,6 +291,9 @@ export class WishlistService extends BaseService {
       
       this.wishlistSubject.next([...this.wishlistItems]);
       this.wishlistCountSubject.next(this.getItemsCount());
+      
+      // Update local storage
+      localStorage.setItem('wishlist', JSON.stringify(this.wishlistItems));
     });
   }
 }

@@ -3,29 +3,43 @@
     <!-- Flash Sale Section with Countdown -->
     <div class="section-header">
       <h2 class="section-title">Limited Time Offers</h2>
-      <div class="sale-countdown">
+      <div class="sale-countdown" *ngIf="!isCountdownExpired()">
         <span class="countdown-label">Sale ends in</span>
         <div class="countdown-timer">
           <div class="countdown-item">
-            <span class="countdown-value">12</span>
+            <span class="countdown-value">{{ formatTime(countdown.hours) }}</span>
             <span class="countdown-unit">H</span>
           </div>
           <div class="countdown-separator">:</div>
           <div class="countdown-item">
-            <span class="countdown-value">45</span>
+            <span class="countdown-value">{{ formatTime(countdown.minutes) }}</span>
             <span class="countdown-unit">M</span>
           </div>
           <div class="countdown-separator">:</div>
           <div class="countdown-item">
-            <span class="countdown-value">30</span>
+            <span class="countdown-value">{{ formatTime(countdown.seconds) }}</span>
             <span class="countdown-unit">S</span>
           </div>
         </div>
       </div>
+      <div class="sale-expired" *ngIf="isCountdownExpired()">
+        <span class="expired-label">Sale has ended</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading limited offers...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="error-state">
+      <p>Unable to load limited offers. Showing available products.</p>
     </div>
 
     <!-- Main grid container -->
-    <div class="product-sections-grid" [class.grid-mobile]="isMobile" [class.grid-tablet]="isTablet">
+    <div *ngIf="!isLoading" class="product-sections-grid" [class.grid-mobile]="isMobile" [class.grid-tablet]="isTablet">
       <!-- FLASH SALE Section -->
       <div class="product-section">
         <div class="section-header">
@@ -77,11 +91,11 @@
         </div>
       </div>
 
-      <!-- NEW ARRIVALS Section -->
+      <!-- NEW PRODUCTS Section -->
       <div class="product-section">
         <div class="section-header">
           <h3 class="section-title">New Arrivals</h3>
-          <a [routerLink]="['/new-arrivals']" class="view-all"> View All <fa-icon [icon]="faArrowRight"></fa-icon> </a>
+          <a [routerLink]="['/new-products']" class="view-all"> View All <fa-icon [icon]="faArrowRight"></fa-icon> </a>
         </div>
         <div class="product-cards">
           <app-flash-product-card

@@ -55,7 +55,7 @@ export class ProductGalleryComponent implements OnChanges {
 
   setupGallery(): void {
     // Setup the gallery with all available images
-    // For consistency and to avoid losing images, don't filter out duplicates
+    // Filter out duplicates to prevent showing the same image twice
     this.allImages = [];
 
     // Add main image first if it exists
@@ -63,9 +63,14 @@ export class ProductGalleryComponent implements OnChanges {
       this.allImages.push(this.mainImage);
     }
 
-    // Add all gallery images, even if they're identical to the main image
+    // Add gallery images, filtering out duplicates
     if (this.galleryImages && this.galleryImages.length > 0) {
-      this.allImages.push(...this.galleryImages);
+      // Add only unique images that aren't already in allImages
+      this.galleryImages.forEach(img => {
+        if (!this.allImages.includes(img)) {
+          this.allImages.push(img);
+        }
+      });
     }
 
     // Fallback if there are no images

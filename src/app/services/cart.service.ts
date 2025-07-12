@@ -30,7 +30,55 @@ export class CartService extends BaseService {
   getCartItems(): Observable<CartItem[]> {
     // Get cart items from API if possible, fall back to local cart
     return this.apiService.get<CartItem[]>('/carts', []).pipe(
-      catchError(() => {
+      map((items) => {
+        console.log('Raw cart items from API:', items);
+        // Validate and fix cart items to ensure they have complete product information
+        return items.map((item) => {
+          console.log('Processing cart item:', item);
+          // If item doesn't have a product or product is incomplete, create a fallback
+          if (!item.product || !item.product.id) {
+            console.warn('Cart item missing product information:', item);
+            return {
+              product: {
+                id: (item as any).id || 'unknown',
+                name: 'Product Unavailable',
+                price: 0,
+                currency: 'XAF',
+                imageUrl: '/assets/images/products/placeholder.jpg',
+                description: 'Product information not available',
+                category: 'Unknown',
+                brand: 'Unknown',
+                specs: '',
+                label: '',
+                stocks: []
+              } as any,
+              quantity: item.quantity || 1
+            };
+          }
+          
+          // Ensure product has all required fields
+          const product = {
+            ...item.product,
+            imageUrl: item.product.imageUrl || '/assets/images/products/placeholder.jpg',
+            currency: item.product.currency || 'XAF',
+            name: item.product.name || 'Product',
+            price: item.product.price || 0,
+            description: item.product.description || '',
+            category: item.product.category || 'Unknown',
+            brand: item.product.brand || 'Unknown',
+            specs: item.product.specs || '',
+            label: item.product.label || '',
+            stocks: item.product.stocks || []
+          };
+          
+          return {
+            product,
+            quantity: item.quantity || 1
+          };
+        });
+      }),
+      catchError((error) => {
+        console.error('Error fetching cart items:', error);
         // If API call fails, return the local cart
         return of(this.cartItems);
       }),
@@ -146,12 +194,21 @@ export class CartService extends BaseService {
   }
 
   getSubtotal(): number {
-    return this.cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    return this.cartItems.reduce((total, item) => {
+      if (!item || !item.product || item.product.price === undefined) {
+        return total;
+      }
+      return total + item.product.price * item.quantity;
+    }, 0);
   }
 
   getDiscount(): number {
     // Calculate discount if applicable
     return this.cartItems.reduce((total, item) => {
+      if (!item || !item.product || item.product.price === undefined) {
+        return total;
+      }
+      
       // Get discount from stocks if available, otherwise default to 0
       const discount = this.getProductDiscount(item.product);
 
@@ -209,7 +266,7 @@ export class CartService extends BaseService {
 
   private loadCart(): void {
     // Try to load cart from API first
-    this.apiService.get<CartItem[]>('/cart', [])
+    this.apiService.get<CartItem[]>('/carts', [])
       .pipe(
         catchError(() => {
           // If API call fails, load from localStorage
@@ -228,7 +285,17 @@ export class CartService extends BaseService {
         })
       )
       .subscribe((items) => {
-        this.cartItems = items;
+        // Validate cart items to ensure they have valid product information
+        this.cartItems = items.filter(item => {
+          if (!item || !item.product) {
+            return false;
+          }
+          if (!item.product.id || !item.product.name || item.product.price === undefined) {
+            return false;
+          }
+          return true;
+        });
+        
         this.cartSubject.next([...this.cartItems]);
         this.cartCountSubject.next(this.getTotalItems());
       });

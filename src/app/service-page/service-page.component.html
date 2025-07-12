@@ -14,8 +14,19 @@
       </p>
     </div>
 
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading our luxury services...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="error-state">
+      <p>Unable to load service information. Showing available services.</p>
+    </div>
+
     <!-- Service Categories Grid -->
-    <div class="service-categories-grid" [class.service-categories-grid-mobile]="currentScreenSize.ltSm">
+    <div *ngIf="!isLoading" class="service-categories-grid" [class.service-categories-grid-mobile]="currentScreenSize.ltSm">
       <div
         *ngFor="let category of serviceCategories"
         class="service-category-card"
@@ -52,7 +63,7 @@
         />
       </div>
     </div>
-  </div>
+    
 
   <!-- Testimonials Section -->
   <div class="testimonials-section" [class.testimonials-section-mobile]="currentScreenSize.ltSm">
@@ -133,4 +144,5 @@
     [isMobile]="currentScreenSize.ltSm"
     [isTablet]="currentScreenSize.ltLg && !currentScreenSize.ltSm"
   ></app-newsletter>
+  </div>
 </main>

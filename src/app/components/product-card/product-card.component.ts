@@ -174,7 +174,6 @@ export class ProductCardComponent implements OnInit {
       normalizedPath = `/assets/${normalizedPath}`;
     }
 
-    console.log(`Normalized image path: ${normalizedPath} from ${this.product.imageUrl}`);
     return normalizedPath;
   }
 
@@ -206,7 +205,6 @@ export class ProductCardComponent implements OnInit {
     }
 
     const path = this.imageSrc;
-    console.log(`getImageSource returning: ${path} for product ${this.product.name}`);
     return path;
   }
 

@@ -11,12 +11,16 @@ import type { Product } from '../../shared/types/product.type';
 import { generateProductSlug } from '../../shared/utils/string.utils';
 import { ApiService } from './api.service';
 import { BaseService } from './base.service';
+import { ReviewsService } from './reviews.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService extends BaseService {
-  constructor(private apiService: ApiService) {
+  constructor(
+    private apiService: ApiService,
+    private reviewsService: ReviewsService
+  ) {
     super();
   }
 
@@ -56,6 +60,10 @@ export class ProductService extends BaseService {
             inStock: product.inStock ?? true,
             shortDescription: product.shortDescription || '',
             inWishlist: product.inWishlist ?? false,
+            // Preserve category data - critical for filtering
+            category: product.category || null,
+            categoryName: product.categoryName || '',
+            tag: product.tag || '',
             stocks: this.normalizeStocks(product.stocks),
             reviews: this.normalizeReviews(product.reviews),
             rating: product.rating || this.calculateAverageRating(product.reviews),
@@ -180,32 +188,25 @@ export class ProductService extends BaseService {
    * @param productId Product ID
    */
   getProductReviews(productId: string): Observable<Product['reviews']> {
-    const endpoint = `/reviews/product/${productId}`;
-    
-    // Create fallback reviews data - convert REVIEWS (type Review[]) to ApiReview[] 
-    const fallbackReviews = REVIEWS.filter(() => Math.random() > 0.5)
-      .map(review => {
-        return {
-          id: review.id?.toString(), // Convert possible number id to string
+    // Use the ReviewsService to get reviews
+    return this.reviewsService.getReviewsByProduct(productId).pipe(
+      map((reviews) => {
+        // Convert Review[] to the format expected by Product interface
+        return reviews.map(review => ({
+          id: typeof review.id === 'string' ? review.id : review.id?.toString() || '',
+          username: review.username || 'Anonymous',
+          comment: review.comment || '',
           rating: review.rating,
-          comment: review.reviewText,
-          user: { email: review.name },
-          username: review.name,
-          title: review.position || '',
-          feedbackDetails: review.reviewText,
-          feedbackSummary: review.position,
-          createdAt: review.date || new Date().toISOString(),
-          verified: true,
-          helpful: 0,
-          notHelpful: 0,
-          content: review.reviewText,
-          imageUrl: review.imageUrl,
+          title: review.title || '',
+          date: review.date,
+          verified: review.verified || false,
+          helpful: review.helpful || 0,
+          notHelpful: review.notHelpful || 0,
+          content: review.content || '',
+          imageUrl: review.imageUrl || '',
           position: review.position
-        } as ApiReview;
-      });
-    
-    return this.apiService.get<ApiReview[]>(endpoint, fallbackReviews).pipe(
-      map((reviews) => this.normalizeReviews(reviews))
+        }));
+      })
     );
   }
 
@@ -315,97 +316,254 @@ export class ProductService extends BaseService {
   getProductsByCategory(categoryNameOrId: string, limit?: number, currentProductId?: string): Observable<Product[]> {
     const endpoint = `/products/category/${categoryNameOrId}${limit ? `?limit=${limit}` : ''}`;
     
-    // Create fallback logic - filter mock products by category
-    const fallback$ = this.getProducts().pipe(
-      map((products) => {
-        // Normalize the category input to lowercase for more flexible matching
-        const normalizedCategoryInput = categoryNameOrId.toLowerCase().trim();
-        const normalizedCategoryInputPlural = normalizedCategoryInput.endsWith('s') ? normalizedCategoryInput : `${normalizedCategoryInput}s`;
-
-        // Filter products by category name or ID
-        let filteredProducts = products.filter((product: Product) => {
-          // Try to match by categoryName field if exists
-          if (product.categoryName) {
-            const productCategoryName = product.categoryName.toLowerCase();
-            if (productCategoryName.includes(normalizedCategoryInput) || 
-                productCategoryName.includes(normalizedCategoryInputPlural)) {
-              return true;
-            }
-          }
-          
-          // Check category if available
-          if (product.category) {
-            const category = product.category;
-            const catName = (category.name || '').toLowerCase();
-            const catId = (category.id || '').toLowerCase();
-            
-            return (
-              catName === normalizedCategoryInput ||
-              catName === normalizedCategoryInputPlural ||
-              catName.includes(normalizedCategoryInput) ||
-              catName.includes(normalizedCategoryInputPlural) ||
-              catId === normalizedCategoryInput
-            );
-          }
-          
-          return false;
-        });
-        
-        // Exclude the current product if ID is provided
-        if (currentProductId) {
-          filteredProducts = filteredProducts.filter((product) => product.id !== currentProductId);
-        }
-
-        // Apply limit if specified
-        if (limit && limit > 0 && filteredProducts.length > limit) {
-          filteredProducts = filteredProducts.slice(0, limit);
-        }
-        
-        // If no products found, return a fallback selection
-        if (filteredProducts.length === 0) {
-          // Exclude current product from all products
-          let fallbackProducts = products;
-          if (currentProductId) {
-            fallbackProducts = fallbackProducts.filter(p => p.id !== currentProductId);
-          }
-          // Take a random selection
-          const maxProducts = Math.min(limit || 4, fallbackProducts.length);
-          filteredProducts = fallbackProducts.slice(0, maxProducts);
-        }
-
-        return filteredProducts;
-      })
-    );
+    console.log('getProductsByCategory called with:', { categoryNameOrId, limit, currentProductId });
+    console.log('Making API request to:', endpoint);
     
-    // Attempt to call the real API endpoint with fallback to local filtering
+    // Normalize and map category names - backend category names are capitalized
+    // and don't always exactly match route names (e.g. 'perfumes' route vs 'Perfumes' category)
+    const normalizedRouteCategory = categoryNameOrId;
+    const backendCategoryMap: Record<string, string> = {
+      'watches': 'Watches',
+      'jewelry': 'Jewelry',
+      'perfumes': 'Perfumes',
+      'kids': 'Kids',
+      'men': 'Men',  // Special handling
+      'women': 'Women',  // Special handling
+    };
+    
+    // If there's a direct mapping for this route category, use it
+    let targetBackendCategory = backendCategoryMap[normalizedRouteCategory.toLowerCase()];
+    if (targetBackendCategory) {
+      console.log(`Mapped route category '${normalizedRouteCategory}' to backend category: ${targetBackendCategory}`);
+    } else {
+      // If no mapping exists, just capitalize the first letter for consistency
+      targetBackendCategory = normalizedRouteCategory.charAt(0).toUpperCase() + normalizedRouteCategory.slice(1);
+      console.log(`No mapping found, using normalized category: ${targetBackendCategory}`);
+    }
+    
+    // Try the API endpoint first
     return this.apiService.get<Product[]>(endpoint, []).pipe(
-      catchError((err: Error) => fallback$),
       map((products: any[]) => {
-        return products.map((product: any) => {
-          // Standard normalization of product data
-          const idPart = product.id?.substring(0, 8) || '';
+        console.log('API response products:', products.length);
+        console.log('API response sample:', products[0]);
+        
+        // If API returns products, use them
+        if (products.length > 0) {
+          // Normalize the products to match our Product type
+          const normalizedProducts = products.map((product: any) => {
+            const idPart = product.id?.substring(0, 8) || '';
+            
+            return {
+              ...product as object,
+              id: product.id || '',
+              name: product.name || 'Unknown Product',
+              specs: product.specs || '',
+              price: Number(product.price || 0),
+              currency: product.currency || 'XAF',
+              imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
+              galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
+              features: product.features || [],
+              label: product.label || null,
+              labelColor: product.labelColor || '#000000',
+              inStock: product.inStock ?? true,
+              shortDescription: product.shortDescription || '',
+              inWishlist: product.inWishlist ?? false,
+              stocks: this.normalizeStocks(product.stocks as ApiStock[] | undefined),
+              reviews: this.normalizeReviews(product.reviews as ApiReview[] | undefined),
+              rating: product.rating || this.calculateAverageRating(product.reviews as ApiReview[] | undefined),
+              slug: generateProductSlug(product.name || 'product', idPart),
+              category: product.category || null,
+              categoryName: product.categoryName || product.category?.name || null
+            } as Product;
+          });
           
-          return {
-            ...product as object,
-            id: product.id || '',
-            name: product.name || 'Unknown Product',
-            specs: product.specs || '',
-            price: Number(product.price || 0),
-            currency: product.currency || 'XAF',
-            imageUrl: product.imageUrl || '/assets/images/products/placeholder.jpg',
-            galleryImages: product.galleryImages || (product.imageUrl ? [product.imageUrl] : ['/assets/images/products/placeholder.jpg']),
-            features: product.features || [],
-            label: product.label || null,
-            labelColor: product.labelColor || '#000000',
-            inStock: product.inStock ?? true,
-            shortDescription: product.shortDescription || '',
-            inWishlist: product.inWishlist ?? false,
-            stocks: this.normalizeStocks(product.stocks as ApiStock[] | undefined),
-            reviews: this.normalizeReviews(product.reviews as ApiReview[] | undefined),
-            rating: product.rating || this.calculateAverageRating(product.reviews as ApiReview[] | undefined),
-            slug: generateProductSlug(product.name || 'product', idPart)
-          } as Product;
-        });
+          // Exclude current product if specified
+          if (currentProductId) {
+            const filteredProducts = normalizedProducts.filter(p => p.id !== currentProductId);
+            console.log('After excluding current product:', filteredProducts.length);
+            return filteredProducts;
+          }
+          
+          return normalizedProducts;
+        } else {
+          console.log('API returned 0 products, will use fallback logic');
+          throw new Error('No products returned from API');
+        }
+      }),
+      catchError((err: Error) => {
+        console.log('API call failed for endpoint:', endpoint);
+        console.log('Error details:', err);
+        
+        // Fallback: Get limited products and filter by category
+        return this.getProducts(limit || 50).pipe(
+          map((allProducts) => {
+            console.log('Fallback: Got', allProducts.length, 'products to filter');
+            
+            // DEBUG: Inspect the first few products to see what they contain
+            console.log('DEBUG - First 3 products structure:', JSON.stringify(allProducts.slice(0, 3).map(p => {
+              return {
+                id: p.id,
+                name: p.name,
+                category: p.category,
+                categoryName: p.categoryName,
+                hasCategory: !!p.category,
+                hasCategoryName: !!p.categoryName
+              };
+            })));
+            
+            // Force re-parse the mock products to ensure we get correct structure
+            // This addresses any potential serialization/deserialization issues
+            const processedProducts = [...MOCK_PRODUCTS].map(p => ({
+              ...p,
+              // Ensure category is properly structured
+              category: p.category,
+              categoryName: p.categoryName || p.category?.name || ''
+            }));
+            
+            // Log the full list of unique category names from processed products
+            const uniqueCategories = [...new Set(processedProducts
+              .map(p => p.category?.name || p.categoryName || '')
+              .filter(name => !!name))];
+            console.log('Available unique categories in processed products:', uniqueCategories);
+            
+            // Use normalized route category for filtering
+            const normalizedCategoryInput = categoryNameOrId.toLowerCase().trim();
+            console.log('Looking for category:', normalizedCategoryInput);
+            console.log('Target backend category:', targetBackendCategory);
+            
+            // Use processedProducts (direct from MOCK_PRODUCTS) instead of allProducts
+            // This ensures we have properly structured category information
+            console.log('Filtering', processedProducts.length, 'processed products instead of', allProducts.length, 'original products');
+            
+            // Filter products by category
+            let filteredProducts = processedProducts.filter((product: Product) => {
+              // Direct category match - this is the primary matching method
+              const productCatName = product.category?.name || product.categoryName || '';
+              
+              // PERFUMES CATEGORY
+              if (normalizedCategoryInput === 'perfumes') {
+                if (productCatName === 'Perfumes') {
+                  console.log(`Perfumes category match:`, product.name);
+                  return true;
+                }
+                return false;
+              }
+              
+              // JEWELRY CATEGORY
+              if (normalizedCategoryInput === 'jewelry') {
+                if (productCatName === 'Jewelry') {
+                  console.log(`Jewelry category match:`, product.name);
+                  return true;
+                }
+                return false;
+              }
+              
+              // WATCHES CATEGORY
+              if (normalizedCategoryInput === 'watches') {
+                if (productCatName === 'Watches') {
+                  console.log(`Watches category match:`, product.name);
+                  return true;
+                }
+                return false;
+              }
+              
+              // KIDS CATEGORY
+              if (normalizedCategoryInput === 'kids') {
+                if (productCatName === 'Kids') {
+                  console.log(`Kids category match:`, product.name);
+                  return true;
+                }
+                return false;
+              }
+              
+              // Special handling for MEN category
+              if (normalizedCategoryInput === 'men') {
+                // Products specifically for men in Watches or Perfumes categories
+                if (productCatName === 'Watches' || productCatName === 'Perfumes') {
+                  const productName = (product.name || '').toLowerCase();
+                  const productSpecs = (product.specs || '').toLowerCase();
+                  
+                  // Check if specifically for men
+                  if (productName.includes('men') || 
+                      productSpecs.includes('men') || 
+                      productName.includes('cologne') ||
+                      productName.includes('gentleman') ||
+                      productName.includes('chronograph')) {
+                    console.log('Men category match:', product.name);
+                    return true;
+                  }
+                }
+                return false;
+              }
+              
+              // Special handling for WOMEN category
+              if (normalizedCategoryInput === 'women') {
+                // Most jewelry and women's perfumes
+                if (productCatName === 'Jewelry' || productCatName === 'Perfumes') {
+                  // Exclude children's jewelry
+                  const productName = (product.name || '').toLowerCase();
+                  if (!productName.includes('children') && !productName.includes('kid')) {
+                    // For perfumes, check if specifically for women
+                    if (productCatName === 'Perfumes') {
+                      const productSpecs = (product.specs || '').toLowerCase();
+                      if (!productSpecs.includes('men') && 
+                          (productName.includes('women') || 
+                           productName.includes('ladies') ||
+                           productName.includes('parfum'))) {
+                        console.log('Women category perfume match:', product.name);
+                        return true;
+                      }
+                      return false;
+                    }
+                    
+                    // Assume jewelry is for women unless explicitly for men or children
+                    console.log('Women category jewelry match:', product.name);
+                    return true;
+                  }
+                }
+                return false;
+              }
+              
+              // For other categories, use exact matching with the backend category name
+              
+              // Direct match with backend category name (case-sensitive)
+              if (productCatName === targetBackendCategory) {
+                console.log(`Direct match found by category name:`, product.name);
+                return true;
+              }
+              
+              // Case-insensitive category name match
+              if (productCatName.toLowerCase() === targetBackendCategory.toLowerCase()) {
+                console.log(`Case-insensitive match found by category name:`, product.name);
+                return true;
+              }
+              
+              // Check tag field for categories like "jewelry"
+              if (product.tag) {
+                const productTag = product.tag.toLowerCase();
+                if (productTag === normalizedCategoryInput) {
+                  console.log('Match found by tag:', productTag);
+                  return true;
+                }
+              }
+              
+              return false;
+            });
+            
+            // Exclude current product if specified
+            if (currentProductId) {
+              filteredProducts = filteredProducts.filter(p => p.id !== currentProductId);
+            }
+            
+            // Apply limit
+            if (limit && limit > 0 && filteredProducts.length > limit) {
+              filteredProducts = filteredProducts.slice(0, limit);
+            }
+            
+            console.log('Final filtered products:', filteredProducts.length);
+            return filteredProducts;
+          })
+        );
       })
     );
   }

@@ -344,6 +344,25 @@
       margin-right: spacing.$base-space;
       color: var.$gray-700;
     }
+    
+    // Apply primary color background to mat-menu dropdown
+    .mat-mdc-menu-panel {
+      background-color: var.$primary;
+      
+      .mat-mdc-menu-item {
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.3); // Lighten on hover
+        }
+        
+        span {
+          color: var.$white; // Make text white for better visibility
+        }
+        
+        .menu-icon {
+          color: var.$white; // Also make icons white for better visibility
+        }
+      }
+    }
   }
 }
 
