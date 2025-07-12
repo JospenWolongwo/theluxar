@@ -56,10 +56,10 @@ export class ProductFilterComponent {
       type: 'radio',
       options: [
         { name: 'All prices', value: 'all', count: 0, checked: true },
-        { name: '$0 - $500', value: '0-500', count: 0, checked: false },
-        { name: '$500 - $1,000', value: '500-1000', count: 0, checked: false },
-        { name: '$1,000 - $5,000', value: '1000-5000', count: 0, checked: false },
-        { name: '$5,000+', value: '5000-plus', count: 0, checked: false },
+        { name: 'XAF 0 - XAF 500', value: '0-500', count: 0, checked: false },
+        { name: 'XAF 500 - XAF 1,000', value: '500-1000', count: 0, checked: false },
+        { name: 'XAF 1,000 - XAF 5,000', value: '1000-5000', count: 0, checked: false },
+        { name: 'XAF 5,000+', value: '5000-plus', count: 0, checked: false },
       ],
     },
     {
@@ -131,10 +131,10 @@ export class ProductFilterComponent {
       title: 'PRICE RANGE',
       type: 'checkbox',
       options: [
-        { name: 'Under $500', value: 'under-500', count: 45, checked: false },
-        { name: '$500 - $1,000', value: '500-1000', count: 32, checked: false },
-        { name: '$1,000 - $5,000', value: '1000-5000', count: 28, checked: false },
-        { name: 'Over $5,000', value: 'over-5000', count: 15, checked: false },
+        { name: 'Under XAF 500', value: 'under-500', count: 45, checked: false },
+        { name: 'XAF 500 - XAF 1,000', value: '500-1000', count: 32, checked: false },
+        { name: 'XAF 1,000 - XAF 5,000', value: '1000-5000', count: 28, checked: false },
+        { name: 'Over XAF 5,000', value: 'over-5000', count: 15, checked: false },
       ],
     },
     {
