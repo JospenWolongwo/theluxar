@@ -1,10 +1,10 @@
 export const environment = {
   production: true,
-  apiUrl: '/api',
-  apiBaseUrl: '/api',
+  apiUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/api',
+  apiBaseUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/api',
   auth: {
-    baseUrl: '/auth',
-    userUrl: '/users',
+    baseUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/auth',
+    userUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/users',
     clientDelimiter: '//',
     cookieNames: {
       accessToken: 'BAL_ess',

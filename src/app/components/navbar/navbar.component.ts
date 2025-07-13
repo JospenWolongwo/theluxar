@@ -139,7 +139,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       
       // Build complete login URL with properly encoded redirect parameter
       const backendUrl = environment.production ? 
-        'https://api.theluxar.com' : 
+        'https://theluxarapi-4s3ok4xm.b4a.run' : 
         'http://localhost:3000';
       
       const loginUrl = `${backendUrl}/auth/login?redirect=${encodeURIComponent(redirectParam)}`;
