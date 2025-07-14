@@ -17,6 +17,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import type { Link } from '../../../shared/types';
 import { environment } from '../../../environments/environment';
+import { PRODUCTION_API_URL } from '../../../environments/environment.prod';
 import { AuthService } from '../../auth/services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
@@ -138,8 +139,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
       const redirectParam = `${clientName}:${returnUrl}`;
       
       // Build complete login URL with properly encoded redirect parameter
+      // Use the direct PRODUCTION_API_URL in production to ensure Netlify builds use the correct URL
       const backendUrl = environment.production ? 
-        'https://theluxarapi-4s3ok4xm.b4a.run' : 
+        PRODUCTION_API_URL : 
         'http://localhost:3000';
       
       const loginUrl = `${backendUrl}/auth/login?redirect=${encodeURIComponent(redirectParam)}`;
