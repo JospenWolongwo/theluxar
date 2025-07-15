@@ -27,7 +27,7 @@ export class ApiService {
       console.warn('Forcing production API URL');
       
       // Force use of production API URL when on production domain
-      const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run/api';
+      const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run';
       const url = `${productionApiUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
       console.log(`Making forced production API request to: ${url}`);
       
@@ -107,7 +107,7 @@ export class ApiService {
    * @returns Observable of the response or fallback
    */
   private tryProductionApi<T>(endpoint: string, fallbackData?: T): Observable<T> {
-    const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run/api';
+    const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run';
     const fallbackUrl = `${productionApiUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     
     console.log(`Making fallback API request to: ${fallbackUrl}`);

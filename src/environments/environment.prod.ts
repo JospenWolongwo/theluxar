@@ -3,8 +3,8 @@ console.log('Loading PRODUCTION environment');
 
 export const environment = {
   production: true,
-  apiUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/api',
-  apiBaseUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/api',
+  apiUrl: 'https://theluxarapi-4s3ok4xm.b4a.run',
+  apiBaseUrl: 'https://theluxarapi-4s3ok4xm.b4a.run',
   auth: {
     baseUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/auth',
     userUrl: 'https://theluxarapi-4s3ok4xm.b4a.run/users',
