@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { map, catchError, of } from 'rxjs';
+import { map, catchError, of, tap } from 'rxjs';
 import { MOCK_PRODUCTS } from '../../shared/data/products.data';
 import { REVIEWS } from '../../shared/data/reviews.data';
 import type { Review } from '../../shared/types/review.type';
@@ -12,6 +12,7 @@ import { generateProductSlug } from '../../shared/utils/string.utils';
 import { ApiService } from './api.service';
 import { BaseService } from './base.service';
 import { ReviewsService } from './reviews.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -37,8 +38,22 @@ export class ProductService extends BaseService {
     if (limit && fallbackProducts.length > limit) {
       fallbackProducts = fallbackProducts.slice(0, limit);
     }
+    
+    // In production, log explicit info about API requests
+    if (environment.production) {
+      console.log(`[ProductService] Getting products in PRODUCTION environment`);
+      console.log(`[ProductService] API Base URL: ${environment.apiBaseUrl}`);
+      console.log(`[ProductService] Full endpoint: ${environment.apiBaseUrl}${endpoint}`);
+    }
 
     return this.apiService.get<Product[]>(endpoint, fallbackProducts).pipe(
+      tap(products => {
+        console.log(`[ProductService] Received ${products?.length || 0} products from API`);
+        // Check if we're actually getting mock data
+        if (products && products[0] && products[0].id === MOCK_PRODUCTS[0].id) {
+          console.warn('[ProductService] WARNING: Using mock product data - API call might have failed');
+        }
+      }),
       map((products) => {
         return products.map((product: any) => {
           // Generate the product ID part for the slug
@@ -89,7 +104,19 @@ export class ProductService extends BaseService {
     const mockProduct = MOCK_PRODUCTS.find(product => product.id === id);
     const fallbackData = mockProduct || MOCK_PRODUCTS[0]; // Use first product as fallback if no match
     
+    // In production, log explicit info about API requests
+    if (environment.production) {
+      console.log(`[ProductService] Getting product by ID in PRODUCTION environment: ${id}`);
+      console.log(`[ProductService] API Base URL: ${environment.apiBaseUrl}`);
+      console.log(`[ProductService] Full endpoint: ${environment.apiBaseUrl}${endpoint}`);
+    }
+    
     return this.apiService.get<Product>(endpoint, fallbackData).pipe(
+      tap(product => {
+        if (product && product.id === fallbackData.id && mockProduct) {
+          console.warn('[ProductService] WARNING: Using mock product data - API call might have failed');
+        }
+      }),
       map((product: any) => ({
         ...product,
         id: product.id || '',
@@ -217,19 +244,35 @@ export class ProductService extends BaseService {
    * @param size Results per page (default: 10)
    */
   searchProducts(query: string, page = 1, size = 10): Observable<Product[]> {
-    const endpoint = `/products/search?q=${query}&page=${page}&size=${size}`;
+    const endpoint = `/products/search?q=${encodeURIComponent(query)}&page=${page}&size=${size}`;
     
-    // Filter mock products for fallback data
-    const normalizedQuery = query.toLowerCase();
-    const fallbackProducts = MOCK_PRODUCTS.filter((product) => {
-      return (
-        product.name?.toLowerCase().includes(normalizedQuery) ||
-        product.shortDescription?.toLowerCase().includes(normalizedQuery) ||
-        product.categoryName?.toLowerCase().includes(normalizedQuery)
-      );
+    // For fallback, filter mock products based on query
+    const fallbackData = MOCK_PRODUCTS.filter(product => {
+      const searchableText = [
+        product.name,
+        product.description,
+        product.shortDescription,
+        product.categoryName,
+        product.tag,
+      ].filter(Boolean).join(' ').toLowerCase();
+      
+      return searchableText.includes(query.toLowerCase());
     });
     
-    return this.apiService.get<Product[]>(endpoint, fallbackProducts).pipe(
+    // In production, log explicit info about API requests
+    if (environment.production) {
+      console.log(`[ProductService] Searching products in PRODUCTION environment: "${query}"`);
+      console.log(`[ProductService] API Base URL: ${environment.apiBaseUrl}`);
+      console.log(`[ProductService] Full endpoint: ${environment.apiBaseUrl}${endpoint}`);
+    }
+
+    return this.apiService.get<Product[]>(endpoint, fallbackData).pipe(
+      tap(products => {
+        console.log(`[ProductService] Search returned ${products?.length || 0} products`);
+        if (products?.length > 0 && products[0].id === fallbackData[0]?.id) {
+          console.warn('[ProductService] WARNING: Using mock product data for search - API call might have failed');
+        }
+      }),
       map((products: any[]) => {
         return products.map((product: any) => {
           // Generate the product ID part for the slug
@@ -314,6 +357,11 @@ export class ProductService extends BaseService {
    * @param currentProductId Optional current product ID to exclude from results
    */
   getProductsByCategory(categoryNameOrId: string, limit?: number, currentProductId?: string): Observable<Product[]> {
+    // In production, log explicit info about API requests
+    if (environment.production) {
+      console.log(`[ProductService] Getting products by category in PRODUCTION: ${categoryNameOrId}`);
+      console.log(`[ProductService] API Base URL: ${environment.apiBaseUrl}`);
+    }
     const endpoint = `/products/category/${categoryNameOrId}${limit ? `?limit=${limit}` : ''}`;
     
     console.log('getProductsByCategory called with:', { categoryNameOrId, limit, currentProductId });
