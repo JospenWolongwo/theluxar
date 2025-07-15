@@ -25,12 +25,44 @@ export class ApiService {
     
     console.log(`Making API request to: ${url}`);
     
+    // First try with responseType: 'json' which is the default
     return this.http.get<T>(url, this.httpOptions).pipe(
       tap((response) => {
         console.log(`API response from ${endpoint}:`, response);
       }),
       catchError((error) => {
         console.warn(`API request failed for ${endpoint}:`, error);
+        
+        // If we got a parse error but the status was 200, try with text response type
+        if (error.status === 200 && error.message && error.message.includes('parsing')) {
+          console.log(`Retrying ${endpoint} as text response`);
+          return this.http.get(url, { 
+            ...this.httpOptions, 
+            responseType: 'text' 
+          }).pipe(
+            map(textResponse => {
+              console.log(`Received text response from ${endpoint}:`, textResponse);
+              try {
+                // Try to parse the text as JSON
+                const jsonResponse = JSON.parse(textResponse);
+                return jsonResponse as T;
+              } catch (parseError) {
+                console.error(`Failed to parse text response as JSON:`, parseError);
+                // If parsing fails and we have fallback data, return it
+                if (fallbackData !== undefined) {
+                  return fallbackData;
+                }
+                // Otherwise throw an error
+                throw new Error(`Response from ${endpoint} is not valid JSON`);
+              }
+            }),
+            catchError(secondError => {
+              console.error(`Second attempt failed for ${endpoint}:`, secondError);
+              return this.handleError(error, fallbackData);
+            })
+          );
+        }
+        
         return this.handleError(error, fallbackData);
       })
     );
