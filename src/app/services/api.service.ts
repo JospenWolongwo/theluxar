@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, throwError, of, tap } from 'rxjs';
+import { Observable, catchError, map, throwError, of, tap, switchMap, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -16,54 +16,106 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Generic GET request with error handling and optional fallback
+   * Make a GET request with intelligent fallback strategies
    * @param endpoint API endpoint path
    * @param fallbackData Optional fallback data to return if API call fails
    */
   public get<T>(endpoint: string, fallbackData?: T): Observable<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Check if we're in production domain (theluxar.com) but using relative URL patterns
+    if (this.baseUrl.startsWith('/') && window.location.href.includes('theluxar.com')) {
+      console.warn(`Using relative API path in production may cause issues: ${this.baseUrl}`);
+      console.warn('Forcing production API URL');
+      
+      // Force use of production API URL when on production domain
+      const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run/api';
+      const url = `${productionApiUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+      console.log(`Making forced production API request to: ${url}`);
+      
+      // Try the production API URL directly
+      return this.http.get<T>(url, this.httpOptions).pipe(
+        tap(response => console.log(`API response from forced production URL ${url}:`, response)),
+        catchError(error => this.handleError(error, fallbackData))
+      );
+    }
     
+    // Standard request for non-production or correctly configured environments
+    const url = `${this.baseUrl}${endpoint}`;
     console.log(`Making API request to: ${url}`);
     
-    // First try with responseType: 'json' which is the default
     return this.http.get<T>(url, this.httpOptions).pipe(
-      tap((response) => {
-        console.log(`API response from ${endpoint}:`, response);
-      }),
-      catchError((error) => {
+      tap(response => console.log(`API response from ${endpoint}:`, response)),
+      catchError(error => {
         console.warn(`API request failed for ${endpoint}:`, error);
         
         // If we got a parse error but the status was 200, try with text response type
         if (error.status === 200 && error.message && error.message.includes('parsing')) {
           console.log(`Retrying ${endpoint} as text response`);
-          return this.http.get(url, { 
-            ...this.httpOptions, 
-            responseType: 'text' 
-          }).pipe(
-            map(textResponse => {
-              console.log(`Received text response from ${endpoint}:`, textResponse);
-              try {
-                // Try to parse the text as JSON
-                const jsonResponse = JSON.parse(textResponse);
-                return jsonResponse as T;
-              } catch (parseError) {
-                console.error(`Failed to parse text response as JSON:`, parseError);
-                // If parsing fails and we have fallback data, return it
-                if (fallbackData !== undefined) {
-                  return fallbackData;
-                }
-                // Otherwise throw an error
-                throw new Error(`Response from ${endpoint} is not valid JSON`);
-              }
-            }),
-            catchError(secondError => {
-              console.error(`Second attempt failed for ${endpoint}:`, secondError);
-              return this.handleError(error, fallbackData);
-            })
-          );
+          
+          return this.handleTextResponse<T>(url, endpoint, fallbackData);
         }
         
         return this.handleError(error, fallbackData);
+      })
+    );
+  }
+  
+  /**
+   * Try to handle response as text and parse as JSON or use fallback strategies
+   * @param url The URL to request
+   * @param endpoint Original endpoint for logging
+   * @param fallbackData Optional fallback data
+   * @returns Observable of the parsed response or fallback
+   */
+  private handleTextResponse<T>(url: string, endpoint: string, fallbackData?: T): Observable<T> {
+    return this.http.get(url, { ...this.httpOptions, responseType: 'text' }).pipe(
+      switchMap(textResponse => {
+        console.log(`Received text response from ${endpoint}:`, textResponse);
+        
+        // Check if response is HTML instead of JSON
+        if (typeof textResponse === 'string' && 
+            (textResponse.trim().startsWith('<!DOCTYPE') || 
+             textResponse.trim().startsWith('<html'))) {
+          console.error('Received HTML instead of JSON. This indicates a server routing issue.');
+          console.warn('Falling back to production API URL');
+          
+          return this.tryProductionApi<T>(endpoint, fallbackData);
+        }
+        
+        // Try to parse the text as JSON
+        try {
+          const jsonResponse = JSON.parse(textResponse);
+          return of(jsonResponse as T);
+        } catch (parseError) {
+          console.error(`Failed to parse text response as JSON:`, parseError);
+          
+          if (fallbackData !== undefined) {
+            return of(fallbackData);
+          }
+          
+          // Try production API as last resort
+          return this.tryProductionApi<T>(endpoint, fallbackData);
+        }
+      }),
+      catchError(error => this.handleError(error, fallbackData))
+    );
+  }
+  
+  /**
+   * Try to fetch data from the production API as a fallback
+   * @param endpoint Original endpoint
+   * @param fallbackData Optional fallback data
+   * @returns Observable of the response or fallback
+   */
+  private tryProductionApi<T>(endpoint: string, fallbackData?: T): Observable<T> {
+    const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run/api';
+    const fallbackUrl = `${productionApiUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    
+    console.log(`Making fallback API request to: ${fallbackUrl}`);
+    
+    return this.http.get<T>(fallbackUrl, this.httpOptions).pipe(
+      catchError(fallbackError => {
+        console.error(`Fallback request to production API failed:`, fallbackError);
+        return this.handleError(fallbackError, fallbackData);
       })
     );
   }
