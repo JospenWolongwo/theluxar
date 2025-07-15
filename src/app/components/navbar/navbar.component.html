@@ -172,7 +172,7 @@
       </ng-container>
 
       <ng-template #mobileLoginButton>
-        <a [routerLink]="['/auth/login']" class="mobile-login-button" (click)="closeMobileMenu()">
+        <a href="javascript:void(0)" class="mobile-login-button" (click)="login()">
           <fa-icon [icon]="['fas', 'sign-in-alt']"></fa-icon>
           <span>Login / Register</span>
         </a>
