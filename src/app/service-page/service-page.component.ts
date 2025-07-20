@@ -78,7 +78,6 @@ export class ServicePageComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Failed to load service categories:', error);
           this.error = true;
           this.isLoading = false;
           

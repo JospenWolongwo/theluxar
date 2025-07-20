@@ -44,7 +44,6 @@ export class CategoriesService extends BaseService {
     return this.apiService.get<Category[]>(endpoint, fallbackData).pipe(
       map((categories) => this.normalizeCategories(categories)),
       catchError((error) => {
-        console.warn('Failed to load categories from API, using fallback data:', error);
         return of(fallbackData);
       })
     );
@@ -66,7 +65,6 @@ export class CategoriesService extends BaseService {
     return this.apiService.get<Category[]>(endpoint, fallbackData).pipe(
       map((categories) => this.normalizeCategories(categories)),
       catchError((error) => {
-        console.warn('Failed to load root categories from API, using fallback data:', error);
         return of(fallbackData);
       })
     );
@@ -84,7 +82,6 @@ export class CategoriesService extends BaseService {
     return this.apiService.get<Category[]>(endpoint, fallbackData).pipe(
       map((categories) => this.normalizeCategories(categories)),
       catchError((error) => {
-        console.warn(`Failed to load child categories for parent ${parentId} from API, using fallback data:`, error);
         return of(fallbackData);
       })
     );
@@ -106,7 +103,6 @@ export class CategoriesService extends BaseService {
     return this.apiService.get<Category>(endpoint, fallbackData).pipe(
       map((category) => this.normalizeCategory(category)),
       catchError((error) => {
-        console.warn(`Failed to load category ${id} from API, using fallback data:`, error);
         return of(fallbackData);
       })
     );

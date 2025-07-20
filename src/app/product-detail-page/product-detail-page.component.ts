@@ -121,24 +121,14 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.productService.getProductBySlug(productSlug).subscribe({
         next: (product: Product) => {
-          console.log('Product loaded:', product);
           this.product = product;
           this.loading = false;
 
           // Load related products after product is fully loaded
-          console.log('About to load related products. Product category info:', {
-            category: this.product.category,
-            categoryName: this.product.categoryName,
-            categoryId: this.product.category?.id,
-            categoryNameFromCategory: this.product.category?.name
-          });
-          
           if (this.product.category?.id || this.product.category?.name || this.product.categoryName) {
-            console.log('Category information found, loading related products');
             const categoryId = this.product.category?.id || this.product.category?.name || this.product.categoryName || 'generic';
             this.loadRelatedProducts(categoryId);
           } else {
-            console.warn('Product has no category information, cannot load related products');
             this.relatedProducts = [];
           }
           
@@ -158,48 +148,30 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
     // Get the category name if available, otherwise use the ID
     const categoryName = this.product.category?.name || categoryId;
     
-    console.log('Loading related products for category:', categoryName);
-    console.log('Current product:', this.product);
-    console.log('Product category info:', {
-      category: this.product.category,
-      categoryName: this.product.categoryName,
-      categoryId: this.product.category?.id,
-      categoryNameFromCategory: this.product.category?.name
-    });
-    
     // Use the proper API endpoint for category-based filtering
     // Try with category ID first (as per API documentation)
     const categoryToUse = this.product.category?.id || categoryId;
-    console.log('Using category ID for API call:', categoryToUse);
     
     this.subscription.add(
       this.productService.getProductsByCategory(categoryToUse, 8, this.product.id).subscribe({
         next: (products: Product[]) => {
-          console.log('Related products loaded for category ID', categoryToUse, ':', products.length);
           
           if (products.length > 0) {
-            console.log('Related products found:', products);
             this.relatedProducts = products;
           } else {
-            console.log('No products found for category ID', categoryToUse, ', trying with category name');
             // Try with category name if different from ID
             if (categoryName && categoryName !== categoryToUse) {
-              console.log('Trying with category name:', categoryName);
               this.loadRelatedProductsByCategoryName(categoryName);
             } else {
-              console.log('No more category options, loading fallback products');
               this.loadFallbackRelatedProducts();
             }
           }
         },
         error: (err: Error) => {
-          console.error('Error loading related products for category ID', categoryToUse, ':', err);
           // Try with category name if different from ID
           if (categoryName && categoryName !== categoryToUse) {
-            console.log('Trying with category name after error:', categoryName);
             this.loadRelatedProductsByCategoryName(categoryName);
           } else {
-            console.log('No more category options after error, loading fallback products');
             this.loadFallbackRelatedProducts();
           }
         },
@@ -208,22 +180,17 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
   }
 
   private loadRelatedProductsByCategoryName(categoryName: string): void {
-    console.log('Loading related products by category name:', categoryName);
     this.subscription.add(
       this.productService.getProductsByCategory(categoryName, 8, this.product.id).subscribe({
         next: (products: Product[]) => {
-          console.log('Related products loaded for category name', categoryName, ':', products.length);
           
           if (products.length > 0) {
-            console.log('Related products found by name:', products);
             this.relatedProducts = products;
           } else {
-            console.log('No products found for category name', categoryName, ', loading fallback');
             this.loadFallbackRelatedProducts();
           }
         },
         error: (err: Error) => {
-          console.error('Error loading related products for category name', categoryName, ':', err);
           this.loadFallbackRelatedProducts();
         },
       })
@@ -234,17 +201,14 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
    * Load fallback related products when category-based loading fails
    */
   private loadFallbackRelatedProducts(): void {
-    console.log('Loading fallback related products');
     this.subscription.add(
       this.productService.getProducts(8).subscribe({
         next: (products: Product[]) => {
           // Exclude the current product
           const filteredProducts = products.filter(p => p.id !== this.product.id);
-          console.log('Fallback related products loaded:', filteredProducts.length);
           this.relatedProducts = filteredProducts;
         },
         error: (err: Error) => {
-          console.error('Error loading fallback related products:', err);
           // Even if this fails, set an empty array to prevent errors
           this.relatedProducts = [];
         },
@@ -259,7 +223,6 @@ export class ProductDetailPageComponent implements OnInit, OnDestroy {
     // If no related products are loaded after a reasonable time, load fallback
     setTimeout(() => {
       if (this.relatedProducts.length === 0) {
-        console.log('No related products loaded, forcing fallback');
         this.loadFallbackRelatedProducts();
       }
     }, 2000); // Wait 2 seconds before forcing fallback

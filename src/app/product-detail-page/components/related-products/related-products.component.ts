@@ -43,8 +43,6 @@ export class RelatedProductsComponent implements OnInit, OnChanges {
     }
 
     if (changes['products']) {
-      console.log('RelatedProductsComponent: Products changed:', this.products);
-      console.log('RelatedProductsComponent: Products length:', this.products.length);
       this.calculatePages();
     }
   }

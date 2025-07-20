@@ -1,0 +1,59 @@
+@use '../../styles/variables' as var;
+@use '../../styles/buttons' as btn;
+@use '../../styles/spacing' as sp;
+@use '../../styles/flexbox' as flex;
+
+.user-profile-page.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 4 * var.$base-space;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 3 * var.$base-space;
+}
+
+.loading, .error {
+  text-align: center;
+  margin: 3 * var.$base-space 0;
+  color: var.$gray-700;
+}
+
+.profile-card {
+  background: var.$white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 3 * var.$base-space;
+  border: 1px solid var.$gray-200;
+}
+
+.profile-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 2 * var.$base-space;
+}
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  gap: 2 * var.$base-space;
+  .label {
+    font-weight: 500;
+    color: var.$gray-700;
+    min-width: 80px;
+  }
+  input {
+    flex: 1;
+    padding: 1 * var.$base-space;
+    border: 1px solid var.$gray-200;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+}
+
+.profile-actions {
+  display: flex;
+  gap: 2 * var.$base-space;
+} 

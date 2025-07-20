@@ -475,24 +475,31 @@ $deep-black: #000000;
   }
 
   .sort-section {
-    gap: var.$base-space * 2;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
 
-    .sort-label {
-      font-size: 0.9rem;
-      color: var.$gray-500;
-    }
+  .sort-label {
+    font-size: 1rem;
+    color: #444;
+    font-weight: 500;
+  }
 
-    .sort-dropdown {
-      gap: var.$base-space;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
+  .sort-dropdown {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    color: #222;
+    background: #fff;
+    outline: none;
+    transition: border 0.2s;
+    min-width: 160px;
+  }
 
-      svg {
-        width: var.$base-space * 4;
-        height: var.$base-space * 4;
-      }
-    }
+  .sort-dropdown:focus {
+    border-color: #bfa16a;
   }
 }
 

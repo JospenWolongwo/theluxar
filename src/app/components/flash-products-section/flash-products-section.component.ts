@@ -69,7 +69,6 @@ export class FlashProductsSectionComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Failed to load flash products:', error);
           this.error = true;
           this.isLoading = false;
           
@@ -93,7 +92,7 @@ export class FlashProductsSectionComponent implements OnInit, OnDestroy {
           this.countdown = countdown;
         },
         error: (error) => {
-          console.error('Countdown error:', error);
+          // Handle countdown error silently
         }
       })
     );

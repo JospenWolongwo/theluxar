@@ -30,6 +30,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
   discount = 0;
   tax = 0;
   total = 0;
+  loading = true;
   subscription: Subscription = new Subscription();
 
   // Screen size properties for responsive design
@@ -71,10 +72,14 @@ export class CartPageComponent implements OnInit, OnDestroy {
     });
 
     // Subscribe to cart changes
+    this.loading = true;
     this.subscription.add(
       this.cartService.getCartItems().subscribe((items) => {
         this.cartItems = items;
         this.updateTotals();
+        this.loading = false;
+      }, () => {
+        this.loading = false;
       })
     );
   }

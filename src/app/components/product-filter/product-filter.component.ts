@@ -141,6 +141,15 @@ export class ProductFilterComponent {
       title: 'COLLECTIONS',
       type: 'checkbox',
       options: [
+        { name: 'Watches', value: 'watches', count: 0, checked: false },
+        { name: 'Jewelry', value: 'jewelry', count: 0, checked: false },
+        { name: 'Perfumes', value: 'perfumes', count: 0, checked: false },
+        { name: 'Accessories', value: 'accessories', count: 0, checked: false },
+        { name: 'Gifts', value: 'gifts', count: 0, checked: false },
+        { name: 'Rings', value: 'rings', count: 0, checked: false },
+        { name: 'Bracelets', value: 'bracelets', count: 0, checked: false },
+        { name: 'Earrings', value: 'earrings', count: 0, checked: false },
+        { name: 'Necklaces', value: 'necklaces', count: 0, checked: false },
         { name: 'New Arrivals', value: 'new-arrivals', count: 12, checked: false },
         { name: 'Best Sellers', value: 'best-sellers', count: 25, checked: false },
         { name: 'Special Offers', value: 'special-offers', count: 18, checked: false },
@@ -184,5 +193,43 @@ export class ProductFilterComponent {
     }, {} as Record<string, string[]>);
 
     this.filterChange.emit(activeFilters);
+  }
+
+  /**
+   * Reset all filters to their default (unchecked) state and emit the change
+   */
+  resetFilters(): void {
+    this.filterCategories.forEach(category => {
+      category.options.forEach(option => {
+        // For radio, reset to default (usually first option checked)
+        if (category.type === 'radio') {
+          option.checked = option === category.options[0];
+        } else {
+          option.checked = false;
+        }
+      });
+    });
+    this.onFilterChange();
+  }
+
+  /**
+   * Toggle icon-based filter options and update checked state
+   */
+  toggleIconOption(categoryIdx: number, optionIdx: number): void {
+    const category = this.filterCategories[categoryIdx];
+    const option = category.options[optionIdx];
+    option.checked = !option.checked;
+    this.onFilterChange();
+  }
+
+  /**
+   * Select a radio option and uncheck all others in the same group
+   */
+  selectRadioOption(categoryIdx: number, optionIdx: number): void {
+    const category = this.filterCategories[categoryIdx];
+    category.options.forEach((option, idx) => {
+      option.checked = idx === optionIdx;
+    });
+    this.onFilterChange();
   }
 }

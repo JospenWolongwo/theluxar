@@ -154,21 +154,8 @@ export class AuthService {
       .get<any>('/carts', null)
       .subscribe({
         next: (response: any) => {
-          // If we get a successful response, user is authenticated
-          // For now, we'll assume the user is authenticated if the request succeeds
-          // and create a basic user object
-          if (response) {
-            // Create a basic user object since we don't have detailed user info
-            const user: User = {
-              id: 'authenticated-user',
-              firstName: 'User',
-              lastName: '',
-              email: ''
-            };
-            console.log('AuthService: Setting user state to authenticated:', user);
-            this.currentUserSubject.next(user);
-            this.isAuthenticatedSubject.next(true);
-          } else {
+          // Only clear auth data if not authenticated; do not set user here
+          if (!response) {
             this.clearAuthData();
           }
         },
@@ -378,6 +365,30 @@ export class AuthService {
   }
 
   /**
+   * Fetch the real user UUID from the backend and set it in the current user
+   */
+  public fetchAndSetUserId(): void {
+    // Always use relative endpoint so proxy works: /api/auth/verify
+    this.apiService.get<{ userId: string, valid: boolean }>('/auth/verify').subscribe({
+      next: (res) => {
+        if (res && res.valid && res.userId) {
+          const user: User = {
+            id: res.userId,
+            firstName: 'User',
+            lastName: '',
+            email: ''
+          };
+          this.currentUserSubject.next(user);
+          this.isAuthenticatedSubject.next(true);
+        }
+      },
+      error: () => {
+        this.clearAuthData();
+      }
+    });
+  }
+
+  /**
    * Handles return from authentication process
    * Should be called when app loads to check for successful auth
    * @returns Promise that resolves when auth state check completes
@@ -416,16 +427,9 @@ export class AuthService {
 
               if (response) {
                 console.log('Session verified successfully - user is authenticated');
-                // Session is valid, create a basic user object
-                const user: User = {
-                  id: 'authenticated-user',
-                  firstName: 'User',
-                  lastName: '',
-                  email: ''
-                };
-                console.log('AuthService handleAuthReturn: Setting user state to authenticated:', user);
-                this.currentUserSubject.next(user);
-                this.isAuthenticatedSubject.next(true);
+                // Fetch and set the real user UUID (this will set the user state)
+                this.fetchAndSetUserId();
+                // Do NOT set the placeholder user here!
                 
                     // If authenticated and we have a stored URL, navigate back
                     if (preLoginUrl) {

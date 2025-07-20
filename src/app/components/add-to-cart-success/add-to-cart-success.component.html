@@ -13,25 +13,24 @@
     </div>
 
     <!-- Success Message -->
-    <h2 class="success-title">Votre commande est passée avec succès</h2>
+    <h2 class="success-title">Product added to cart!</h2>
 
     <!-- Instructions -->
     <p class="success-message">
-      Cliquer sur le boutton pour entrer en contact avec le vendeur via whatsapp ou copier le lien ci-après dans votre
-      barre de navigation
-      <a href="https://{{ websiteUrl }}" class="website-link">{{ websiteUrl }}</a>
+      Your product has been successfully added to your cart.<br />
+      You can continue shopping or proceed to your cart to complete your order.
     </p>
 
     <!-- Action Buttons -->
     <div class="action-buttons flex-row">
       <button class="return-btn flex-row align-items-center justify-content-center" (click)="returnToMenu()">
         <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
-        <span class="m-l-2">RETOUR AU MENU</span>
+        <span class="m-l-2">Continue Shopping</span>
       </button>
 
-      <button class="contact-btn flex-row align-items-center justify-content-center" (click)="contactVendor()">
-        <span class="m-r-2">CONTACTER LE VENDEUR</span>
-        <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+      <button class="contact-btn flex-row align-items-center justify-content-center" (click)="goToCart()">
+        <span class="m-r-2">Go to Cart</span>
+        <fa-icon [icon]="['fas', 'shopping-cart']"></fa-icon>
       </button>
     </div>
   </div>

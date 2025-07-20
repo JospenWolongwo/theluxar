@@ -30,7 +30,8 @@ export class AddToCartSuccessComponent {
   /**
    * Navigate to cart page and close the modal
    */
-  contactVendor(): void {
+  goToCart(): void {
     this.close.emit();
+    this.router.navigate(['/cart']);
   }
 }

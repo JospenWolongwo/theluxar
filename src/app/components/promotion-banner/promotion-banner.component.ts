@@ -35,7 +35,7 @@ export class PromotionBannerComponent {
   @Input() isMobile = false;
   @Input() isTablet = false;
   @Input() resultsCount?: number;
-  @Input() sortOption = 'Most Popular';
+  sortOption: string = 'most-popular';
 
   promotionItems: PromotionItem[] = [
     {
@@ -72,5 +72,27 @@ export class PromotionBannerComponent {
     this.router.navigate(['/products'], {
       queryParams: { category: category.toLowerCase() },
     });
+  }
+
+  onSortChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.sortOption = value;
+    this.applySorting();
+  }
+
+  private applySorting(): void {
+    if (this.sortOption === 'price-asc') {
+      this.promotionItems = [...this.promotionItems].sort((a, b) => this.getPrice(a) - this.getPrice(b));
+    } else if (this.sortOption === 'price-desc') {
+      this.promotionItems = [...this.promotionItems].sort((a, b) => this.getPrice(b) - this.getPrice(a));
+    } else {
+      // Most Popular: keep original order or implement your own logic
+      // For now, do nothing
+    }
+  }
+
+  private getPrice(item: PromotionItem): number {
+    // Remove commas and parse as number
+    return Number((item.price || '').replace(/,/g, '')) || 0;
   }
 }

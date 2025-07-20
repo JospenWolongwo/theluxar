@@ -46,7 +46,6 @@ export class FlashProductsService extends BaseService {
         };
       }),
       catchError((error) => {
-        console.warn('Failed to load flash products from API, using fallback data:', error);
         return of(fallbackData);
       })
     );

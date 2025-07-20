@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import type { AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { Component, HostListener, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { REVIEWS } from '../../../shared/data/reviews.data';
 import type { Review } from '../../../shared/types';
+import { ReviewsService } from '../../services/reviews.service';
 import { StarRatingComponent } from '../star-rating/star-rating.component';
 
 @Component({
@@ -16,16 +18,22 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() isMobile = false;
   @Input() isTablet = false;
 
-  reviews: Review[] = REVIEWS;
+  reviews: Review[] = [];
+  isLoading = true;
+  error = false;
   currentSlide = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sliderInterval: any;
   reviewsPerPage = 3;
   totalPages = 0;
 
+  private subscription = new Subscription();
+
+  constructor(private reviewsService: ReviewsService) {}
+
   ngOnInit(): void {
+    this.loadReviews();
     this.updateReviewsPerPage();
-    this.totalPages = Math.ceil(this.reviews.length / this.reviewsPerPage);
     this.startSlider();
     window.addEventListener('resize', this.onResize.bind(this));
   }
@@ -35,8 +43,37 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe();
     window.removeEventListener('resize', this.onResize.bind(this));
     this.stopSlider();
+  }
+
+  /**
+   * Load reviews from the service
+   */
+  private loadReviews(): void {
+    this.isLoading = true;
+    this.error = false;
+
+    this.subscription.add(
+      this.reviewsService.getAllReviews().subscribe({
+        next: (reviews) => {
+          this.reviews = reviews;
+          this.isLoading = false;
+          this.updateReviewsPerPage();
+          this.totalPages = Math.ceil(this.reviews.length / this.reviewsPerPage);
+        },
+        error: (error) => {
+          this.error = true;
+          this.isLoading = false;
+          
+          // Use fallback data
+          this.reviews = REVIEWS;
+          this.updateReviewsPerPage();
+          this.totalPages = Math.ceil(this.reviews.length / this.reviewsPerPage);
+        }
+      })
+    );
   }
 
   @HostListener('window:resize')

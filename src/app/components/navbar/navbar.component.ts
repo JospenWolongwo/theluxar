@@ -85,10 +85,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     // Subscribe to authentication state changes
     this.subscription.add(
       this.authService.currentUser$.subscribe((user) => {
-        console.log('Navbar received user update:', user);
         this.isLoggedIn = !!user;
         this.userName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
-        console.log('Navbar updated - isLoggedIn:', this.isLoggedIn, 'userName:', this.userName);
         // Force change detection since we're using OnPush strategy
         this.cdr.markForCheck();
       })

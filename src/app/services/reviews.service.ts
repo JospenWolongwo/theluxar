@@ -44,7 +44,6 @@ export class ReviewsService extends BaseService {
     return this.apiService.get<ApiReview[]>(endpoint, this.convertReviewsToApiReviews(REVIEWS)).pipe(
       map((reviews) => this.normalizeReviews(reviews)),
       catchError((error) => {
-        console.warn('Failed to load reviews from API, using fallback data:', error);
         return of(fallbackData);
       })
     );
@@ -62,7 +61,6 @@ export class ReviewsService extends BaseService {
     return this.apiService.get<ApiReview[]>(endpoint, this.convertReviewsToApiReviews(REVIEWS.slice(0, 5))).pipe(
       map((reviews) => this.normalizeReviews(reviews)),
       catchError((error) => {
-        console.warn(`Failed to load reviews for product ${productId} from API, using fallback data:`, error);
         return of(fallbackData);
       })
     );
@@ -88,7 +86,6 @@ export class ReviewsService extends BaseService {
     return this.apiService.get<ApiReview>(endpoint, this.convertReviewToApiReview(fallbackData)).pipe(
       map((review) => this.normalizeReview(review)),
       catchError((error) => {
-        console.warn(`Failed to load review ${id} from API, using fallback data:`, error);
         return of(fallbackData);
       })
     );
@@ -111,7 +108,6 @@ export class ReviewsService extends BaseService {
     return this.apiService.post<ApiReview>(endpoint, apiReview, apiReview).pipe(
       map((response) => this.normalizeReview(response)),
       catchError((error) => {
-        console.error('Failed to create review:', error);
         throw error;
       })
     );
@@ -133,7 +129,6 @@ export class ReviewsService extends BaseService {
     return this.apiService.patch<ApiReview>(endpoint, apiReview, apiReview).pipe(
       map((response) => this.normalizeReview(response)),
       catchError((error) => {
-        console.error(`Failed to update review ${id}:`, error);
         throw error;
       })
     );
@@ -147,7 +142,6 @@ export class ReviewsService extends BaseService {
 
     return this.apiService.delete<void>(endpoint, undefined).pipe(
       catchError((error) => {
-        console.error(`Failed to delete review ${id}:`, error);
         throw error;
       })
     );

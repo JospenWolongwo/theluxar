@@ -269,11 +269,9 @@ export class WishlistService extends BaseService {
       // Validate wishlist items to ensure they have valid product information
       const validItems = items.filter(item => {
         if (!item || !item.product) {
-          console.warn('Wishlist item missing product information:', item);
           return false;
         }
         if (!item.product.id || !item.product.name || item.product.price === undefined) {
-          console.warn('Wishlist item has incomplete product information:', item);
           return false;
         }
         return true;

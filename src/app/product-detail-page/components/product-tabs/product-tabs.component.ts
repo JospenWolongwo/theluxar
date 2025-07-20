@@ -119,18 +119,15 @@ export class ProductTabsComponent implements OnInit {
 
     // Only proceed if we have a valid product
     if (this.product) {
-      console.log('Preparing specs from product:', this.product);
       
       // Determine product category first
       this.determineProductCategory();
-      console.log(`Detected product category: ${this.productCategory}, type: ${this.productType}`);
       
       // Prepare the specifications from the product data
       this.prepareSpecifications();
 
       // Add default core features if specs are not available
       if (this.coreFeatures.length === 0) {
-        console.log('No specs found, adding default core features');
         this.addDefaultCoreFeatures();
       }
     }
@@ -196,7 +193,6 @@ export class ProductTabsComponent implements OnInit {
       this.productType = 'accessory';
     }
     
-    console.log(`Product determined to be in category: ${this.productCategory}, type: ${this.productType}`);
   }
 
   /**

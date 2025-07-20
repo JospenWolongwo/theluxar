@@ -87,6 +87,19 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./wishlist-page/wishlist-page.component').then((module) => module.WishlistPageComponent),
   },
+  {
+    path: 'products',
+    loadComponent: () =>
+      import('./product-list-page/product-list-page.component').then((m) => m.ProductListPageComponent),
+  },
+  {
+    path: 'orders',
+    loadComponent: () => import('./order-page/order-page.component').then(m => m.OrderPageComponent),
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./user-profile-page/user-profile-page.component').then(m => m.UserProfilePageComponent),
+  },
 
   // Content pages
   {

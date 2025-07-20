@@ -14,6 +14,7 @@ import { ProductFilterComponent } from '../components/product-filter/product-fil
 import { ProductsSliderComponent } from '../components/products-slider/products-slider.component';
 import { ProductService } from '../services/product.service';
 import { WishlistService } from '../services/wishlist.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-list-page',
@@ -30,6 +31,7 @@ import { WishlistService } from '../services/wishlist.service';
     ProductsSliderComponent,
     ProductFilterComponent,
     ProductBannerComponent,
+    FormsModule,
   ],
 })
 export class ProductListPageComponent implements OnInit, OnDestroy {
@@ -56,6 +58,7 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
   activeFilters: Record<string, string[]> = {};
   isFilterPopupOpen = false;
   isLoading = true;
+  sortOption: string = 'most-popular';
 
   // eslint-disable-next-line max-params
   constructor(
@@ -76,11 +79,9 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
       );
     });
 
-    // Get category from route
+    // Get category from route data (for /watches, /jewelry, etc.)
     this.route.data.subscribe((data) => {
       const routeCategory = (data['category'] || '').toLowerCase();
-
-      // Map route categories to our internal category format
       const categoryMap: Record<string, string> = {
         'soins-peau': 'Soins de la Peau',
         maquillage: 'Maquillage',
@@ -88,13 +89,19 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
         parfums: 'Parfums',
         'soins-corps': 'Soins du Corps',
       };
-
-      // If the route category exists in our map, use the mapped value
-      // Otherwise, use the route category as is (for 'all products' case)
       this.activeCategory = categoryMap[routeCategory] || routeCategory;
+      if (this.activeCategory) {
+        this.loadProductsByCategory();
+      }
+    });
 
-      // Load products for the category
-      this.loadProductsByCategory();
+    // Get category from query param (for /products?category=...)
+    this.route.queryParams.subscribe((params) => {
+      const queryCategory = params['category'];
+      if (queryCategory) {
+        this.activeCategory = queryCategory;
+        this.loadProductsByCategory();
+      }
     });
 
     // Subscribe to wishlist updates
@@ -200,6 +207,7 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
     
     // Explicitly assign a new array to ensure change detection
     this.filteredProducts = [...newFilteredProducts];
+    this.applySorting();
   }
 
   toggleFilterPopup(): void {
@@ -216,6 +224,21 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onReserveClick(productId: string): void {
     // Handle reserve functionality
+  }
+
+  onSortChange(): void {
+    this.applySorting();
+  }
+
+  private applySorting(): void {
+    if (this.sortOption === 'price-asc') {
+      this.filteredProducts = [...this.filteredProducts].sort((a, b) => a.price - b.price);
+    } else if (this.sortOption === 'price-desc') {
+      this.filteredProducts = [...this.filteredProducts].sort((a, b) => b.price - a.price);
+    } else {
+      // Most Popular: keep original order or implement your own logic
+      // For now, do nothing (assume API or initial order is by popularity)
+    }
   }
 
   /**
@@ -285,26 +308,35 @@ export class ProductListPageComponent implements OnInit, OnDestroy {
       case 'occasions':
       case 'certifications':
       case 'ethical standards':
-      case 'collections':
-        // For these categories, check product features, tag and description
+      case 'collections': {
+        // Robust collections filter: check collections, label, tag, features, category, etc., normalizing both sides
         return values.some(value => {
-          // Check if the product has features that match
-          if (product.features && Array.isArray(product.features)) {
-            const matchingFeatures = product.features.filter(feature => 
-              feature.toLowerCase().includes(value.toLowerCase())
-            );
-            if (matchingFeatures.length > 0) return true;
+          const filterVal = value.toLowerCase().replace(/[-\s]/g, '');
+          const collections = (product as any)?.collections;
+          if (collections) {
+            if (Array.isArray(collections)) {
+              if (collections.some((c: string) => typeof c === 'string' && c.toLowerCase().replace(/[-\s]/g, '').includes(filterVal))) return true;
+            } else if (typeof collections === 'string') {
+              if (collections.toLowerCase().replace(/[-\s]/g, '').includes(filterVal)) return true;
+            }
           }
-          
-          // Check product description
-          const productDesc = (product.shortDescription || '').toLowerCase();
-          if (productDesc.includes(value.toLowerCase())) return true;
-          
-          // Check product tag
-          if ((product.tag || '').toLowerCase().includes(value.toLowerCase())) return true;
-          
+          if (typeof product.label === 'string' && product.label.toLowerCase().replace(/[-\s]/g, '').includes(filterVal)) return true;
+          if ((product.tag || '').toLowerCase().replace(/[-\s]/g, '').includes(filterVal)) return true;
+          if (product.features && Array.isArray(product.features)) {
+            if (product.features.some((feature: string) => feature.toLowerCase().replace(/[-\s]/g, '').includes(filterVal))) return true;
+          }
+          const productDesc = (product.shortDescription || '').toLowerCase().replace(/[-\s]/g, '');
+          if (productDesc.includes(filterVal)) return true;
+          const productCat = (product.category?.name || product.categoryName || '').toLowerCase().replace(/[-\s]/g, '');
+          if (productCat === filterVal) {
+            console.log('[COLLECTIONS FILTER MATCH]', { filterVal, productCat, product });
+            return true;
+          } else {
+            console.log('[COLLECTIONS FILTER NO MATCH]', { filterVal, productCat, product });
+          }
           return false;
         });
+      }
 
       // For any other filter category that we haven't explicitly handled
       default:

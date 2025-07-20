@@ -80,7 +80,7 @@
               <fa-icon [icon]="['fas', 'angle-down']" class="dropdown-icon"></fa-icon>
             </div>
             <mat-menu #userMenu="matMenu" class="user-menu">
-              <a mat-menu-item [routerLink]="['/auth/profile']">
+              <a mat-menu-item [routerLink]="['/profile']">
                 <fa-icon [icon]="['fas', 'user-circle']" class="menu-icon"></fa-icon>
                 <span>Profile</span>
               </a>
@@ -156,7 +156,7 @@
           <span class="user-name" *ngIf="userName">{{ userName }}</span>
         </div>
         <div class="mobile-user-actions">
-          <a [routerLink]="['/auth/profile']" class="mobile-menu-user-link" (click)="closeMobileMenu()">
+          <a [routerLink]="['/profile']" class="mobile-menu-user-link" (click)="closeMobileMenu()">
             <fa-icon [icon]="['fas', 'user-circle']"></fa-icon>
             <span>Profile</span>
           </a>

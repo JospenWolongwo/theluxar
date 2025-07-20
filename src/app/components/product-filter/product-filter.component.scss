@@ -288,4 +288,34 @@
       }
     }
   }
+
+  .filter-reset-row {
+    margin-bottom: 12px;
+    .reset-btn {
+      background: none;
+      border: 1px solid var.$gray-300;
+      color: var.$gray-700;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      &:hover {
+        background: var.$gray-100;
+        color: var.$gray-900;
+      }
+    }
+  }
+
+  .filter-option.icon-only.checked {
+    background-color: var.$gray-100;
+    border: 1px solid var.$gray-300;
+    .icon-label {
+      font-weight: 600;
+      color: var.$gray-900;
+    }
+    .category-icon {
+      color: var.$primary;
+    }
+  }
 }

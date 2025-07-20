@@ -1,0 +1,26 @@
+<!-- Requires FormsModule for ngModel -->
+<div class="user-profile-page container">
+  <h1 class="page-title">My Profile</h1>
+  <div *ngIf="loading" class="loading">Loading profile...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading && !error && user" class="profile-card">
+    <div class="profile-fields" *ngIf="!editing">
+      <div class="profile-row"><span class="label">Name:</span> <span>{{ user.firstName }} {{ user.lastName }}</span></div>
+      <div class="profile-row"><span class="label">Email:</span> <span>{{ user.email }}</span></div>
+      <div class="profile-row"><span class="label">Phone:</span> <span>{{ user.phone }}</span></div>
+      <div class="profile-row"><span class="label">Joined:</span> <span>{{ user.createdAt | date:'medium' }}</span></div>
+      <div class="profile-actions m-t-3">
+        <button class="btn-primary" (click)="startEdit()">Edit Profile</button>
+      </div>
+    </div>
+    <div class="profile-fields" *ngIf="editing">
+      <div class="profile-row"><span class="label">Name:</span> <input [(ngModel)]="editUser.firstName" placeholder="First Name" /> <input [(ngModel)]="editUser.lastName" placeholder="Last Name" /></div>
+      <div class="profile-row"><span class="label">Email:</span> <input [(ngModel)]="editUser.email" placeholder="Email" /></div>
+      <div class="profile-row"><span class="label">Phone:</span> <input [(ngModel)]="editUser.phone" placeholder="Phone" /></div>
+      <div class="profile-actions m-t-3">
+        <button class="btn-primary" (click)="saveEdit()">Save</button>
+        <button class="btn-outline m-l-2" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div> 

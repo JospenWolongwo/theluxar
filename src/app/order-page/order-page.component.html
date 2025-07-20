@@ -1,0 +1,32 @@
+<div class="order-page container">
+  <h1 class="page-title">My Orders</h1>
+  <div *ngIf="loading" class="loading">Loading orders...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!loading && !error && orders.length === 0" class="empty">No orders found.</div>
+  <div *ngIf="!loading && !error && orders.length > 0" class="orders-list">
+    <div *ngFor="let order of orders" class="order-card">
+      <div class="order-header">
+        <span class="order-id">Order #{{ order.id }}</span>
+        <span class="order-status status-{{ order.status | lowercase }}">{{ order.status }}</span>
+      </div>
+      <div class="order-details">
+        <div *ngFor="let item of order.items" class="order-item">
+          <span class="item-name">{{ item.productName || item.product?.name }}</span>
+          <span class="item-qty">x{{ item.quantity }}</span>
+          <span class="item-price">{{ item.price | number:'1.0-0' }} {{ item.currency || 'XAF' }}</span>
+        </div>
+      </div>
+      <div class="order-summary">
+        <span>Total: <b>{{ order.total | number:'1.0-0' }} {{ order.currency || 'XAF' }}</b></span>
+        <span>Date: {{ order.createdAt | date:'medium' }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="order-actions m-t-4">
+    <button class="btn-primary" (click)="placeOrder()" [disabled]="placingOrder">Place New Order (Cash on Delivery)</button>
+  </div>
+  <div *ngIf="orderSuccess" class="order-success m-t-4">
+    <p>Your order was placed successfully!</p>
+    <a [href]="whatsappUrl" target="_blank" class="btn-outline whatsapp-btn">Contact WhatsApp Assistant for Delivery & Payment</a>
+  </div>
+</div> 

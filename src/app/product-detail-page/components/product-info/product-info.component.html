@@ -90,23 +90,23 @@
       </button>
     </div>
 
-    <!-- Reserve button -->
-    <button
-      class="reserve-btn"
-      [disabled]="stockAvailability === 'Out of Stock'"
-    >
-      <span>RESERVE NOW</span>
-      <fa-icon [icon]="['fab', 'whatsapp']"></fa-icon>
-    </button>
-
-    <!-- Cart button using reusable component -->
+    <!-- Add to Cart button using reusable component -->
     <app-add-to-cart
       [product]="product"
-      [buttonLabel]="'CART'"
+      [buttonLabel]="'Add to Cart'"
       [buttonClass]="'cart-btn'"
       [showQuantity]="false"
       (productAdded)="onProductAdded($event)"
     ></app-add-to-cart>
+
+    <!-- Order Now button -->
+    <button
+      class="order-btn btn-primary m-l-2"
+      [disabled]="stockAvailability === 'Out of Stock'"
+      routerLink="/cart"
+    >
+      <span>ORDER NOW</span>
+    </button>
   </div>
 
   <!-- Social sharing -->

@@ -1,6 +1,10 @@
 <div class="product-filter-container" [class.mobile]="isMobile" [class.tablet]="isTablet">
   <div class="filter-content" [class.p-2]="isMobile" [class.p-3]="isTablet" [class.p-4]="!isMobile && !isTablet">
-    <ng-container *ngFor="let category of filterCategories">
+    <!-- Reset Filters Button -->
+    <div class="filter-reset-row flex-row align-items-center justify-content-end m-b-3">
+      <button class="reset-btn" type="button" (click)="resetFilters()">Reset Filters</button>
+    </div>
+    <ng-container *ngFor="let category of filterCategories; let catIdx = index">
       <div class="filter-category">
         <div class="filter-title" [class.sm-title]="isMobile" [class.md-title]="isTablet">
           <fa-icon [icon]="parseIcon(category.icon)" class="filter-icon" *ngIf="category.icon"></fa-icon>
@@ -12,9 +16,10 @@
           <ng-container *ngIf="category.type === 'icon'">
             <div class="icon-grid" [class.mobile-grid]="isMobile" [class.tablet-grid]="isTablet">
               <div
-                *ngFor="let option of category.options"
+                *ngFor="let option of category.options; let optIdx = index"
                 class="filter-option icon-only"
-                (click)="onFilterChange()"
+                [class.checked]="option.checked"
+                (click)="toggleIconOption(catIdx, optIdx)"
                 [class.mobile-option]="isMobile"
                 [class.tablet-option]="isTablet"
               >
@@ -45,7 +50,7 @@
           <!-- Radio buttons for price filters -->
           <ng-container *ngIf="category.type === 'radio'">
             <div
-              *ngFor="let option of category.options"
+              *ngFor="let option of category.options; let optIdx = index"
               class="filter-option"
               [class.mobile-option]="isMobile"
               [class.tablet-option]="isTablet"
@@ -56,7 +61,7 @@
                   [name]="category.title"
                   [value]="option.value"
                   [checked]="option.checked"
-                  (change)="option.checked = true; onFilterChange()"
+                  (change)="selectRadioOption(catIdx, optIdx)"
                 />
                 <span class="radio-mark" [class.small-mark]="isMobile"></span>
                 <span class="label-text" [class.sm-text]="isMobile" [class.md-text]="isTablet">{{ option.name }}</span>

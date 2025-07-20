@@ -23,34 +23,23 @@ export class ApiService {
   public get<T>(endpoint: string, fallbackData?: T): Observable<T> {
     // Check if we're in production domain (theluxar.com) but using relative URL patterns
     if (this.baseUrl.startsWith('/') && window.location.href.includes('theluxar.com')) {
-      console.warn(`Using relative API path in production may cause issues: ${this.baseUrl}`);
-      console.warn('Forcing production API URL');
-      
       // Force use of production API URL when on production domain
       const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run';
       const url = `${productionApiUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-      console.log(`Making forced production API request to: ${url}`);
       
       // Try the production API URL directly
       return this.http.get<T>(url, this.httpOptions).pipe(
-        tap(response => console.log(`API response from forced production URL ${url}:`, response)),
         catchError(error => this.handleError(error, fallbackData))
       );
     }
     
     // Standard request for non-production or correctly configured environments
     const url = `${this.baseUrl}${endpoint}`;
-    console.log(`Making API request to: ${url}`);
     
     return this.http.get<T>(url, this.httpOptions).pipe(
-      tap(response => console.log(`API response from ${endpoint}:`, response)),
       catchError(error => {
-        console.warn(`API request failed for ${endpoint}:`, error);
-        
         // If we got a parse error but the status was 200, try with text response type
         if (error.status === 200 && error.message && error.message.includes('parsing')) {
-          console.log(`Retrying ${endpoint} as text response`);
-          
           return this.handleTextResponse<T>(url, endpoint, fallbackData);
         }
         
@@ -69,15 +58,10 @@ export class ApiService {
   private handleTextResponse<T>(url: string, endpoint: string, fallbackData?: T): Observable<T> {
     return this.http.get(url, { ...this.httpOptions, responseType: 'text' }).pipe(
       switchMap(textResponse => {
-        console.log(`Received text response from ${endpoint}:`, textResponse);
-        
         // Check if response is HTML instead of JSON
         if (typeof textResponse === 'string' && 
             (textResponse.trim().startsWith('<!DOCTYPE') || 
              textResponse.trim().startsWith('<html'))) {
-          console.error('Received HTML instead of JSON. This indicates a server routing issue.');
-          console.warn('Falling back to production API URL');
-          
           return this.tryProductionApi<T>(endpoint, fallbackData);
         }
         
@@ -86,8 +70,6 @@ export class ApiService {
           const jsonResponse = JSON.parse(textResponse);
           return of(jsonResponse as T);
         } catch (parseError) {
-          console.error(`Failed to parse text response as JSON:`, parseError);
-          
           if (fallbackData !== undefined) {
             return of(fallbackData);
           }
@@ -110,11 +92,8 @@ export class ApiService {
     const productionApiUrl = 'https://theluxarapi-4s3ok4xm.b4a.run';
     const fallbackUrl = `${productionApiUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     
-    console.log(`Making fallback API request to: ${fallbackUrl}`);
-    
     return this.http.get<T>(fallbackUrl, this.httpOptions).pipe(
       catchError(fallbackError => {
-        console.error(`Fallback request to production API failed:`, fallbackError);
         return this.handleError(fallbackError, fallbackData);
       })
     );

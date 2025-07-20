@@ -22,21 +22,21 @@
 
       <!-- Content column (right side) -->
       <div class="content-column w-100">
-        <!-- Mobile Filter & Sort buttons -->
-        <div class="mobile-filter-sort-container p-t-10" *ngIf="currentScreenSize.ltSm">
-          <div class="button-container">
-            <button class="filter-btn" (click)="toggleFilterPopup()">
-              <img src="assets/images/Tags.png" alt="Filter" class="filter-icon" />
-              <span>Filter</span>
-            </button>
-            <button class="sort-btn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 7H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                <path d="M6 12H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                <path d="M10 17H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              </svg>
-              <span>Sort</span>
-            </button>
+        <!-- Filter & Sort Controls Row -->
+        <div class="filter-sort-row flex-row flex-wrap align-items-center justify-content-between m-b-4">
+          <!-- Filter Button (always visible) -->
+          <button class="filter-btn" (click)="toggleFilterPopup()">
+            <img src="assets/images/Tags.png" alt="Filter" class="filter-icon" />
+            <span>Filter</span>
+          </button>
+          <!-- Sort Dropdown (always visible) -->
+          <div class="sort-row flex-row align-items-center">
+            <label for="sort-select" class="sort-label m-r-2">Sort by</label>
+            <select id="sort-select" class="sort-select" [(ngModel)]="sortOption" (change)="onSortChange()">
+              <option value="most-popular">Most Popular</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
           </div>
         </div>
 

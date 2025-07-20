@@ -26,7 +26,6 @@ export class ServiceCategoriesService extends BaseService {
     return this.apiService.get<ServiceCategory[]>(endpoint, fallbackData).pipe(
       map((categories) => this.normalizeServiceCategories(categories)),
       catchError((error) => {
-        console.warn('Failed to load service categories from API, using fallback data:', error);
         return of(fallbackData);
       })
     );
@@ -50,7 +49,6 @@ export class ServiceCategoriesService extends BaseService {
     return this.apiService.get<ServiceCategory>(endpoint, fallbackData).pipe(
       map((category) => this.normalizeServiceCategory(category)),
       catchError((error) => {
-        console.warn(`Failed to load service category ${id} from API, using fallback data:`, error);
         return of(fallbackData);
       })
     );

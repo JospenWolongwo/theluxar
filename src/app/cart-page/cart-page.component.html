@@ -1,10 +1,15 @@
 <!-- Cart Page Container -->
 <div class="cart-page-container container">
+  <!-- Loading Spinner -->
+  <div class="loading-container flex-col align-items-center justify-content-center" *ngIf="loading">
+    <div class="spinner"></div>
+    <p class="m-t-4">Loading cart...</p>
+  </div>
   <!-- Breadcrumb -->
   <div class="breadcrumb">
-    <a [routerLink]="['/home']" class="breadcrumb-link">Tous les produits</a>
+    <a [routerLink]="['/home']" class="breadcrumb-link">All Products</a>
     <span class="breadcrumb-separator">></span>
-    <span class="breadcrumb-current">Mon Panier</span>
+    <span class="breadcrumb-current">My Cart</span>
   </div>
 
   <!-- Main content -->
@@ -12,7 +17,7 @@
     <div class="cart-layout" [class.mobile-layout]="isMobile">
       <!-- Shopping Cart Section -->
       <div class="shopping-cart-section">
-        <h2 class="section-title">Shopping Card</h2>
+        <h2 class="section-title">Shopping Cart</h2>
 
         <!-- Cart Items Table -->
         <div class="cart-table">
@@ -88,15 +93,15 @@
         <!-- Action Buttons -->
         <div class="cart-actions">
           <a [routerLink]="['/home']" class="btn-outline back-btn">
-            <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon> <span class="m-l-2">RETOUR À LA BOUTIQUE</span>
+            <fa-icon [icon]="['fas', 'arrow-left']"></fa-icon> <span class="m-l-2">BACK TO SHOP</span>
           </a>
-          <button class="btn-primary update-btn">METTRE À JOUR LE PANIER</button>
+          <button class="btn-primary update-btn">UPDATE CART</button>
         </div>
       </div>
 
       <!-- Cart Totals Section -->
       <div class="cart-totals-section">
-        <h2 class="section-title">Card Totals</h2>
+        <h2 class="section-title">Cart Totals</h2>
 
         <div class="totals-table">
           <!-- Subtotal Row -->
@@ -132,7 +137,7 @@
 
         <!-- Contact Vendor Button -->
         <button class="btn-primary contact-btn">
-          <fa-icon [icon]="['fas', 'phone']"></fa-icon> <span class="m-l-2">CONTACTEZ LE VENDEUR</span>
+          <fa-icon [icon]="['fas', 'phone']"></fa-icon> <span class="m-l-2">CONTACT VENDOR</span>
         </button>
       </div>
     </div>
@@ -142,9 +147,9 @@
   <ng-template #emptyCart>
     <div class="empty-cart">
       <fa-icon [icon]="['fas', 'shopping-cart']" class="empty-cart-icon"></fa-icon>
-      <h2>Votre panier est vide</h2>
-      <p>Parcourez notre catalogue et ajoutez des produits à votre panier.</p>
-      <a [routerLink]="['/home']" class="btn-primary">Continuer vos achats</a>
+      <h2>Your cart is empty</h2>
+      <p>Browse our catalog and add products to your cart.</p>
+      <a [routerLink]="['/home']" class="btn-primary">Continue Shopping</a>
     </div>
   </ng-template>
 </div>

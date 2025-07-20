@@ -1,0 +1,89 @@
+@use '../../styles/variables' as var;
+@use '../../styles/buttons' as btn;
+@use '../../styles/spacing' as sp;
+@use '../../styles/flexbox' as flex;
+
+.order-page.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4 * var.$base-space;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 3 * var.$base-space;
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  margin: 3 * var.$base-space 0;
+  color: var.$color-grey-700;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3 * var.$base-space;
+}
+
+.order-card {
+  background: var.$color-white;
+  border-radius: var.$border-radius;
+  box-shadow: var.$box-shadow;
+  padding: 3 * var.$base-space;
+  border: 1px solid var.$color-grey-200;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2 * var.$base-space;
+  .order-id {
+    font-weight: bold;
+    color: var.$color-primary;
+  }
+  .order-status {
+    font-size: 0.95rem;
+    &.status-pending { color: var.$color-warning; }
+    &.status-completed { color: var.$color-success; }
+    &.status-cancelled { color: var.$color-danger; }
+  }
+}
+
+.order-details {
+  margin-bottom: 2 * var.$base-space;
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1 * var.$base-space 0;
+    border-bottom: 1px solid var.$color-grey-100;
+    &:last-child { border-bottom: none; }
+    .item-name { font-weight: 500; }
+    .item-qty { color: var.$color-grey-600; }
+    .item-price { color: var.$color-grey-800; }
+  }
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.98rem;
+  color: var.$color-grey-700;
+}
+
+.order-actions {
+  text-align: center;
+}
+
+.order-success {
+  text-align: center;
+  color: var.$color-success;
+  .whatsapp-btn {
+    margin-top: 2 * var.$base-space;
+    border-color: var.$color-success;
+    color: var.$color-success;
+    &:hover { background: var.$color-success; color: var.$color-white; }
+  }
+} 

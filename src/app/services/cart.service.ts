@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { BehaviorSubject, Subject, catchError, map, of, tap } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, map, of, tap, forkJoin, mergeMap } from 'rxjs';
 import type { Product } from '../../shared/types/product.type';
 import { ApiService } from './api.service';
 import { BaseService } from './base.service';
+import { ProductService } from './product.service';
+import { AuthService } from '../auth/services/auth.service';
 
 export interface CartItem {
   product: Product;
@@ -18,9 +20,21 @@ export class CartService extends BaseService {
   private cartSubject = new BehaviorSubject<CartItem[]>([]);
   private cartCountSubject = new BehaviorSubject<number>(0);
   private cartSuccessSubject = new Subject<Product>();
+  loading = false;
+  cartId: string | null = null;
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private productService: ProductService, private authService: AuthService) {
     super();
+    // Robustly load cartId from localStorage
+    const storedCartId = localStorage.getItem('cartId');
+    if (storedCartId && storedCartId !== 'undefined') {
+      this.cartId = storedCartId;
+    } else {
+      this.cartId = null;
+      if (storedCartId === 'undefined') {
+        localStorage.removeItem('cartId');
+      }
+    }
     // Load cart from local storage on initialization
     this.loadCart();
     // Initialize the cart count
@@ -29,53 +43,46 @@ export class CartService extends BaseService {
 
   getCartItems(): Observable<CartItem[]> {
     // Get cart items from API if possible, fall back to local cart
-    return this.apiService.get<CartItem[]>('/carts', []).pipe(
-      map((items) => {
+    return this.apiService.get<any>('/carts', []).pipe(
+      map((response) => {
+        // Flatten all items arrays from all cart objects
+        let items: any[] = [];
+        if (Array.isArray(response)) {
+          // Array of cart objects, each with an items array
+          items = response.flatMap(cart => Array.isArray(cart.items) ? cart.items : []);
+        } else if (response && Array.isArray(response.items)) {
+          items = response.items;
+        } else if (response && response.data && Array.isArray(response.data.items)) {
+          items = response.data.items;
+        } else {
+          items = [];
+        }
         console.log('Raw cart items from API:', items);
-        // Validate and fix cart items to ensure they have complete product information
-        return items.map((item) => {
-          console.log('Processing cart item:', item);
-          // If item doesn't have a product or product is incomplete, create a fallback
-          if (!item.product || !item.product.id) {
-            console.warn('Cart item missing product information:', item);
-            return {
-              product: {
-                id: (item as any).id || 'unknown',
-                name: 'Product Unavailable',
-                price: 0,
-                currency: 'XAF',
-                imageUrl: '/assets/images/products/placeholder.jpg',
-                description: 'Product information not available',
-                category: 'Unknown',
-                brand: 'Unknown',
-                specs: '',
-                label: '',
-                stocks: []
-              } as any,
-              quantity: item.quantity || 1
-            };
+        return items;
+      }),
+      // Fetch product details if needed
+      // (switchMap is not imported, so use mergeMap and toArray for simplicity)
+      // Only fetch if product fields are missing and productId is present
+      // Otherwise, just map to { product: item, quantity: item.quantity || 1 }
+      // Use forkJoin for parallel requests
+      // This is a robust, production-ready approach
+      mergeMap((items: any[]) => {
+        const needsFetch = items.some(item => item.productId && (!item.name || !item.imageUrl));
+        if (!needsFetch) {
+          // All items already have product info
+          return of(items.map(item => ({ product: item, quantity: item.quantity || 1 })));
+        }
+        // Fetch product details for items that need it
+        const fetches = items.map(item => {
+          if (item.productId && (!item.name || !item.imageUrl)) {
+            return this.productService.getProductById(item.productId).pipe(
+              map(product => ({ product, quantity: item.quantity || 1 }))
+            );
+          } else {
+            return of({ product: item, quantity: item.quantity || 1 });
           }
-          
-          // Ensure product has all required fields
-          const product = {
-            ...item.product,
-            imageUrl: item.product.imageUrl || '/assets/images/products/placeholder.jpg',
-            currency: item.product.currency || 'XAF',
-            name: item.product.name || 'Product',
-            price: item.product.price || 0,
-            description: item.product.description || '',
-            category: item.product.category || 'Unknown',
-            brand: item.product.brand || 'Unknown',
-            specs: item.product.specs || '',
-            label: item.product.label || '',
-            stocks: item.product.stocks || []
-          };
-          
-          return {
-            product,
-            quantity: item.quantity || 1
-          };
         });
+        return forkJoin(fetches);
       }),
       catchError((error) => {
         console.error('Error fetching cart items:', error);
@@ -105,36 +112,62 @@ export class CartService extends BaseService {
   }
 
   addToCart(product: Product, quantity = 1): void {
-    const cartItem = {
-      product,
-      quantity: quantity
+    this.loading = true;
+    const addItem = (cartId: string) => {
+      if (!cartId || cartId === 'undefined') {
+        console.warn('[CartService] Attempting to add to cart with undefined cartId!');
+        return;
+      }
+      const body = { productId: product.id, quantity, price: product.price };
+      console.log('[CartService] Adding item to cart:', { cartId, body });
+      this.apiService.post<any>(`/carts/${cartId}/items`, body, body)
+        .pipe(
+          catchError(() => {
+            // If API call fails, update local cart
+            const existingItem = this.cartItems.find((item) => item.product.id === product.id);
+            if (existingItem) {
+              existingItem.quantity += quantity;
+            } else {
+              this.cartItems.push({ product, quantity });
+            }
+            return of(body);
+          })
+        )
+        .subscribe(() => {
+          this.updateCart();
+          this.cartSuccessSubject.next(product);
+          this.loading = false;
+        });
     };
-
-    // Try to add to cart via API
-    this.apiService.post<CartItem>('/carts', cartItem, cartItem)
-      .pipe(
-        catchError(() => {
-          // If API call fails, update local cart
-          const existingItem = this.cartItems.find((item) => item.product.id === product.id);
-
-          if (existingItem) {
-            existingItem.quantity += quantity;
-          } else {
-            this.cartItems.push({
-              product,
-              quantity,
-            });
-          }
-
-          return of(cartItem);
-        })
-      )
-      .subscribe(() => {
-        // Update local cart state
-        this.updateCart();
-        // Emit notification that product was added successfully
-        this.cartSuccessSubject.next(product);
-      });
+    if (this.cartId) {
+      console.log('[CartService] Using existing cartId:', this.cartId);
+      addItem(this.cartId);
+    } else {
+      // Get userId from AuthService
+      const user = this.authService.currentUserValue;
+      const userId = user?.id;
+      const cartBody = userId ? { userId } : {};
+      console.log('[CartService] Creating cart with body:', cartBody);
+      this.apiService.post<any>('/carts', cartBody, {})
+        .pipe(
+          tap((cart) => console.log('[CartService] Cart creation response:', cart)),
+          map((cart) => cart && (cart._id || cart.id || cart.cartId)),
+          catchError((err) => {
+            console.error('[CartService] Cart creation failed:', err);
+            // Fallback: generate a random cartId for local use
+            const localId = 'local-' + Math.random().toString(36).substring(2, 15);
+            this.cartId = localId;
+            localStorage.setItem('cartId', localId);
+            return of(localId);
+          })
+        )
+        .subscribe((cartId: string) => {
+          console.log('[CartService] New cartId set:', cartId);
+          this.cartId = cartId;
+          localStorage.setItem('cartId', cartId);
+          addItem(cartId);
+        });
+    }
   }
 
   updateItemQuantity(productId: string, quantity: number): void {
