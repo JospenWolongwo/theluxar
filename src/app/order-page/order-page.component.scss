@@ -29,8 +29,8 @@
 
 .order-card {
   background: var.$white;
-  border-radius: var.$border-radius;
-  box-shadow: var.$box-shadow;
+  border-radius: 4px;
+  box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.1);
   padding: 3 * var.$base-space;
   border: 1px solid var.$gray-200;
 }
@@ -42,13 +42,13 @@
   margin-bottom: 2 * var.$base-space;
   .order-id {
     font-weight: bold;
-    color: var.$color-primary;
+    color: var.$primary;
   }
   .order-status {
     font-size: 0.95rem;
-    &.status-pending { color: var.$color-warning; }
-    &.status-completed { color: var.$color-success; }
-    &.status-cancelled { color: var.$color-danger; }
+    &.status-pending { color: var.$warning; }
+    &.status-completed { color: var.$green; }
+    &.status-cancelled { color: var.$red; }
   }
 }
 
@@ -79,11 +79,11 @@
 
 .order-success {
   text-align: center;
-  color: var.$color-success;
+  color: var.$green;
   .whatsapp-btn {
     margin-top: 2 * var.$base-space;
-    border-color: var.$color-success;
-    color: var.$color-success;
-    &:hover { background: var.$color-success; color: var.$white; }
+    border-color: var.$green;
+    color: var.$green;
+    &:hover { background: var.$green; color: var.$white; }
   }
 } 
