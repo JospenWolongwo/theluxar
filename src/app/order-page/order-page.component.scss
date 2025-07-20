@@ -28,7 +28,7 @@
 }
 
 .order-card {
-  background: var.$color-white;
+  background: var.$white;
   border-radius: var.$border-radius;
   box-shadow: var.$box-shadow;
   padding: 3 * var.$base-space;
@@ -84,6 +84,6 @@
     margin-top: 2 * var.$base-space;
     border-color: var.$color-success;
     color: var.$color-success;
-    &:hover { background: var.$color-success; color: var.$color-white; }
+    &:hover { background: var.$color-success; color: var.$white; }
   }
 } 
